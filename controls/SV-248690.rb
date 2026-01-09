@@ -1,16 +1,16 @@
 control 'SV-248690' do
   title 'OL 8 must require the maximum number of repeating characters of the same character class be limited to four when passwords are changed.'
-  desc 'Use of a complex password helps to increase the time and resources required to compromise the password. Password complexity, or strength, is a measure of the effectiveness of a password in resisting attempts at guessing and brute-force attacks. 
- 
-Password complexity is one factor of several that determines how long it takes to crack a password. The more complex the password, the greater the number of possible combinations that need to be tested before the password is compromised. 
- 
+  desc 'Use of a complex password helps to increase the time and resources required to compromise the password. Password complexity, or strength, is a measure of the effectiveness of a password in resisting attempts at guessing and brute-force attacks.
+
+Password complexity is one factor of several that determines how long it takes to crack a password. The more complex the password, the greater the number of possible combinations that need to be tested before the password is compromised.
+
 OL 8 uses "pwquality" as a mechanism to enforce password complexity. The "maxclassrepeat" option sets the maximum number of allowed same consecutive characters in the same class in the new password.'
-  desc 'check', 'Check for the value of the "maxclassrepeat" option in "/etc/security/pwquality.conf" or "/etc/security/pwquality.conf.d/*.conf" files with the following command: 
- 
+  desc 'check', 'Check for the value of the "maxclassrepeat" option in "/etc/security/pwquality.conf" or "/etc/security/pwquality.conf.d/*.conf" files with the following command:
+
 $ sudo grep -r maxclassrepeat /etc/security/pwquality.conf*
- 
-/etc/security/pwquality.conf:maxclassrepeat = 4 
- 
+
+/etc/security/pwquality.conf:maxclassrepeat = 4
+
 If the value of "maxclassrepeat" is set to "0", more than "4" or is commented out, this is a finding.
 If conflicting results are returned, this is a finding.'
   desc 'fix', 'Configure OL 8 to require the change of the number of repeating characters of the same character class when passwords are changed by setting the "maxclassrepeat" option.

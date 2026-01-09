@@ -10,14 +10,14 @@ IgnoreUserKnownHosts yes
 If the value is returned as "no", the returned line is commented out, or no output is returned, this is a finding.
 
 If conflicting results are returned, this is a finding.)
-  desc 'fix', 'Configure the SSH daemon to not allow authentication using known host’s authentication. 
- 
-Add the following line in "/etc/ssh/sshd_config", or uncomment the line and set the value to "yes": 
- 
-IgnoreUserKnownHosts yes 
- 
-The SSH daemon must be restarted for the changes to take effect. To restart the SSH daemon, run the following command: 
- 
+  desc 'fix', 'Configure the SSH daemon to not allow authentication using known host’s authentication.
+
+Add the following line in "/etc/ssh/sshd_config", or uncomment the line and set the value to "yes":
+
+IgnoreUserKnownHosts yes
+
+The SSH daemon must be restarted for the changes to take effect. To restart the SSH daemon, run the following command:
+
 $ sudo systemctl restart sshd.service'
   impact 0.5
   tag check_id: 'C-52039r951565_chk'

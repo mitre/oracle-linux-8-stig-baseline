@@ -1,29 +1,29 @@
 control 'SV-248744' do
   title 'OL 8 must generate audit records for all account creation events that affect "/etc/group".'
-  desc 'Without generating audit records that are specific to the security and mission needs of the organization, it would be difficult to establish, correlate, and investigate the events relating to an incident or identify those responsible for one. 
- 
+  desc 'Without generating audit records that are specific to the security and mission needs of the organization, it would be difficult to establish, correlate, and investigate the events relating to an incident or identify those responsible for one.
+
 Audit records can be generated from various components within the information system (e.g., module or policy filter).
 
 '
-  desc 'check', 'Verify OL 8 generates audit records for all account creations events that affect "/etc/group". 
- 
-Check the auditing rules in "/etc/audit/audit.rules" with the following command: 
- 
-$ sudo grep /etc/group /etc/audit/audit.rules 
- 
--w /etc/group -p wa -k identity 
- 
-If the command does not return a line or the line is commented out, this is a finding.  
- 
+  desc 'check', 'Verify OL 8 generates audit records for all account creations events that affect "/etc/group".
+
+Check the auditing rules in "/etc/audit/audit.rules" with the following command:
+
+$ sudo grep /etc/group /etc/audit/audit.rules
+
+-w /etc/group -p wa -k identity
+
+If the command does not return a line or the line is commented out, this is a finding.
+
 Note: The "-k" allows for specifying an arbitrary identifier, and the string after it does not need to match the example output above.'
-  desc 'fix', 'Configure OL 8 to generate audit records for all account creations events that affect "/etc/group". 
- 
-Add or update the following file system rule to "/etc/audit/rules.d/audit.rules": 
- 
--w /etc/group -p wa -k identity 
- 
-The audit daemon must be restarted for the changes to take effect. To restart the audit daemon, run the following command: 
- 
+  desc 'fix', 'Configure OL 8 to generate audit records for all account creations events that affect "/etc/group".
+
+Add or update the following file system rule to "/etc/audit/rules.d/audit.rules":
+
+-w /etc/group -p wa -k identity
+
+The audit daemon must be restarted for the changes to take effect. To restart the audit daemon, run the following command:
+
 $ sudo service auditd restart'
   impact 0.5
   tag check_id: 'C-52178r779796_chk'

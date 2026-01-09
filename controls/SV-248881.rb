@@ -32,7 +32,7 @@ If conflicting results are returned, this is a finding.'
 
 $ sudo sysctl -w net.ipv4.conf.default.accept_source_route=0
 
-Remove any configurations that conflict with the above from the following locations: 
+Remove any configurations that conflict with the above from the following locations:
 /run/sysctl.d/*.conf
 /usr/local/lib/sysctl.d/*.conf
 /usr/lib/sysctl.d/*.conf

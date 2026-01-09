@@ -12,10 +12,10 @@ X11UseLocalhost yes
 If the "X11UseLocalhost" keyword is set to "no", is missing, or is commented out, this is a finding.
 
 If conflicting results are returned, this is a finding.)
-  desc 'fix', 'Configure the OL 8 SSH daemon to prevent remote hosts from connecting to the proxy display. 
- 
-Edit the "/etc/ssh/sshd_config" file to uncomment or add the line for the "X11UseLocalhost" keyword and set its value to "yes" (this file may be named differently or be in a different location if using a version of SSH that is provided by a third-party vendor): 
- 
+  desc 'fix', 'Configure the OL 8 SSH daemon to prevent remote hosts from connecting to the proxy display.
+
+Edit the "/etc/ssh/sshd_config" file to uncomment or add the line for the "X11UseLocalhost" keyword and set its value to "yes" (this file may be named differently or be in a different location if using a version of SSH that is provided by a third-party vendor):
+
 X11UseLocalhost yes'
   impact 0.5
   tag check_id: 'C-52335r951586_chk'

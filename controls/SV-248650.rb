@@ -10,14 +10,14 @@ PermitUserEnvironment no
 If "PermitUserEnvironment" is set to "yes", is missing completely, or is commented out, this is a finding.
 
 If conflicting results are returned, this is a finding.)
-  desc 'fix', 'Configure OL 8 to allow the SSH daemon to not allow unattended or automatic login to the system. 
- 
-Add or edit the following line in the "/etc/ssh/sshd_config" file: 
- 
-PermitUserEnvironment no 
- 
-The SSH daemon must be restarted for the changes to take effect. To restart the SSH daemon, run the following command: 
- 
+  desc 'fix', 'Configure OL 8 to allow the SSH daemon to not allow unattended or automatic login to the system.
+
+Add or edit the following line in the "/etc/ssh/sshd_config" file:
+
+PermitUserEnvironment no
+
+The SSH daemon must be restarted for the changes to take effect. To restart the SSH daemon, run the following command:
+
 $ sudo systemctl restart sshd.service'
   impact 0.7
   tag check_id: 'C-52084r951573_chk'

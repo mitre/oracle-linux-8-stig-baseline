@@ -1,27 +1,27 @@
 control 'SV-248525' do
   title 'All OL 8 local disk partitions must implement cryptographic mechanisms to prevent unauthorized disclosure or modification of all information that requires at-rest protection.'
-  desc 'OL 8 systems handling data requiring "data-at-rest" protections must employ cryptographic mechanisms to prevent unauthorized disclosure and modification of the information at rest. 
- 
+  desc 'OL 8 systems handling data requiring "data-at-rest" protections must employ cryptographic mechanisms to prevent unauthorized disclosure and modification of the information at rest.
+
 Selection of a cryptographic mechanism is based on the need to protect the integrity of organizational information. The strength of the mechanism is commensurate with the security category and/or classification of the information. Organizations have the flexibility to either encrypt all information on storage devices (i.e., full disk encryption) or encrypt specific data structures (e.g., files, records, or fields).
 
 '
-  desc 'check', 'Verify OL 8 prevents unauthorized disclosure or modification of all information requiring at-rest protection by using disk encryption. 
- 
+  desc 'check', 'Verify OL 8 prevents unauthorized disclosure or modification of all information requiring at-rest protection by using disk encryption.
+
 If there is a documented and approved reason for not having data-at-rest encryption at the operating system level, such as encryption provided by a hypervisor or a disk storage array in a virtualized environment, this requirement is not applicable.
-  
-Verify all system partitions are encrypted with the following command: 
- 
+
+Verify all system partitions are encrypted with the following command:
+
      $ sudo blkid
 
      /dev/mapper/ol-root:  UUID="67b7d7fe-de60-6fd0-befb-e6748cf97743" TYPE="crypto_LUKS"
- 
+
 Every persistent disk partition present must be of type "crypto_LUKS".
- 
+
 If any partitions other than the boot partition or pseudo file systems (such as "/proc" or "/sys") are not listed, ask the administrator to indicate how the partitions are encrypted. If there is no evidence that these partitions are encrypted, this is a finding.'
-  desc 'fix', 'Configure OL 8 to prevent unauthorized modification of all information at rest by using disk encryption. 
- 
-Encrypting a partition in an already-installed system is more difficult because existing partitions will need to be resized and changed.  
- 
+  desc 'fix', 'Configure OL 8 to prevent unauthorized modification of all information at rest by using disk encryption.
+
+Encrypting a partition in an already-installed system is more difficult because existing partitions will need to be resized and changed.
+
 To encrypt an entire partition, dedicate a partition for encryption in the partition layout.'
   impact 0.7
   tag check_id: 'C-51959r917892_chk'

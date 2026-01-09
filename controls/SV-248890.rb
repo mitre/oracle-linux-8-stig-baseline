@@ -9,12 +9,12 @@ The sysctl --system command will load settings from all system configuration fil
 /usr/lib/sysctl.d/*.conf
 /lib/sysctl.d/*.conf
 /etc/sysctl.conf'
-  desc 'check', 'Verify OL 8 restricts the use of "ptrace" to descendant processes with the following commands: 
- 
-$ sudo sysctl kernel.yama.ptrace_scope 
- 
-kernel.yama.ptrace_scope = 1 
- 
+  desc 'check', 'Verify OL 8 restricts the use of "ptrace" to descendant processes with the following commands:
+
+$ sudo sysctl kernel.yama.ptrace_scope
+
+kernel.yama.ptrace_scope = 1
+
 If the returned line does not have a value of "1" or a line is not returned, this is a finding.
 
 Check that the configuration files are present to enable this network parameter.
@@ -30,7 +30,7 @@ If conflicting results are returned, this is a finding.'
 
 kernel.yama.ptrace_scope = 1
 
-Remove any configurations that conflict with the above from the following locations: 
+Remove any configurations that conflict with the above from the following locations:
 /run/sysctl.d/*.conf
 /usr/local/lib/sysctl.d/*.conf
 /usr/lib/sysctl.d/*.conf

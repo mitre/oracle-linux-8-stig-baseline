@@ -10,12 +10,12 @@ PermitEmptyPasswords no
 If "PermitEmptyPasswords" is set to "yes", this is a finding.
 
 If conflicting results are returned, this is a finding.)
-  desc 'fix', 'Edit the following line in "etc/ssh/sshd_config" to prevent logons with empty passwords. 
- 
-PermitEmptyPasswords no 
- 
-The SSH daemon must be restarted for the changes to take effect. To restart the SSH daemon, run the following command: 
- 
+  desc 'fix', 'Edit the following line in "etc/ssh/sshd_config" to prevent logons with empty passwords.
+
+PermitEmptyPasswords no
+
+The SSH daemon must be restarted for the changes to take effect. To restart the SSH daemon, run the following command:
+
 $ sudo systemctl restart sshd.service'
   impact 0.7
   tag check_id: 'C-52148r951575_chk'

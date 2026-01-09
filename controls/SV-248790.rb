@@ -1,7 +1,7 @@
 control 'SV-248790' do
   title 'OL 8 must generate audit records for any use of the "chown", "fchown", "fchownat", and "lchown" system calls.'
-  desc 'Without generating audit records that are specific to the security and mission needs of the organization, it would be difficult to establish, correlate, and investigate the events relating to an incident or identify those responsible for one. 
- 
+  desc 'Without generating audit records that are specific to the security and mission needs of the organization, it would be difficult to establish, correlate, and investigate the events relating to an incident or identify those responsible for one.
+
 Audit records can be generated from various components within the information system (e.g., module or policy filter).
 The "chown" command is used to change file owner and group.
 The "fchown" system call is used to change the ownership of a file referred to by the open file descriptor.
@@ -13,23 +13,23 @@ When a user logs on, the AUID is set to the UID of the account that is being aut
 The system call rules are loaded into a matching engine that intercepts each syscall that all programs on the system makes. Therefore, it is very important to only use syscall rules when absolutely necessary since these affect performance. The more rules, the bigger the performance hit. Performance can be helped, though, by combining syscalls into one rule whenever possible.
 
 '
-  desc 'check', 'Verify OL 8 generates an audit record for any use of the "chown", "fchown", "fchownat", and "lchown" system calls by running the following command to check the file system rules in "/etc/audit/audit.rules": 
- 
-$ sudo grep chown /etc/audit/audit.rules 
- 
--a always,exit -F arch=b32 -S chown,fchown,fchownat,lchown -F auid>=1000 -F auid!=unset -k perm_chng 
--a always,exit -F arch=b64 -S chown,fchown,fchownat,lchown -F auid>=1000 -F auid!=unset -k perm_chng 
- 
-If audit rules are not defined for "chown", "fchown", "fchownat", and "lchown" or any of the lines returned are commented out, this is a finding.  
- 
+  desc 'check', 'Verify OL 8 generates an audit record for any use of the "chown", "fchown", "fchownat", and "lchown" system calls by running the following command to check the file system rules in "/etc/audit/audit.rules":
+
+$ sudo grep chown /etc/audit/audit.rules
+
+-a always,exit -F arch=b32 -S chown,fchown,fchownat,lchown -F auid>=1000 -F auid!=unset -k perm_chng
+-a always,exit -F arch=b64 -S chown,fchown,fchownat,lchown -F auid>=1000 -F auid!=unset -k perm_chng
+
+If audit rules are not defined for "chown", "fchown", "fchownat", and "lchown" or any of the lines returned are commented out, this is a finding.
+
 Note: The "-k" allows for specifying an arbitrary identifier, and the string after it does not need to match the example output above.'
-  desc 'fix', 'Configure the audit system to generate an audit event for any use of the "chown", "fchown", "fchownat", and "lchown" system calls by adding or updating the following line to "/etc/audit/rules.d/audit.rules": 
- 
--a always,exit -F arch=b32 -S chown,fchown,fchownat,lchown -F auid>=1000 -F auid!=unset -k perm_chng 
--a always,exit -F arch=b64 -S chown,fchown,fchownat,lchown -F auid>=1000 -F auid!=unset -k perm_chng 
- 
-The audit daemon must be restarted for the changes to take effect. To restart the audit daemon, run the following command: 
- 
+  desc 'fix', 'Configure the audit system to generate an audit event for any use of the "chown", "fchown", "fchownat", and "lchown" system calls by adding or updating the following line to "/etc/audit/rules.d/audit.rules":
+
+-a always,exit -F arch=b32 -S chown,fchown,fchownat,lchown -F auid>=1000 -F auid!=unset -k perm_chng
+-a always,exit -F arch=b64 -S chown,fchown,fchownat,lchown -F auid>=1000 -F auid!=unset -k perm_chng
+
+The audit daemon must be restarted for the changes to take effect. To restart the audit daemon, run the following command:
+
 $ sudo service auditd restart'
   impact 0.5
   tag check_id: 'C-52224r818679_chk'

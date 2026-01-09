@@ -10,14 +10,14 @@ PermitRootLogin no
 If the "PermitRootLogin" keyword is set to "yes", is missing, or is commented out, this is a finding.
 
 If conflicting results are returned, this is a finding.)
-  desc 'fix', 'Configure OL 8 to stop users from logging on remotely as the "root" user via SSH. 
- 
-Edit the appropriate "/etc/ssh/sshd_config" file to uncomment or add the line for the "PermitRootLogin" keyword and set its value to "no": 
- 
-PermitRootLogin no 
- 
-The SSH daemon must be restarted for the changes to take effect. To restart the SSH daemon, run the following command: 
- 
+  desc 'fix', 'Configure OL 8 to stop users from logging on remotely as the "root" user via SSH.
+
+Edit the appropriate "/etc/ssh/sshd_config" file to uncomment or add the line for the "PermitRootLogin" keyword and set its value to "no":
+
+PermitRootLogin no
+
+The SSH daemon must be restarted for the changes to take effect. To restart the SSH daemon, run the following command:
+
 $ sudo systemctl restart sshd.service'
   impact 0.5
   tag check_id: 'C-52047r951571_chk'

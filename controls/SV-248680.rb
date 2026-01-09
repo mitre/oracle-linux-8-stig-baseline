@@ -1,33 +1,33 @@
 control 'SV-248680' do
   title 'OL 8 must automatically lock graphical user sessions after 15 minutes of inactivity.'
-  desc "A session time-out lock is a temporary action taken when a user stops work and moves away from the immediate physical vicinity of the information system but does not log out because of the temporary nature of the absence. Rather than relying on the user to manually lock their operating system session prior to vacating the vicinity, operating systems must be able to identify when a user's session has idled and take action to initiate the session lock. 
- 
+  desc "A session time-out lock is a temporary action taken when a user stops work and moves away from the immediate physical vicinity of the information system but does not log out because of the temporary nature of the absence. Rather than relying on the user to manually lock their operating system session prior to vacating the vicinity, operating systems must be able to identify when a user's session has idled and take action to initiate the session lock.
+
 The session lock is implemented at the point where session activity can be determined and/or controlled.
 
 "
-  desc 'check', 'Note: This requirement assumes the use of the OL 8 default graphical user interface, Gnome Shell. If the system does not have any graphical user interface installed, this requirement is Not Applicable. 
- 
-Verify the operating system initiates a session lock after a 15-minute period of inactivity for graphical user interfaces with the following commands: 
- 
-$ sudo gsettings get org.gnome.desktop.session idle-delay 
- 
-uint32 900 
- 
+  desc 'check', 'Note: This requirement assumes the use of the OL 8 default graphical user interface, Gnome Shell. If the system does not have any graphical user interface installed, this requirement is Not Applicable.
+
+Verify the operating system initiates a session lock after a 15-minute period of inactivity for graphical user interfaces with the following commands:
+
+$ sudo gsettings get org.gnome.desktop.session idle-delay
+
+uint32 900
+
 If "idle-delay" is set to "0" or a value greater than "900", this is a finding.'
-  desc 'fix', 'Configure OL 8 to initiate a screensaver after a 15-minute period of inactivity for graphical user interfaces. 
- 
-Create a database to contain the system-wide screensaver settings (if it does not already exist) with the following command: 
- 
-$ sudo touch /etc/dconf/db/local.d/00-screensaver 
- 
-Edit "/etc/dconf/db/local.d/00-screensaver" and add or update the following lines: 
- 
-[org/gnome/desktop/session] 
-# Set the lock time out to 900 seconds before the session is considered idle 
-idle-delay=uint32 900 
- 
-Update the system databases: 
- 
+  desc 'fix', 'Configure OL 8 to initiate a screensaver after a 15-minute period of inactivity for graphical user interfaces.
+
+Create a database to contain the system-wide screensaver settings (if it does not already exist) with the following command:
+
+$ sudo touch /etc/dconf/db/local.d/00-screensaver
+
+Edit "/etc/dconf/db/local.d/00-screensaver" and add or update the following lines:
+
+[org/gnome/desktop/session]
+# Set the lock time out to 900 seconds before the session is considered idle
+idle-delay=uint32 900
+
+Update the system databases:
+
 $ sudo dconf update'
   impact 0.5
   tag check_id: 'C-52114r779604_chk'

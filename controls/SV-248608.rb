@@ -1,12 +1,12 @@
 control 'SV-248608' do
   title 'OL 8 must use a separate file system for "/var".'
   desc 'The use of separate file systems for different paths can protect the system from failures resulting from a file system becoming full or failing.'
-  desc 'check', 'Verify that a separate file system has been created for "/var" with the following command: 
- 
-     $ sudo grep /var /etc/fstab 
- 
+  desc 'check', 'Verify that a separate file system has been created for "/var" with the following command:
+
+     $ sudo grep /var /etc/fstab
+
      /dev/mapper/...   /var   xfs   defaults,nodev 0 0
- 
+
 If a separate entry for "/var" is not in use, this is a finding.'
   desc 'fix', 'Migrate the "/var" path onto a separate file system.'
   impact 0.3

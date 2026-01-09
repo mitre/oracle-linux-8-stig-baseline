@@ -36,11 +36,11 @@ Insert OL 8 installation disc or attach OL 8 installation image to the system. M
 Assuming the mounted location is "/media/cdrom", use the following command to copy Oracle GPG key file onto the system:
 
      $ sudo cp /media/cdrom/RPM-GPG-KEY-oracle /etc/pki/rpm-gpg/
-	 
+
 Import Oracle GPG keys from key file into system keyring:
 
      $ sudo rpm --import /etc/pki/rpm-gpg/RPM-GPG-KEY-oracle
-	 
+
 Using the steps listed in the Check Text, confirm the newly imported key shows as installed on the system and verify its fingerprint matches vendor value.'
   impact 0.5
   tag check_id: 'C-60656r986383_chk'

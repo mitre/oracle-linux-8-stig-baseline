@@ -1,20 +1,20 @@
 control 'SV-248635' do
   title "Executable search paths within the initialization files of all local interactive OL 8 users must only contain paths that resolve to the system default or the user's home directory."
-  desc "The executable search path (typically the PATH environment variable) contains a list of directories for the shell to search to find executables. If this path includes the current working directory (other than the user's home directory), executables in these directories may be executed instead of system commands.  
- 
+  desc "The executable search path (typically the PATH environment variable) contains a list of directories for the shell to search to find executables. If this path includes the current working directory (other than the user's home directory), executables in these directories may be executed instead of system commands.
+
 This variable is formatted as a colon-separated list of directories. If there is an empty entry, such as a leading or trailing colon or two consecutive colons, this is interpreted as the current working directory. If deviations from the default system search path for the local interactive user are required, they must be documented with the Information System Security Officer (ISSO)."
-  desc 'check', %q(Verify that all local interactive user initialization files' executable search path statements do not contain statements that will reference a working directory other than the users' home directory with the following commands: 
- 
-Note: The example will be for the "smithj" user, which has a home directory of "/home/smithj". 
- 
-$ sudo grep -i path /home/smithj/.* 
- 
-/home/smithj/.bash_profile:PATH=$PATH:$HOME/.local/bin:$HOME/bin 
-/home/smithj/.bash_profile:export PATH 
- 
+  desc 'check', %q(Verify that all local interactive user initialization files' executable search path statements do not contain statements that will reference a working directory other than the users' home directory with the following commands:
+
+Note: The example will be for the "smithj" user, which has a home directory of "/home/smithj".
+
+$ sudo grep -i path /home/smithj/.*
+
+/home/smithj/.bash_profile:PATH=$PATH:$HOME/.local/bin:$HOME/bin
+/home/smithj/.bash_profile:export PATH
+
 If any local interactive user initialization files have executable search path statements that include directories outside of their home directory, this is a finding.)
-  desc 'fix', 'Edit the local interactive user initialization files to change any PATH variable statements that reference directories other than their home directory. 
- 
+  desc 'fix', 'Edit the local interactive user initialization files to change any PATH variable statements that reference directories other than their home directory.
+
 If a local interactive user requires path variables to reference a directory owned by the application, it must be documented with the ISSO.'
   impact 0.5
   tag check_id: 'C-52069r779469_chk'

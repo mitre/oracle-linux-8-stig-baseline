@@ -10,14 +10,14 @@ KerberosAuthentication no
 If the value is returned as "yes", the returned line is commented out, or no output is returned or has not been documented with the information system security officer (ISSO), this is a finding.
 
 If conflicting results are returned, this is a finding.)
-  desc 'fix', 'Configure the SSH daemon to not allow Kerberos authentication. 
- 
-Add the following line in "/etc/ssh/sshd_config", or uncomment the line and set the value to "no": 
- 
+  desc 'fix', 'Configure the SSH daemon to not allow Kerberos authentication.
+
+Add the following line in "/etc/ssh/sshd_config", or uncomment the line and set the value to "no":
+
 KerberosAuthentication no
- 
-The SSH daemon must be restarted for the changes to take effect. To restart the SSH daemon, run the following command: 
- 
+
+The SSH daemon must be restarted for the changes to take effect. To restart the SSH daemon, run the following command:
+
 $ sudo systemctl restart sshd.service'
   impact 0.5
   tag check_id: 'C-52040r951567_chk'

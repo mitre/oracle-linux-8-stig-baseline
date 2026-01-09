@@ -1,9 +1,9 @@
 control 'SV-248543' do
   title 'The OL 8 "pam_unix.so" module must be configured in the system-auth file to use a FIPS 140-2 approved cryptographic hashing algorithm for system authentication.'
-  desc 'Unapproved mechanisms that are used for authentication to the cryptographic module are not verified and therefore cannot be relied on to provide confidentiality or integrity, and DoD data may be compromised. 
- 
-OL 8 systems using encryption are required to use FIPS-compliant mechanisms for authenticating to cryptographic modules. 
- 
+  desc 'Unapproved mechanisms that are used for authentication to the cryptographic module are not verified and therefore cannot be relied on to provide confidentiality or integrity, and DoD data may be compromised.
+
+OL 8 systems using encryption are required to use FIPS-compliant mechanisms for authenticating to cryptographic modules.
+
 FIPS 140-2 is the current standard for validating that mechanisms used to access cryptographic modules use authentication that meets DoD requirements. This allows for Security Levels 1, 2, 3, or 4 for use on a general-purpose computing system.'
   desc 'check', 'Verify that the "pam_unix.so" module is configured to use sha512.
 

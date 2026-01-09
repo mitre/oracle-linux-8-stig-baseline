@@ -1,7 +1,7 @@
 control 'SV-248739' do
   title 'The OL 8 audit system must protect logon UIDs from unauthorized change.'
-  desc 'Unauthorized disclosure of audit records can reveal system and configuration data to attackers, thus compromising its confidentiality. 
- 
+  desc 'Unauthorized disclosure of audit records can reveal system and configuration data to attackers, thus compromising its confidentiality.
+
 Audit information includes all information (e.g., audit records, audit settings, audit reports) needed to successfully audit OL 8 system activity.
 
 In immutable mode, unauthorized users cannot execute changes to the audit system to potentially hide malicious activity and then put the audit rules back. A system reboot would be noticeable and a system administrator could then investigate the unauthorized changes.

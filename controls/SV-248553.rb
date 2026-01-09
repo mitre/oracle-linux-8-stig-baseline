@@ -3,7 +3,7 @@ control 'SV-248553' do
   desc 'Terminating an unresponsive SSH session within a short time period reduces the window of opportunity for unauthorized personnel to take control of a management session enabled on the console or console port that has been left unattended. In addition, quickly terminating an idle SSH session will also free up resources committed by the managed network element.
 
 Terminating network connections associated with communications sessions includes, for example, deallocating associated TCP/IP address/port pairs at the operating system level and deallocating networking assignments at the application level if multiple application sessions are using a single operating system-level network connection. This does not mean that the operating system terminates all sessions or network access; it only ends the unresponsive session and releases the resources associated with that session.
- 
+
 OL 8 uses "/etc/ssh/sshd_config" for configurations of OpenSSH. Within the "sshd_config", the product of the values of "ClientAliveInterval" and "ClientAliveCountMax" is used to establish the inactivity threshold. The "ClientAliveInterval" is a timeout interval in seconds after which if no data has been received from the client, sshd will send a message through the encrypted channel to request a response from the client. The "ClientAliveCountMax" is the number of client alive messages that may be sent without sshd receiving any messages back from the client. If this threshold is met, sshd will disconnect the client. For more information on these settings and others, refer to the sshd_config man pages.
 
 '
@@ -21,13 +21,13 @@ If conflicting results are returned, this is a finding.)
   desc 'fix', 'Note: This setting must be applied in conjunction with OL08-00-010200 to function correctly.
 
 Configure the SSH server to terminate a user session automatically after the SSH client has been unresponsive for 10 minutes.
- 
-Modify or append the following lines in the "/etc/ssh/sshd_config" file to have a product value of "600" or less: 
- 
-     ClientAliveInterval 600 
- 
+
+Modify or append the following lines in the "/etc/ssh/sshd_config" file to have a product value of "600" or less:
+
+     ClientAliveInterval 600
+
 The SSH daemon must be restarted for changes to take effect.
- 
+
      $ sudo systemctl restart sshd.service'
   impact 0.5
   tag check_id: 'C-51987r951556_chk'

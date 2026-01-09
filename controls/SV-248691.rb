@@ -1,16 +1,16 @@
 control 'SV-248691' do
   title 'OL 8 must require the maximum number of repeating characters be limited to three when passwords are changed.'
-  desc 'Use of a complex password helps to increase the time and resources required to compromise the password. Password complexity, or strength, is a measure of the effectiveness of a password in resisting attempts at guessing and brute-force attacks. 
- 
-Password complexity is one factor of several that determines how long it takes to crack a password. The more complex the password, the greater the number of possible combinations that need to be tested before the password is compromised. 
- 
+  desc 'Use of a complex password helps to increase the time and resources required to compromise the password. Password complexity, or strength, is a measure of the effectiveness of a password in resisting attempts at guessing and brute-force attacks.
+
+Password complexity is one factor of several that determines how long it takes to crack a password. The more complex the password, the greater the number of possible combinations that need to be tested before the password is compromised.
+
 OL 8 uses "pwquality" as a mechanism to enforce password complexity. The "maxrepeat" option sets the maximum number of allowed same consecutive characters in a new password.'
-  desc 'check', 'Check for the value of the "maxrepeat" option in "/etc/security/pwquality.conf" or "/etc/security/pwquality.conf.d/*.conf" files with the following command: 
- 
+  desc 'check', 'Check for the value of the "maxrepeat" option in "/etc/security/pwquality.conf" or "/etc/security/pwquality.conf.d/*.conf" files with the following command:
+
 $ sudo grep -r maxrepeat /etc/security/pwquality.conf*
- 
-/etc/security/pwquality.conf:maxrepeat = 3 
- 
+
+/etc/security/pwquality.conf:maxrepeat = 3
+
 If the value of "maxrepeat" is set to more than "3" or is commented out, this is a finding.
 If conflicting results are returned, this is a finding.'
   desc 'fix', 'Configure OL 8 to require the change of the number of repeating consecutive characters when passwords are changed by setting the "maxrepeat" option.

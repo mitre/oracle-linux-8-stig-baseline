@@ -8,16 +8,16 @@ $ grubby --info=/boot/vmlinuz-$(uname -r) | grep mitigations
 If the "mitigations" parameter is set to "off" (mitigations=off), this is a finding.
 
 Note: The default behavior of the kernel is to enable mitigations for vulnerabilities like Meltdown and Spectre based on hardware and system requirements. Therefore, if the "mitigation" parameter is not present or if it is set to on this is not a finding.'
-  desc 'fix', 'Determine the default kernel:  
- 
-$ sudo grubby --default-kernel 
- 
-/boot/vmlinuz-5.4.17-2011.1.2.el8uek.x86_64 
+  desc 'fix', 'Determine the default kernel:
 
-Using the default kernel, remove the argument that sets the Meltdown mitigations to "off": 
- 
-$ sudo grubby --update-kernel=<path-to-default-kernel>  --remove-args=mitigations=off 
- 
+$ sudo grubby --default-kernel
+
+/boot/vmlinuz-5.4.17-2011.1.2.el8uek.x86_64
+
+Using the default kernel, remove the argument that sets the Meltdown mitigations to "off":
+
+$ sudo grubby --update-kernel=<path-to-default-kernel>  --remove-args=mitigations=off
+
 Reboot the system for the change to take effect.'
   impact 0.5
   tag check_id: 'C-52027r1069158_chk'

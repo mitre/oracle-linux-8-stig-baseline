@@ -1,15 +1,15 @@
 control 'SV-248697' do
   title 'OL 8 user account passwords must be configured so that existing passwords are restricted to a 60-day maximum lifetime.'
   desc 'Any password, no matter how complex, can eventually be cracked. Therefore, passwords need to be changed periodically. If OL 8 does not limit the lifetime of passwords and force users to change their passwords, there is the risk that OL 8 passwords could be compromised.'
-  desc 'check', %q(Verify the maximum time period for existing passwords is restricted to 60 days with the following commands: 
- 
-$ sudo awk -F: '$5 > 60 {print $1 " " $5}' /etc/shadow 
- 
-$ sudo awk -F: '$5 <= 0 {print $1 " " $5}' /etc/shadow 
- 
+  desc 'check', %q(Verify the maximum time period for existing passwords is restricted to 60 days with the following commands:
+
+$ sudo awk -F: '$5 > 60 {print $1 " " $5}' /etc/shadow
+
+$ sudo awk -F: '$5 <= 0 {print $1 " " $5}' /etc/shadow
+
 If any results are returned that are not associated with a system account, this is a finding.)
-  desc 'fix', 'Configure non-compliant accounts to enforce a 60-day maximum password lifetime restriction. 
- 
+  desc 'fix', 'Configure non-compliant accounts to enforce a 60-day maximum password lifetime restriction.
+
 $ sudo chage -M 60 [user]'
   impact 0.5
   tag check_id: 'C-52131r779655_chk'

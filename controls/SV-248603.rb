@@ -7,17 +7,17 @@ $ sudo /usr/sbin/sshd -dd 2>&1 | awk '/filename/ {print $4}' | tr -d '\r' | tr '
 
 StrictModes yes
 
-If "StrictModes" is set to "no" or is missing, or if the returned line is commented out, this is a finding. 
+If "StrictModes" is set to "no" or is missing, or if the returned line is commented out, this is a finding.
 
 If conflicting results are returned, this is a finding.)
-  desc 'fix', 'Configure SSH to perform strict mode checking of home directory configuration files.  
- 
-Uncomment the "StrictModes" keyword in "/etc/ssh/sshd_config" and set the value to "yes": 
- 
-StrictModes yes 
- 
-The SSH daemon must be restarted for the changes to take effect. To restart the SSH daemon, run the following command: 
- 
+  desc 'fix', 'Configure SSH to perform strict mode checking of home directory configuration files.
+
+Uncomment the "StrictModes" keyword in "/etc/ssh/sshd_config" and set the value to "yes":
+
+StrictModes yes
+
+The SSH daemon must be restarted for the changes to take effect. To restart the SSH daemon, run the following command:
+
 $ sudo systemctl restart sshd.service'
   impact 0.5
   tag check_id: 'C-52037r951563_chk'

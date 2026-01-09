@@ -5,7 +5,7 @@ control 'SV-248527' do
 System use notifications are required only for access via logon interfaces with human users and are not required when such human interfaces do not exist.
 
 '
-  desc 'check', 'Note: This requirement assumes the use of the OL 8 default graphical user interface, Gnome Shell. If the system does not have any graphical user interface installed, this requirement is Not Applicable. 
+  desc 'check', 'Note: This requirement assumes the use of the OL 8 default graphical user interface, Gnome Shell. If the system does not have any graphical user interface installed, this requirement is Not Applicable.
 
 Verify OL 8 displays a banner before granting access to the operating system via a graphical user logon.
 

@@ -1,19 +1,19 @@
 control 'SV-248686' do
   title 'OL 8 must ensure the password complexity module is enabled in the password-auth file.'
-  desc 'Use of a complex password helps to increase the time and resources required to compromise the password. Password complexity, or strength, is a measure of the effectiveness of a password in resisting attempts at guessing and brute-force attacks. Use of "pwquality" enforces complex password construction configuration and has the ability to limit brute-force attacks on the system. 
- 
-OL 8 uses "pwquality" as a mechanism to enforce password complexity. This is set in both of the following: 
-/etc/pam.d/password-auth 
-/etc/pam.d/system-auth 
- 
+  desc 'Use of a complex password helps to increase the time and resources required to compromise the password. Password complexity, or strength, is a measure of the effectiveness of a password in resisting attempts at guessing and brute-force attacks. Use of "pwquality" enforces complex password construction configuration and has the ability to limit brute-force attacks on the system.
+
+OL 8 uses "pwquality" as a mechanism to enforce password complexity. This is set in both of the following:
+/etc/pam.d/password-auth
+/etc/pam.d/system-auth
+
 '
-  desc 'check', 'Verify the operating system uses "pwquality" to enforce the password complexity rules. 
+  desc 'check', 'Verify the operating system uses "pwquality" to enforce the password complexity rules.
 
 Check for the use of "pwquality" in the password-auth file with the following command:
 
      $ sudo cat /etc/pam.d/password-auth | grep pam_pwquality
 
-     password requisite pam_pwquality.so 
+     password requisite pam_pwquality.so
 
 If the command does not return a line containing the value "pam_pwquality.so" as shown, or the line is commented out, this is a finding.'
   desc 'fix', 'Configure the operating system to use "pwquality" to enforce password complexity rules.

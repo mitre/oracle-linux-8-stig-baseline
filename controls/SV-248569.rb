@@ -1,10 +1,10 @@
 control 'SV-248569' do
   title 'OL 8 system commands must be group-owned by root or a system account.'
-  desc 'If OL 8 were to allow any user to make changes to software libraries, those changes might be implemented without undergoing the appropriate testing and approvals that are part of a robust change management process. 
- 
+  desc 'If OL 8 were to allow any user to make changes to software libraries, those changes might be implemented without undergoing the appropriate testing and approvals that are part of a robust change management process.
+
 This requirement applies to OL 8 with software libraries that are accessible and configurable, as in the case of interpreted languages. Software libraries also include privileged programs that execute with escalated privileges. Only qualified and authorized individuals must be allowed to obtain access to information system components for purposes of initiating changes, including upgrades and modifications.'
-  desc 'check', 'Verify the system commands contained in the following directories are group-owned by "root" or a required system account, with the following command: 
- 
+  desc 'check', 'Verify the system commands contained in the following directories are group-owned by "root" or a required system account, with the following command:
+
 $ sudo find -L /bin /sbin /usr/bin /usr/sbin /usr/local/bin /usr/local/sbin ! -group root -exec ls -l {} \\;
 
 If any system commands are returned and is not group-owned by a required system account, this is a finding.'

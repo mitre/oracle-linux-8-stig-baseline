@@ -11,7 +11,7 @@ $ sudo  grep -i umask /etc/bashrc /etc/csh.cshrc /etc/profile
 
 /etc/bashrc: umask 077
 /etc/bashrc: umask 077
-/etc/csh.cshrc: umask 077 
+/etc/csh.cshrc: umask 077
 /etc/csh.cshrc: umask 077
 /etc/profile: umask 077
 /etc/profile: umask 077

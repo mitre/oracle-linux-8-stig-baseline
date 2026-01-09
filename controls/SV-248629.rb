@@ -9,12 +9,12 @@ The sysctl --system command will load settings from all system configuration fil
 /usr/lib/sysctl.d/*.conf
 /lib/sysctl.d/*.conf
 /etc/sysctl.conf'
-  desc 'check', 'Verify that OL 8 disables storing core dumps with the following commands: 
- 
-$ sudo sysctl kernel.core_pattern 
- 
-kernel.core_pattern = |/bin/false 
- 
+  desc 'check', 'Verify that OL 8 disables storing core dumps with the following commands:
+
+$ sudo sysctl kernel.core_pattern
+
+kernel.core_pattern = |/bin/false
+
 If the returned line does not have a value of "|/bin/false", or a line is not returned and the need for core dumps is not documented with the Information System Security Officer (ISSO) as an operational requirement, this is a finding.
 
 Check that the configuration files are present to enable this kernel parameter:
@@ -30,7 +30,7 @@ If conflicting results are returned, this is a finding.'
 
 kernel.core_pattern = |/bin/false
 
-Remove any configurations that conflict with the above from the following locations: 
+Remove any configurations that conflict with the above from the following locations:
 /run/sysctl.d/*.conf
 /usr/local/lib/sysctl.d/*.conf
 /usr/lib/sysctl.d/*.conf

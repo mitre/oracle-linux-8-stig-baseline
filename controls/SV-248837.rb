@@ -8,17 +8,17 @@ control 'SV-248837' do
 
 If the command does not return any output, or the line is commented out, and use of USB Storage is not documented with the information system security officer (ISSO) as an operational requirement, this is a finding.
 
-Determine if USB mass storage is disabled with the following command: 
- 
-     $ sudo grep usb-storage /etc/modprobe.d/* | grep -i "blacklist" | grep -v "^#" 
-     /etc/modprobe.d/blacklist.conf:blacklist usb-storage 
- 
+Determine if USB mass storage is disabled with the following command:
+
+     $ sudo grep usb-storage /etc/modprobe.d/* | grep -i "blacklist" | grep -v "^#"
+     /etc/modprobe.d/blacklist.conf:blacklist usb-storage
+
 If the command does not return any output or the output is not "blacklist usb-storage" and use of USB storage devices is not documented with the ISSO as an operational requirement, this is a finding.'
   desc 'fix', 'Configure OL 8 to disable the ability to use the USB Storage kernel module and to use USB mass storage devices.
 
      $ sudo vi /etc/modprobe.d/blacklist.conf
 
-Add or update the lines: 
+Add or update the lines:
 
      install usb-storage /bin/false
      blacklist usb-storage

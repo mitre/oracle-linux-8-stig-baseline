@@ -1,29 +1,29 @@
 control 'SV-248781' do
   title 'OL 8 must generate audit records for any use of the delete_module syscall.'
-  desc 'Without generating audit records that are specific to the security and mission needs of the organization, it would be difficult to establish, correlate, and investigate the events relating to an incident or identify those responsible for one. 
- 
-Audit records can be generated from various components within the information system (e.g., module or policy filter). The "delete_module" command is used to unload a kernel module. 
- 
+  desc 'Without generating audit records that are specific to the security and mission needs of the organization, it would be difficult to establish, correlate, and investigate the events relating to an incident or identify those responsible for one.
+
+Audit records can be generated from various components within the information system (e.g., module or policy filter). The "delete_module" command is used to unload a kernel module.
+
 When a user logs on, the AUID is set to the UID of the account that is being authenticated. Daemons are not user sessions and have the loginuid set to "-1". The AUID representation is an unsigned 32-bit integer, which equals "4294967295". The audit system interprets "-1", "4294967295", and "unset" in the same way.
 
 '
-  desc 'check', 'Verify OL 8 generates an audit record for any use of the "delete_module" syscall by running the following command to check the file system rules in "/etc/audit/audit.rules": 
- 
-$ sudo grep -w "delete_module" /etc/audit/audit.rules 
- 
--a always,exit -F arch=b32 -S delete_module -F auid>=1000 -F auid!=unset -k module_chng 
--a always,exit -F arch=b64 -S delete_module -F auid>=1000 -F auid!=unset -k module_chng 
- 
-If the command does not return a line or the line is commented out, this is a finding.  
- 
+  desc 'check', 'Verify OL 8 generates an audit record for any use of the "delete_module" syscall by running the following command to check the file system rules in "/etc/audit/audit.rules":
+
+$ sudo grep -w "delete_module" /etc/audit/audit.rules
+
+-a always,exit -F arch=b32 -S delete_module -F auid>=1000 -F auid!=unset -k module_chng
+-a always,exit -F arch=b64 -S delete_module -F auid>=1000 -F auid!=unset -k module_chng
+
+If the command does not return a line or the line is commented out, this is a finding.
+
 Note: The "-k" allows for specifying an arbitrary identifier, and the string after it does not need to match the example output above.'
-  desc 'fix', 'Configure the audit system to generate an audit event for any use of the "delete_module" syscall by adding or updating the following rules in the "/etc/audit/rules.d/audit.rules" file: 
- 
--a always,exit -F arch=b32 -S delete_module -F auid>=1000 -F auid!=unset -k module_chng 
--a always,exit -F arch=b64 -S delete_module -F auid>=1000 -F auid!=unset -k module_chng 
- 
-The audit daemon must be restarted for the changes to take effect. To restart the audit daemon, run the following command: 
- 
+  desc 'fix', 'Configure the audit system to generate an audit event for any use of the "delete_module" syscall by adding or updating the following rules in the "/etc/audit/rules.d/audit.rules" file:
+
+-a always,exit -F arch=b32 -S delete_module -F auid>=1000 -F auid!=unset -k module_chng
+-a always,exit -F arch=b64 -S delete_module -F auid>=1000 -F auid!=unset -k module_chng
+
+The audit daemon must be restarted for the changes to take effect. To restart the audit daemon, run the following command:
+
 $ sudo service auditd restart'
   impact 0.5
   tag check_id: 'C-52215r779907_chk'

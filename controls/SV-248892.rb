@@ -1,6 +1,6 @@
 control 'SV-248892' do
   title 'OL 8 must disable the use of user namespaces.'
-  desc 'It is detrimental for operating systems to provide, or install by default, functionality exceeding requirements or mission objectives. These unnecessary capabilities or services are often overlooked and therefore may remain unsecured. They increase the risk to the platform by providing additional attack vectors. 
+  desc 'It is detrimental for operating systems to provide, or install by default, functionality exceeding requirements or mission objectives. These unnecessary capabilities or services are often overlooked and therefore may remain unsecured. They increase the risk to the platform by providing additional attack vectors.
 
 User namespaces are used primarily for Linux containers. "Rootful" containers run with root privileges on the host system and may pose a security risk if compromised. "Rootless" containers run without root privileges and allow for better isolation from the host system. The value "0" disallows the use of user namespaces. When containers are not in use, namespaces should be disallowed. When privileged user namespaces or "rootful" containers are in use, user namespaces should be disallowed. When unprivileged user namespaces or "rootless" containers are deployed on a system, the value should be set to a large non-zero value. The default value depends on the amount of memory in the system, approximately the total memory in kilobytes divided by 256.
 
@@ -11,13 +11,13 @@ The sysctl --system command will load settings from all system configuration fil
 /usr/lib/sysctl.d/*.conf
 /lib/sysctl.d/*.conf
 /etc/sysctl.conf'
-  desc 'check', 'Verify OL 8 disables the use of user namespaces with the following commands. 
- 
+  desc 'check', 'Verify OL 8 disables the use of user namespaces with the following commands.
+
 Note: If unprivileged user namespaces or "rootless" containers are in use, this requirement is not applicable.
- 
-     $ sudo sysctl user.max_user_namespaces 
-     user.max_user_namespaces = 0 
- 
+
+     $ sudo sysctl user.max_user_namespaces
+     user.max_user_namespaces = 0
+
 If the returned line does not have a value of "0" or a line is not returned, this is a finding.
 
 Check that the configuration files are present to enable this network parameter.
@@ -32,7 +32,7 @@ If conflicting results are returned, this is a finding.'
 
      user.max_user_namespaces = 0
 
-Remove any configurations that conflict with the above from the following locations: 
+Remove any configurations that conflict with the above from the following locations:
 
      /run/sysctl.d/*.conf
      /usr/local/lib/sysctl.d/*.conf

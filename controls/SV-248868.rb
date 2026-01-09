@@ -1,7 +1,7 @@
 control 'SV-248868' do
   title 'OL 8 must force a frequent session key renegotiation for SSH connections to the server.'
-  desc 'Unapproved mechanisms that are used for authentication to the cryptographic module are not verified and therefore cannot be relied on to provide confidentiality or integrity, and DOD data may be compromised. 
- 
+  desc 'Unapproved mechanisms that are used for authentication to the cryptographic module are not verified and therefore cannot be relied on to provide confidentiality or integrity, and DOD data may be compromised.
+
 Session key regeneration limits the chances of a session key becoming compromised.'
   desc 'check', %q(Verify the SSH server is configured to force frequent session key renegotiation with the following command:
 
@@ -12,12 +12,12 @@ RekeyLimit 1G 1h
 If "RekeyLimit" does not have a maximum data amount and maximum time defined or is missing or commented out, this is a finding.
 
 If conflicting results are returned, this is a finding.)
-  desc 'fix', 'Configure the system to force a frequent session key renegotiation for SSH connections to the server by adding or modifying the following line in the "/etc/ssh/sshd_config" file: 
- 
-RekeyLimit 1G 1h 
- 
-The SSH daemon must be restarted for the settings to take effect. 
- 
+  desc 'fix', 'Configure the system to force a frequent session key renegotiation for SSH connections to the server by adding or modifying the following line in the "/etc/ssh/sshd_config" file:
+
+RekeyLimit 1G 1h
+
+The SSH daemon must be restarted for the settings to take effect.
+
 $ sudo systemctl restart sshd.service'
   impact 0.5
   tag check_id: 'C-52302r951582_chk'

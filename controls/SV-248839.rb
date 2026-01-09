@@ -1,23 +1,23 @@
 control 'SV-248839' do
   title 'An OL 8 firewall must employ a deny-all, allow-by-exception policy for allowing connections to other systems.'
-  desc 'Failure to restrict network connectivity only to authorized systems permits inbound connections from malicious systems. It also permits outbound connections that may facilitate exfiltration of DoD data. 
- 
+  desc 'Failure to restrict network connectivity only to authorized systems permits inbound connections from malicious systems. It also permits outbound connections that may facilitate exfiltration of DoD data.
+
 OL 8 incorporates the "firewalld" daemon, which allows for many different configurations. One of these configurations is zones. Zones can be used in a deny-all, allow-by-exception approach. The default "drop" zone will drop all incoming network packets unless it is explicitly allowed by the configuration file or is related to an outgoing network connection.'
-  desc 'check', 'Verify "firewalld" is configured to employ a deny-all, allow-by-exception policy for allowing connections to other systems with the following commands: 
- 
-     $ sudo firewall-cmd --state 
-     running 
- 
-     $ sudo firewall-cmd --get-active-zones 
-     [custom] 
-     interfaces: ens33 
- 
-     $ sudo firewall-cmd --info-zone=[custom] | grep target 
-     target: DROP 
- 
+  desc 'check', 'Verify "firewalld" is configured to employ a deny-all, allow-by-exception policy for allowing connections to other systems with the following commands:
+
+     $ sudo firewall-cmd --state
+     running
+
+     $ sudo firewall-cmd --get-active-zones
+     [custom]
+     interfaces: ens33
+
+     $ sudo firewall-cmd --info-zone=[custom] | grep target
+     target: DROP
+
 If no zones are active on the OL 8 interfaces or if the target is set to an option other than "DROP", this is a finding.
 
-If the "firewalld" package is not installed, ask the System Administrator if an alternate firewall (such as iptables) is installed and in use, and how is it configured to employ a deny-all, allow-by-exception policy. 
+If the "firewalld" package is not installed, ask the System Administrator if an alternate firewall (such as iptables) is installed and in use, and how is it configured to employ a deny-all, allow-by-exception policy.
 
 If the alternate firewall is not configured to employ a deny-all, allow-by-exception policy, this is a finding.
 

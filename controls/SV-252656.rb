@@ -1,6 +1,6 @@
 control 'SV-252656' do
   title 'The OL 8 operating system must not be configured to bypass password requirements for privilege escalation.'
-  desc 'Without reauthentication, users may access resources or perform tasks for which they do not have authorization. 
+  desc 'Without reauthentication, users may access resources or perform tasks for which they do not have authorization.
 
 When operating systems provide the capability to escalate a functional capability, it is critical the user reauthenticate.
 

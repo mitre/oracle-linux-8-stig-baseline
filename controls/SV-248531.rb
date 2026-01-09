@@ -1,11 +1,11 @@
 control 'SV-248531' do
   title 'OL 8, for PKI-based authentication, must validate certificates by constructing a certification path (which includes status information) to an accepted trust anchor.'
-  desc 'Without path validation, the relying party cannot make an informed trust decision when presented with any certificate not already explicitly trusted. 
- 
-A trust anchor is an authoritative entity represented via a public key and associated data. It is used in the context of public key infrastructures, X.509 digital certificates, and DNSSEC. 
- 
-When there is a chain of trust, usually the top entity to be trusted becomes the trust anchor; it can be, for example, a Certification Authority (CA). A certification path starts with the subject certificate and proceeds through a number of intermediate certificates up to a trusted root certificate, typically issued by a trusted CA. 
- 
+  desc 'Without path validation, the relying party cannot make an informed trust decision when presented with any certificate not already explicitly trusted.
+
+A trust anchor is an authoritative entity represented via a public key and associated data. It is used in the context of public key infrastructures, X.509 digital certificates, and DNSSEC.
+
+When there is a chain of trust, usually the top entity to be trusted becomes the trust anchor; it can be, for example, a Certification Authority (CA). A certification path starts with the subject certificate and proceeds through a number of intermediate certificates up to a trusted root certificate, typically issued by a trusted CA.
+
 This requirement verifies that a certification path to an accepted trust anchor is used for certificate validation and that the path includes status information. Path validation is necessary for a relying party to make an informed trust decision when presented with any certificate not already explicitly trusted. Status information for certification paths includes certificate revocation lists or online certificate status protocol responses. Validation of the certificate status information is out of scope for this requirement.
 
 '
@@ -31,10 +31,10 @@ Subject Public Key Info:
 Public Key Algorithm: rsaEncryption
 
 If the root ca file is not a DOD-issued certificate with a valid date installed in the "/etc/sssd/pki/sssd_auth_ca_db.pem" location, this is a finding.'
-  desc 'fix', 'Configure OL 8, for PKI-based authentication, to validate certificates by constructing a certification path (which includes status information) to an accepted trust anchor. 
- 
-Obtain a valid copy of the DOD root CA file from the PKI CA certificate bundle at cyber.mil and copy it into the following file: 
- 
+  desc 'fix', 'Configure OL 8, for PKI-based authentication, to validate certificates by constructing a certification path (which includes status information) to an accepted trust anchor.
+
+Obtain a valid copy of the DOD root CA file from the PKI CA certificate bundle at cyber.mil and copy it into the following file:
+
 /etc/sssd/pki/sssd_auth_ca_db.pem'
   impact 0.5
   tag check_id: 'C-51965r1015026_chk'

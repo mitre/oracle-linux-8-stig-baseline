@@ -7,10 +7,10 @@ $ sudo grep -i pass_max_days /etc/login.defs
 PASS_MAX_DAYS 60
 
 If the "PASS_MAX_DAYS" parameter value is greater than "60", or commented out, this is a finding.'
-  desc 'fix', 'Configure OL 8 to enforce a 60-day maximum password lifetime. 
- 
-Add or modify the following line in the "/etc/login.defs" file: 
- 
+  desc 'fix', 'Configure OL 8 to enforce a 60-day maximum password lifetime.
+
+Add or modify the following line in the "/etc/login.defs" file:
+
 PASS_MAX_DAYS 60'
   impact 0.5
   tag check_id: 'C-52130r779652_chk'

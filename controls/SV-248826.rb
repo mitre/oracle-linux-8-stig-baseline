@@ -17,7 +17,7 @@ kernelopts=root=/dev/mapper/ol-root ro crashkernel=auto resume=/dev/mapper/ol-sw
 
 If the "pti" entry does not equal "on", is missing, or the line is commented out, this is a finding.
 
-Check that kernel page-table isolation is enabled by default to persist in kernel updates: 
+Check that kernel page-table isolation is enabled by default to persist in kernel updates:
 
 $ sudo grep pti /etc/default/grub
 

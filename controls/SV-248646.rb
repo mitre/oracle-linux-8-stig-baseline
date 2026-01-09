@@ -1,13 +1,13 @@
 control 'SV-248646' do
   title 'All OL 8 files and directories must have a valid owner.'
   desc 'Unowned files and directories may be unintentionally inherited if a user is assigned the same User Identifier "UID" as the UID of the unowned files.'
-  desc 'check', 'Verify all files and directories on OL 8 have a valid owner with the following command: 
- 
-$ sudo find / -nouser 
- 
+  desc 'check', 'Verify all files and directories on OL 8 have a valid owner with the following command:
+
+$ sudo find / -nouser
+
 If any files on the system do not have an assigned owner, this is a finding.'
-  desc 'fix', 'Either remove all files and directories from the system that do not have a valid user or assign a valid user to all unowned files and directories on OL 8 with the "chown" command: 
- 
+  desc 'fix', 'Either remove all files and directories from the system that do not have a valid user or assign a valid user to all unowned files and directories on OL 8 with the "chown" command:
+
 $ sudo chown <user> <file>'
   impact 0.5
   tag check_id: 'C-52080r779502_chk'

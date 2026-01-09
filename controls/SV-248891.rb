@@ -10,11 +10,11 @@ The sysctl --system command will load settings from all system configuration fil
 /lib/sysctl.d/*.conf
 /etc/sysctl.conf'
   desc 'check', 'Verify OL 8 restricts exposed kernel pointer addresses access with the following commands:
- 
-$ sudo sysctl kernel.kptr_restrict 
- 
-kernel.kptr_restrict = 1 
- 
+
+$ sudo sysctl kernel.kptr_restrict
+
+kernel.kptr_restrict = 1
+
 If the returned line does not have a value of "1" or "2" or a line is not returned, this is a finding.
 
 Check that the configuration files are present to enable this network parameter.
@@ -30,7 +30,7 @@ If conflicting results are returned, this is a finding.'
 
 kernel.kptr_restrict = 1
 
-Remove any configurations that conflict with the above from the following locations: 
+Remove any configurations that conflict with the above from the following locations:
 /run/sysctl.d/*.conf
 /usr/local/lib/sysctl.d/*.conf
 /usr/lib/sysctl.d/*.conf

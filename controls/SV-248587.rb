@@ -1,9 +1,9 @@
 control 'SV-248587' do
   title 'OL 8 must implement certificate status checking for multifactor authentication.'
-  desc 'Using an authentication device, such as a DOD Common Access Card (CAC) or token that is separate from the information system, ensures that even if the information system is compromised, credentials stored on the authentication device will not be affected. 
- 
-Multifactor solutions that require devices separate from information systems gaining access include, for example, hardware tokens providing time-based or challenge-response authenticators and smart cards such as the U.S. Government Personal Identity Verification (PIV) card and the DOD CAC. 
- 
+  desc 'Using an authentication device, such as a DOD Common Access Card (CAC) or token that is separate from the information system, ensures that even if the information system is compromised, credentials stored on the authentication device will not be affected.
+
+Multifactor solutions that require devices separate from information systems gaining access include, for example, hardware tokens providing time-based or challenge-response authenticators and smart cards such as the U.S. Government Personal Identity Verification (PIV) card and the DOD CAC.
+
 OL 8 includes multiple options for configuring certificate status checking but for this requirement focuses on the system security services daemon (sssd). By default, sssd performs Online Certificate Status Protocol (OCSP) checking and certificate verification using a sha256 digest function.
 
 '
@@ -18,10 +18,10 @@ $ sudo grep certificate_verification /etc/sssd/sssd.conf /etc/sssd/conf.d/*.conf
 certificate_verification = ocsp_dgst=sha1
 
 If the certificate_verification line is missing from the [sssd] section, or is missing "ocsp_dgst=sha1", ask the administrator to indicate what type of multifactor authentication is being used and how the system implements certificate status checking. If there is no evidence of certificate status checking being used, this is a finding.'
-  desc 'fix', 'Configure OL 8 to implement certificate status checking for multifactor authentication. 
- 
-Review the "/etc/sssd/sssd.conf" file to determine if the system is configured to prevent OCSP or certificate verification. 
- 
+  desc 'fix', 'Configure OL 8 to implement certificate status checking for multifactor authentication.
+
+Review the "/etc/sssd/sssd.conf" file to determine if the system is configured to prevent OCSP or certificate verification.
+
 Add the following line to the [sssd] section of the "/etc/sssd/sssd.conf" file:
 
 certificate_verification = ocsp_dgst=sha1

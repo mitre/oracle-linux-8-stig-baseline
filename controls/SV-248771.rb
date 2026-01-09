@@ -1,27 +1,27 @@
 control 'SV-248771' do
   title 'OL 8 must generate audit records for any use of the "pam_timestamp_check" command.'
-  desc 'Without generating audit records that are specific to the security and mission needs of the organization, it would be difficult to establish, correlate, and investigate the events relating to an incident or identify those responsible for one. 
- 
-Audit records can be generated from various components within the information system (e.g., module or policy filter). The "pam_timestamp_check" command is used to check if the default timestamp is valid. 
- 
+  desc 'Without generating audit records that are specific to the security and mission needs of the organization, it would be difficult to establish, correlate, and investigate the events relating to an incident or identify those responsible for one.
+
+Audit records can be generated from various components within the information system (e.g., module or policy filter). The "pam_timestamp_check" command is used to check if the default timestamp is valid.
+
 When a user logs on, the AUID is set to the UID of the account that is being authenticated. Daemons are not user sessions and have the loginuid set to "-1". The AUID representation is an unsigned 32-bit integer, which equals "4294967295". The audit system interprets "-1", "4294967295", and "unset" in the same way.
 
 '
-  desc 'check', 'Verify OL 8 generates an audit event for any use of the "pam_timestamp_check" command by running the following command to check the file system rules in "/etc/audit/audit.rules": 
- 
-$ sudo grep -w pam_timestamp_check /etc/audit/audit.rules 
- 
--a always,exit -F path=/usr/sbin/pam_timestamp_check -F perm=x -F auid>=1000 -F auid!=unset -k privileged-pam_timestamp_check 
- 
-If the command does not return a line or the line is commented out, this is a finding.  
- 
+  desc 'check', 'Verify OL 8 generates an audit event for any use of the "pam_timestamp_check" command by running the following command to check the file system rules in "/etc/audit/audit.rules":
+
+$ sudo grep -w pam_timestamp_check /etc/audit/audit.rules
+
+-a always,exit -F path=/usr/sbin/pam_timestamp_check -F perm=x -F auid>=1000 -F auid!=unset -k privileged-pam_timestamp_check
+
+If the command does not return a line or the line is commented out, this is a finding.
+
 Note: The "-k" allows for specifying an arbitrary identifier, and the string after it does not need to match the example output above.'
-  desc 'fix', 'Configure the audit system to generate an audit event for any use of the "pam_timestamp_check" command by adding or updating the following rule in the "/etc/audit/rules.d/audit.rules" file: 
- 
--a always,exit -F path=/usr/sbin/pam_timestamp_check -F perm=x -F auid>=1000 -F auid!=unset -k privileged-pam_timestamp_check 
- 
-The audit daemon must be restarted for the changes to take effect. To restart the audit daemon, run the following command: 
- 
+  desc 'fix', 'Configure the audit system to generate an audit event for any use of the "pam_timestamp_check" command by adding or updating the following rule in the "/etc/audit/rules.d/audit.rules" file:
+
+-a always,exit -F path=/usr/sbin/pam_timestamp_check -F perm=x -F auid>=1000 -F auid!=unset -k privileged-pam_timestamp_check
+
+The audit daemon must be restarted for the changes to take effect. To restart the audit daemon, run the following command:
+
 $ sudo service auditd restart'
   impact 0.5
   tag check_id: 'C-52205r779877_chk'

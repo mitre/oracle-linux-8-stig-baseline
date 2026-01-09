@@ -1,14 +1,14 @@
 control 'SV-248705' do
   title 'The OL 8 lastlog command must have a mode of "0750" or less permissive.'
   desc 'Unauthorized disclosure of the contents of the /var/log/lastlog file can reveal system data to attackers, thus compromising its confidentiality.'
-  desc 'check', 'Verify the "lastlog" command has a mode of "0750" or less permissive with the following command: 
- 
+  desc 'check', 'Verify the "lastlog" command has a mode of "0750" or less permissive with the following command:
+
 $ sudo stat -c "%a %n" /usr/bin/lastlog
 
 750  /usr/bin/lastlog
 
 If the "lastlog" command has a mode more permissive than "0750", this is a finding.'
-  desc 'fix', 'Configure the mode of the "lastlog" command for OL 8 to "0750" with the following command:  
+  desc 'fix', 'Configure the mode of the "lastlog" command for OL 8 to "0750" with the following command:
 
 $ sudo chmod 0750 /usr/bin/lastlog'
   impact 0.5
