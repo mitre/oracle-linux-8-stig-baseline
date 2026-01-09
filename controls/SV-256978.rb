@@ -51,6 +51,25 @@ Using the steps listed in the Check Text, confirm the newly imported key shows a
   tag gtitle: 'SRG-OS-000366-GPOS-00153'
   tag fix_id: 'F-60598r902783_fix'
   tag 'documentable'
-  tag cci: ['CCI-003992', 'CCI-001749']
-  tag nist: ['CM-14', 'CM-5 (3)']
+  tag cci: ['CCI-001749', 'CCI-003992']
+  tag nist: ['CM-5 (3)', 'CM-14']
+  tag 'host'
+  tag 'container'
+
+  rpm_gpg_file = input('rpm_gpg_file')
+  rpm_gpg_keys = input('rpm_gpg_keys')
+
+  describe file(rpm_gpg_file) do
+    it { should exist }
+  end
+  rpm_gpg_keys.each do |k, v|
+    describe command('rpm -q --queryformat "%{SUMMARY}\\n" gpg-pubkey | grep -i "red hat"') do
+      its('stdout') { should include k.to_s }
+    end
+    next unless file(rpm_gpg_file).exist?
+
+    describe command("gpg -q --keyid-format short --with-fingerprint #{rpm_gpg_file}") do
+      its('stdout') { should include v }
+    end
+  end
 end

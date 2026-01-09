@@ -10,14 +10,32 @@ $ sudo find [PART] -xdev -type d -perm -0002 -uid +999 -print
 If there is output, this is a finding.'
   desc 'fix', 'Investigate any world-writable directories that are not owned by a system account and then delete the files or assign them to an appropriate group.'
   impact 0.5
-  tag check_id: 'C-52070r779472_chk'
   tag severity: 'medium'
+  tag gtitle: 'SRG-OS-000480-GPOS-00227'
   tag gid: 'V-248636'
   tag rid: 'SV-248636r991589_rule'
   tag stig_id: 'OL08-00-010700'
-  tag gtitle: 'SRG-OS-000480-GPOS-00227'
   tag fix_id: 'F-52024r779473_fix'
-  tag 'documentable'
   tag cci: ['CCI-000366']
   tag nist: ['CM-6 b']
+  tag 'host'
+  tag 'container'
+
+  if input('disable_slow_controls')
+    describe 'This control consistently takes a long to run and has been disabled using the disable_slow_controls attribute.' do
+      skip 'This control consistently takes a long to run and has been disabled using the disable_slow_controls attribute. You must enable this control for a full accredidation for production.'
+    end
+  else
+
+    partitions = etc_fstab.params.map { |partition| partition['mount_point'] }.uniq
+
+    cmd = "find #{partitions.join(' ')} -xdev -type d -perm -0002 -uid +999 -print"
+    failing_dirs = command(cmd).stdout.split("\n").uniq
+
+    describe 'Any world-writeable directories' do
+      it 'should be owned by system accounts' do
+        expect(failing_dirs).to be_empty, "Failing directories:\n\t- #{failing_dirs.join("\n\t- ")}"
+      end
+    end
+  end
 end

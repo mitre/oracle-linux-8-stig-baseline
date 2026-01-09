@@ -14,14 +14,27 @@ If there is no evidence that real-time alerts are configured on the system, this
 
 space_left = 25%'
   impact 0.5
-  tag check_id: 'C-52252r1106142_chk'
   tag severity: 'medium'
+  tag gtitle: 'SRG-OS-000343-GPOS-00134'
   tag gid: 'V-248818'
   tag rid: 'SV-248818r1106143_rule'
   tag stig_id: 'OL08-00-030730'
-  tag gtitle: 'SRG-OS-000343-GPOS-00134'
   tag fix_id: 'F-52206r1101876_fix'
-  tag 'documentable'
   tag cci: ['CCI-001855']
   tag nist: ['AU-5 (1)']
+  tag 'host'
+
+  only_if('This control is Not Applicable to containers', impact: 0.0) {
+    !virtualization.system.eql?('docker')
+  }
+
+  if input('alternative_logging_method') != ''
+    describe 'manual check' do
+      skip 'Manual check required. Ask the administrator to indicate how logging is done for this system.'
+    end
+  else
+    describe auditd_conf do
+      its('space_left.to_i') { should cmp >= input('audit_storage_threshold') }
+    end
+  end
 end

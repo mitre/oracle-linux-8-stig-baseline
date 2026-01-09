@@ -1,14 +1,28 @@
 control 'SV-248826' do
   title 'OL 8 must enable mitigations against processor-based vulnerabilities.'
-  desc 'It is detrimental for operating systems to provide, or install by default, functionality exceeding requirements or mission objectives. These unnecessary capabilities or services are often overlooked and therefore may remain unsecured. They increase the risk to the platform by providing additional attack vectors.
+  desc 'It is detrimental for operating systems to provide, or install by
+default, functionality exceeding requirements or mission objectives. These
+unnecessary capabilities or services are often overlooked and therefore may
+remain unsecured. They increase the risk to the platform by providing
+additional attack vectors.
 
-Operating systems are capable of providing a wide variety of functions and services. Some of the functions and services, provided by default, may not be necessary to support essential organizational operations (e.g., key missions, functions).
+    Operating systems are capable of providing a wide variety of functions and
+services. Some of the functions and services, provided by default, may not be
+necessary to support essential organizational operations (e.g., key missions,
+functions).
 
-Examples of non-essential capabilities include, but are not limited to, games, software packages, tools, and demonstration software not related to requirements or providing a wide array of functionality not required for every mission, but which cannot be disabled.
+    Examples of non-essential capabilities include, but are not limited to,
+games, software packages, tools, and demonstration software not related to
+requirements or providing a wide array of functionality not required for every
+mission, but which cannot be disabled.
 
-Verify the operating system is configured to disable non-essential capabilities. The most secure way of ensuring a non-essential capability is disabled is to not have the capability installed.
+    Verify the operating system is configured to disable non-essential
+capabilities. The most secure way of ensuring a non-essential capability is
+disabled is to not have the capability installed.
 
-Kernel page-table isolation is a kernel feature that mitigates the Meltdown security vulnerability and hardens the kernel against attempts to bypass kernel address space layout randomization (KASLR).'
+    Kernel page-table isolation is a kernel feature that mitigates the Meltdown
+security vulnerability and hardens the kernel against attempts to bypass kernel
+address space layout randomization (KASLR).'
   desc 'check', 'Verify OL 8 enables kernel page-table isolation with the following commands:
 
 $ sudo grub2-editenv list | grep pti
@@ -32,14 +46,26 @@ Add or modify the following line in "/etc/default/grub" to ensure the configurat
 
 GRUB_CMDLINE_LINUX="pti=on"'
   impact 0.3
-  tag check_id: 'C-52260r780042_chk'
   tag severity: 'low'
+  tag gtitle: 'SRG-OS-000095-GPOS-00049'
   tag gid: 'V-248826'
   tag rid: 'SV-248826r958478_rule'
   tag stig_id: 'OL08-00-040004'
-  tag gtitle: 'SRG-OS-000095-GPOS-00049'
   tag fix_id: 'F-52214r780043_fix'
-  tag 'documentable'
   tag cci: ['CCI-000381']
   tag nist: ['CM-7 a']
+  tag 'host'
+
+  only_if('This control is Not Applicable to containers', impact: 0.0) {
+    !virtualization.system.eql?('docker')
+  }
+
+  grub_stdout = command('grub2-editenv - list').stdout
+
+  describe parse_config(grub_stdout) do
+    its('kernelopts') { should match(/pti=on/) }
+  end
+  describe parse_config_file('/etc/default/grub') do
+    its('GRUB_CMDLINE_LINUX') { should match(/pti=on/) }
+  end
 end

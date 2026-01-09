@@ -28,4 +28,12 @@ If "mailx" package is not installed, this is a finding.'
   tag 'documentable'
   tag cci: ['CCI-001744']
   tag nist: ['CM-3 (5)']
+  tag 'host'
+  tag 'container'
+
+  mail_package = input('mail_package')
+
+  describe package(mail_package) do
+    it { should be_installed }
+  end
 end

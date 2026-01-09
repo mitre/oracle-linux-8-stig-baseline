@@ -24,14 +24,58 @@ Update the "/etc/crypto-policies/back-ends/opensshserver.config" file to include
 
 A reboot is required for the changes to take effect.'
   impact 0.5
-  tag check_id: 'C-51995r917900_chk'
   tag severity: 'medium'
+  tag gtitle: 'SRG-OS-000125-GPOS-00065'
+  tag satisfies: ['SRG-OS-000250-GPOS-00093', 'SRG-OS-000393-GPOS-00173', 'SRG-OS-000394-GPOS-00174', 'SRG-OS-000125-GPOS-00065']
   tag gid: 'V-248561'
   tag rid: 'SV-248561r958510_rule'
   tag stig_id: 'OL08-00-010290'
-  tag gtitle: 'SRG-OS-000125-GPOS-00065'
   tag fix_id: 'F-51949r917901_fix'
-  tag 'documentable'
-  tag cci: ['CCI-000877']
-  tag nist: ['MA-4 c']
+  tag cci: ['CCI-001453', 'CCI-000877']
+  tag nist: ['AC-17 (2)', 'MA-4 c']
+  tag 'host'
+  tag 'container-conditional'
+
+  if virtualization.system.eql?('docker')
+    impact 0.0
+    describe 'Control not applicable in a container' do
+      skip 'The host OS controls the FIPS mode settings. The host OS should also be scanned with the applicable OS validation profile.'
+    end
+  elsif input('use_fips') == false
+    impact 0.0
+    describe 'This control is Not Applicable as FIPS is not required for this system' do
+      skip 'This control is Not Applicable as FIPS is not required for this system'
+    end
+  else
+    # Define the required algorithms
+    required_algorithms = input('openssh_server_required_algorithms')
+
+    # TODO: make a simple resource for this based off 'login_defs' or 'yum' as a model
+
+    # Parse the configuration file to get the value of "CRYPTO_POLICY"
+    crypto_policy = parse_config_file('/etc/crypto-policies/back-ends/opensshserver.config')['CRYPTO_POLICY']
+
+    # Parse the CRYPTO_POLICY string into a hash of configuration options
+    config_options = crypto_policy.scan(/-o(\w+)=([\w\-,@]+.)/).to_h
+
+    # Split each configuration option's values into an array
+    config_options.transform_values! { |v| v.split(',') }
+
+    # Define the path to the crypto policy file
+    crypto_policy_file = '/etc/crypto-policies/back-ends/opensshserver.config'
+
+    # Test that the crypto policy file is configured with the required algorithms
+    describe "The crypto policy file #{crypto_policy_file}" do
+      it 'is configured with the required algorithms' do
+        expect(crypto_policy).not_to be_nil, "The crypto policy file #{crypto_policy_file} \ndoes not contain the required algorithms\n\n\t#{required_algorithms}."
+      end
+    end
+
+    # Test that the MACS option in the crypto policy file contains the required algorithms in the correct order
+    describe 'The MACs option in the crypto policy file' do
+      it 'contains the required algorithms in the correct order' do
+        expect(config_options['MACS']).to eq(required_algorithms), "The MACS option in the crypto policy file does not contain the required algorithms in the *exact order*:\n\n\texpected: #{required_algorithms}\n\tgot:#{config_options['MACS']}"
+      end
+    end
+  end
 end

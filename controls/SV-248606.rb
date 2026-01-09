@@ -12,22 +12,45 @@ If the value is returned as "yes", the returned line is commented out, or no out
 If conflicting results are returned, this is a finding.)
   desc 'fix', 'Configure the SSH daemon to not allow Kerberos authentication.
 
-Add the following line in "/etc/ssh/sshd_config", or uncomment the line and set the value to "no":
+    Add the following line in "/etc/ssh/sshd_config", or uncomment the line
+and set the value to "no":
 
-KerberosAuthentication no
+    KerberosAuthentication no
 
-The SSH daemon must be restarted for the changes to take effect. To restart the SSH daemon, run the following command:
+    The SSH daemon must be restarted for the changes to take effect. To restart
+the SSH daemon, run the following command:
 
-$ sudo systemctl restart sshd.service'
+    $ sudo systemctl restart sshd.service'
   impact 0.5
-  tag check_id: 'C-52040r951567_chk'
   tag severity: 'medium'
+  tag gtitle: 'SRG-OS-000480-GPOS-00227'
   tag gid: 'V-248606'
   tag rid: 'SV-248606r991589_rule'
   tag stig_id: 'OL08-00-010521'
-  tag gtitle: 'SRG-OS-000480-GPOS-00227'
   tag fix_id: 'F-51994r779383_fix'
-  tag 'documentable'
   tag cci: ['CCI-000366']
   tag nist: ['CM-6 b']
+  tag 'host'
+  tag 'container-conditional'
+
+  only_if('This control is Not Applicable to containers without SSH installed', impact: 0.0) {
+    !(virtualization.system.eql?('docker') && !directory('/etc/ssh').exist?)
+  }
+
+  kerb = package('krb5-server')
+
+  if (kerb.installed? && kerb.version >= '1.17-9.el8') || input('system_is_workstation')
+    impact 0.0
+    describe 'N/A' do
+      skip 'The system is a workstation or is utilizing krb5-server-1.17-9.el8 or newer; control is Not Applicable.'
+    end
+  elsif input('kerberos_required')
+    describe package('krb5-server') do
+      it { should be_installed }
+    end
+  else
+    describe sshd_active_config do
+      its('KerberosAuthentication') { should cmp 'no' }
+    end
+  end
 end

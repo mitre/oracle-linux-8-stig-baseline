@@ -21,14 +21,29 @@ $ sudo systemctl disable kdump.service
 
 If kernel core dumps are required, document the need with the ISSO.'
   impact 0.5
-  tag check_id: 'C-52062r779448_chk'
   tag severity: 'medium'
+  tag gtitle: 'SRG-OS-000269-GPOS-00103'
   tag gid: 'V-248628'
   tag rid: 'SV-248628r991562_rule'
   tag stig_id: 'OL08-00-010670'
-  tag gtitle: 'SRG-OS-000269-GPOS-00103'
   tag fix_id: 'F-52016r779449_fix'
-  tag 'documentable'
-  tag cci: ['CCI-001665']
-  tag nist: ['SC-24']
+  tag cci: ['CCI-000366', 'CCI-001665']
+  tag nist: ['CM-6 b', 'SC-24']
+  tag 'host'
+
+  only_if('This control is Not Applicable to containers', impact: 0.0) {
+    !virtualization.system.eql?('docker')
+  }
+
+  kernel_dump = input('kernel_dump_expected_value')
+
+  if kernel_dump == '|/bin/false'
+    describe systemd_service('kdump.service') do
+      it { should_not be_running }
+    end
+  else
+    describe systemd_service('kdump.service') do
+      it { should be_running }
+    end
+  end
 end

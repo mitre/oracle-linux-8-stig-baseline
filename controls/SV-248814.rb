@@ -13,9 +13,7 @@ UDP *.* @remotesystemname
 TCP *.* @@remotesystemname
 RELP *.* :omrelp:remotesystemname:2514
 
-Note that a port number was given as there is no standard port for RELP.
-
-'
+Note that a port number was given as there is no standard port for RELP.'
   desc 'check', 'Verify the audit system offloads audit records onto a different system or media from the system being audited with the following command:
 
      $ sudo grep @@ /etc/rsyslog.conf /etc/rsyslog.d/*.conf
@@ -33,15 +31,28 @@ For UDP:
 For TCP:
      *.* @@[logaggregationserver.example.mil]:[port]'
   impact 0.5
-  tag check_id: 'C-52248r917912_chk'
   tag severity: 'medium'
+  tag gtitle: 'SRG-OS-000342-GPOS-00133'
+  tag satisfies: ['SRG-OS-000342-GPOS-00133', 'SRG-OS-000479-GPOS-00224']
   tag gid: 'V-248814'
   tag rid: 'SV-248814r958754_rule'
   tag stig_id: 'OL08-00-030690'
-  tag gtitle: 'SRG-OS-000342-GPOS-00133'
   tag fix_id: 'F-52202r917913_fix'
-  tag satisfies: ['SRG-OS-000342-GPOS-00133', 'SRG-OS-000479-GPOS-00224']
-  tag 'documentable'
   tag cci: ['CCI-001851']
   tag nist: ['AU-4 (1)']
+  tag 'host'
+
+  only_if('This control is Not Applicable to containers', impact: 0.0) {
+    !virtualization.system.eql?('docker')
+  }
+
+  if input('alternative_logging_method') != ''
+    describe 'manual check' do
+      skip 'Manual check required. Ask the administrator to indicate how logging is done for this system.'
+    end
+  else
+    describe command("grep @@ #{input('logging_conf_files').join(' ')}") do
+      its('stdout') { should match(/^[^#]*:\*\.\*\s*@@[a-z.0-9]*:?[0-9]*?/) }
+    end
+  end
 end

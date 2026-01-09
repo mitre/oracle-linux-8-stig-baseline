@@ -4,9 +4,7 @@ control 'SV-248662' do
 
 OL 8 can use the "pam_faillock.so" for this purpose. Note that manual changes to the listed files may be overwritten by the "authselect" program.
 
-From "Pam_Faillock" man pages: Note that the default directory that "pam_faillock" uses is usually cleared on system boot so the access will be reenabled after system reboot. If that is undesirable, a different tally directory must be set with the "dir" option.
-
-'
+From "Pam_Faillock" man pages: Note that the default directory that "pam_faillock" uses is usually cleared on system boot so the access will be reenabled after system reboot. If that is undesirable, a different tally directory must be set with the "dir" option.'
   desc 'check', 'Verify the system logs user name information when unsuccessful logon attempts occur with the following commands.
 
 Note: If the System Administrator demonstrates the use of an approved centralized account management method that locks an account after three unsuccessful logon attempts within a period of 15 minutes, this requirement is not applicable.
@@ -40,15 +38,34 @@ The "sssd" service must be restarted for the changes to take effect. To restart 
 
 $ sudo systemctl restart sssd.service'
   impact 0.5
-  tag check_id: 'C-52096r779550_chk'
   tag severity: 'medium'
+  tag gtitle: 'SRG-OS-000021-GPOS-00005'
+  tag satisfies: ['SRG-OS-000021-GPOS-00005', 'SRG-OS-000329-GPOS-00128']
   tag gid: 'V-248662'
   tag rid: 'SV-248662r958388_rule'
   tag stig_id: 'OL08-00-020020'
-  tag gtitle: 'SRG-OS-000021-GPOS-00005'
   tag fix_id: 'F-52050r779551_fix'
-  tag satisfies: ['SRG-OS-000021-GPOS-00005', 'SRG-OS-000329-GPOS-00128']
-  tag 'documentable'
   tag cci: ['CCI-000044', 'CCI-002238']
   tag nist: ['AC-7 a', 'AC-7 b']
+
+  message = <<~MESSAGE
+    \nThis check only applies to RHEL versions 8.0 or 8.1.\n
+    The system is running RHEL version: #{os.version}, this check is Not Applicable.
+  MESSAGE
+  only_if(message, impact: 0.0) do
+    ['8.0', '8.1'].include?(os.version)
+  end
+
+  pam_auth_files = input('pam_auth_files')
+
+  describe pam(pam_auth_files['password-auth']) do
+    its('lines') {
+      should match_pam_rule('auth [default=die]|required pam_faillock.so preauth').all_with_args('audit')
+    }
+  end
+  describe pam(pam_auth_files['system-auth']) do
+    its('lines') {
+      should match_pam_rule('auth [default=die]|required pam_faillock.so preauth').all_with_args('audit')
+    }
+  end
 end

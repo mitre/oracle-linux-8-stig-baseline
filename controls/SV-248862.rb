@@ -20,14 +20,34 @@ If there is no evidence that unauthorized peripherals are being blocked before e
 
 $ sudo yum install usbguard.x86_64'
   impact 0.5
-  tag check_id: 'C-52296r780150_chk'
   tag severity: 'medium'
+  tag gtitle: 'SRG-OS-000378-GPOS-00163'
   tag gid: 'V-248862'
   tag rid: 'SV-248862r986387_rule'
   tag stig_id: 'OL08-00-040139'
-  tag gtitle: 'SRG-OS-000378-GPOS-00163'
   tag fix_id: 'F-52250r780151_fix'
-  tag 'documentable'
   tag cci: ['CCI-001958', 'CCI-003959']
   tag nist: ['IA-3', 'CM-7 (9) (b)']
+  tag 'host'
+
+  only_if('This requirement is Not Applicable in the container', impact: 0.0) {
+    !virtualization.system.eql?('docker')
+  }
+
+  peripherals_package = input('peripherals_package')
+  is_virtualized_system_no_usb_devices = input('is_virtualized_system_no_usb_devices')
+
+  if is_virtualized_system_no_usb_devices
+    impact 0.0
+    describe 'The system is a virtual machine with no virtual or physical USB peripherals attached' do
+      skip 'The system is a virtual machine with no virtual or physical USB peripherals attached, this control is Not Applicable.'
+    end
+  else
+
+    describe package(peripherals_package) do
+      it "is expected to be installed. \n\tPlease ensure to configure the service to ensure your devices function as expected." do
+        expect(subject.installed?).to be(true), "The #{peripherals_package} package is not installed"
+      end
+    end
+  end
 end

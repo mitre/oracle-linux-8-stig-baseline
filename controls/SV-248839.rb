@@ -46,14 +46,41 @@ Add any interfaces to the new [custom] zone:
 Reload the firewall rules for changes to take effect:
      $ sudo firewall-cmd --reload'
   impact 0.5
-  tag check_id: 'C-52273r943093_chk'
   tag severity: 'medium'
+  tag gtitle: 'SRG-OS-000297-GPOS-00115'
   tag gid: 'V-248839'
   tag rid: 'SV-248839r958672_rule'
   tag stig_id: 'OL08-00-040090'
-  tag gtitle: 'SRG-OS-000297-GPOS-00115'
   tag fix_id: 'F-52227r943094_fix'
-  tag 'documentable'
   tag cci: ['CCI-002314']
+  tag legacy: []
   tag nist: ['AC-17 (1)']
+  tag 'host'
+
+  only_if('This control is Not Applicable to containers', impact: 0.0) {
+    !virtualization.system.eql?('docker')
+  }
+
+  if input('external_firewall') == false
+
+    describe service('firewalld') do
+      it { should be_running }
+    end
+
+    describe firewalld do
+      its('zone') { should_not be_empty }
+    end
+
+    failing_zones = firewalld.zone.reject { |fz| firewalld.zone(fz).target == 'DROP' }
+
+    describe 'All firewall zones' do
+      it 'should be configured to drop all incoming network packets unless explicitly accepted' do
+        expect(failing_zones).to be_empty, "Failing zones:\n\t- #{failing_zones.join("\n\t- ")}"
+      end
+    end
+  else
+    describe 'Manual' do
+      skip 'Inputs indicate this system is using a firewall tool other than the default firewalld; review the configuration of this tool to ensure it employs a deny-all, allow-by-exception policy for allowing connections to other systems.'
+    end
+  end
 end

@@ -9,25 +9,44 @@ Remote access is access to DoD nonpublic information systems by an authorized us
 OL 8 functionality (e.g., RDP) must be capable of taking enforcement action if the audit reveals unauthorized activity. Automated control of remote access sessions allows organizations to ensure ongoing compliance with remote access policies by enforcing connection rules of remote access applications on a variety of information system components (e.g., servers, workstations, notebook computers, smartphones, and tablets).'
   desc 'check', 'Verify that "firewalld" is active with the following commands:
 
-$ sudo systemctl is-active firewalld
+    $ sudo systemctl is-active firewalld
 
-active
+    active
 
-If the "firewalld" package is not "active", ask the System Administrator if another firewall is installed. If no firewall is installed and active this is a finding.'
+    If the "firewalld" package is not "active", ask the System
+Administrator if another firewall is installed. If no firewall is installed and
+active this is a finding.'
   desc 'fix', 'Configure "firewalld" to protect the operating system with the following commands:
 
 $ sudo systemctl enable firewalld
 
 $ sudo systemctl start firewalld'
   impact 0.5
-  tag check_id: 'C-52275r780087_chk'
   tag severity: 'medium'
+  tag gtitle: 'SRG-OS-000297-GPOS-00115'
   tag gid: 'V-248841'
   tag rid: 'SV-248841r958672_rule'
   tag stig_id: 'OL08-00-040101'
-  tag gtitle: 'SRG-OS-000297-GPOS-00115'
   tag fix_id: 'F-52229r780088_fix'
-  tag 'documentable'
   tag cci: ['CCI-002314']
   tag nist: ['AC-17 (1)']
+
+  only_if('This requirment is Not Applicable in the container, the container management platform manages the firewall service', impact: 0.0) {
+    !virtualization.system.eql?('docker')
+  }
+
+  if input('external_firewall')
+    message = 'This system uses an externally managed firewall service, verify with the system administrator that the firewall is configured to requirements'
+    describe message do
+      skip message
+    end
+  else
+    describe package('firewalld') do
+      it { should be_installed }
+    end
+    describe firewalld do
+      it { should be_installed }
+      it { should be_running }
+    end
+  end
 end

@@ -26,14 +26,24 @@ Add or modify the following line in "/etc/default/grub" to ensure the configurat
 
 GRUB_CMDLINE_LINUX="page_poison=1"'
   impact 0.5
-  tag check_id: 'C-52024r779334_chk'
   tag severity: 'medium'
+  tag gtitle: 'SRG-OS-000134-GPOS-00068'
+  tag satisfies: ['SRG-OS-000134-GPOS-00068', 'SRG-OS-000433-GPOS-00192']
   tag gid: 'V-248590'
   tag rid: 'SV-248590r958518_rule'
   tag stig_id: 'OL08-00-010421'
-  tag gtitle: 'SRG-OS-000134-GPOS-00068'
   tag fix_id: 'F-51978r779335_fix'
-  tag 'documentable'
   tag cci: ['CCI-001084']
   tag nist: ['SC-3']
+  tag 'host'
+
+  grub_stdout = command('grub2-editenv - list').stdout
+  setting = /page_poison\s*=\s*1/
+
+  describe 'GRUB config' do
+    it 'should enable page poisoning' do
+      expect(parse_config(grub_stdout)['kernelopts']).to match(setting), 'Current GRUB configuration does not disable this setting'
+      expect(parse_config_file('/etc/default/grub')['GRUB_CMDLINE_LINUX']).to match(setting), 'Setting not configured to persist between kernel updates'
+    end
+  end
 end

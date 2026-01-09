@@ -16,14 +16,18 @@ Modify the "/etc/login.defs" file to set the "FAIL_DELAY" parameter to "4" or gr
 
 FAIL_DELAY 4'
   impact 0.5
-  tag check_id: 'C-52146r779700_chk'
   tag severity: 'medium'
+  tag gtitle: 'SRG-OS-000480-GPOS-00226'
   tag gid: 'V-248712'
   tag rid: 'SV-248712r991588_rule'
   tag stig_id: 'OL08-00-020310'
-  tag gtitle: 'SRG-OS-000480-GPOS-00226'
   tag fix_id: 'F-52100r779701_fix'
-  tag 'documentable'
   tag cci: ['CCI-000366']
   tag nist: ['CM-6 b']
+  tag 'host'
+  tag 'container'
+
+  describe login_defs do
+    its('FAIL_DELAY.to_i') { should cmp >= input('login_prompt_delay') }
+  end
 end

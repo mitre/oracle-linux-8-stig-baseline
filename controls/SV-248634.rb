@@ -1,6 +1,9 @@
 control 'SV-248634' do
   title 'For OL 8 systems using Domain Name Servers (DNS) resolution, at least two name servers must be configured.'
-  desc 'To provide availability for name resolution services, multiple redundant name servers are mandated. A failure in name resolution could lead to the failure of security functions requiring name resolution, which may include time synchronization, centralized authentication, and remote system logging.'
+  desc 'To provide availability for name resolution services, multiple
+redundant name servers are mandated. A failure in name resolution could lead to
+the failure of security functions requiring name resolution, which may include
+time synchronization, centralized authentication, and remote system logging.'
   desc 'check', %q(Determine whether the system is using local or DNS name resolution with the following command:
 
 $ sudo grep hosts /etc/nsswitch.conf
@@ -37,14 +40,49 @@ If local host resolution is being performed, the "/etc/resolv.conf" file must be
 
 $ sudo echo -n > /etc/resolv.conf'
   impact 0.5
-  tag check_id: 'C-52068r779466_chk'
   tag severity: 'medium'
+  tag gtitle: 'SRG-OS-000480-GPOS-00227'
   tag gid: 'V-248634'
   tag rid: 'SV-248634r991589_rule'
   tag stig_id: 'OL08-00-010680'
-  tag gtitle: 'SRG-OS-000480-GPOS-00227'
   tag fix_id: 'F-52022r779467_fix'
-  tag 'documentable'
   tag cci: ['CCI-000366']
   tag nist: ['CM-6 b']
+  tag 'host'
+  tag 'container'
+
+  dns_in_host_line = parse_config_file('/etc/nsswitch.conf',
+                                       comment_char: '#',
+                                       assignment_regex: /^\s*([^:]*?)\s*:\s*(.*?)\s*$/).params['hosts'].include?('dns')
+
+  unless dns_in_host_line
+    describe 'If `local` resolution is being used, a `hosts` entry in /etc/nsswitch.conf having `dns`' do
+      subject { dns_in_host_line }
+      it { should be false }
+    end
+  end
+
+  unless dns_in_host_line
+    describe 'If `local` resoultion is being used, the /etc/resolv.conf file should' do
+      subject { parse_config_file('/etc/resolv.conf', comment_char: '#').params }
+      it { should be_empty }
+    end
+  end
+
+  nameservers = parse_config_file('/etc/resolv.conf',
+                                  comment_char: '#').params.keys.grep(/nameserver/)
+
+  if dns_in_host_line
+    describe "The system's nameservers: #{nameservers}" do
+      subject { nameservers }
+      it { should_not be nil }
+    end
+  end
+
+  if dns_in_host_line
+    describe 'The number of nameservers' do
+      subject { nameservers.count }
+      it { should cmp >= 2 }
+    end
+  end
 end

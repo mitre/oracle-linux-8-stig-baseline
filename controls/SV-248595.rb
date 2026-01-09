@@ -1,6 +1,9 @@
 control 'SV-248595' do
   title 'YUM must remove all software components after updated versions have been installed on OL 8.'
-  desc 'Previous versions of software components that are not removed from the information system after updates have been installed may be exploited by adversaries. Some information technology products may remove older versions of software automatically from the information system.'
+  desc 'Previous versions of software components that are not removed from the
+information system after updates have been installed may be exploited by
+adversaries. Some information technology products may remove older versions of
+software automatically from the information system.'
   desc 'check', 'Verify the operating system removes all software components after updated versions have been installed.
 
 Check if YUM is configured to remove unneeded packages with the following command:
@@ -16,14 +19,18 @@ Set the "clean_requirements_on_remove" option to "True" in the "/etc/yum.conf" f
 
 clean_requirements_on_remove=True'
   impact 0.3
-  tag check_id: 'C-52029r779349_chk'
   tag severity: 'low'
+  tag gtitle: 'SRG-OS-000437-GPOS-00194'
   tag gid: 'V-248595'
   tag rid: 'SV-248595r958936_rule'
   tag stig_id: 'OL08-00-010440'
-  tag gtitle: 'SRG-OS-000437-GPOS-00194'
   tag fix_id: 'F-51983r779350_fix'
-  tag 'documentable'
   tag cci: ['CCI-002617']
   tag nist: ['SI-2 (6)']
+  tag 'host'
+  tag 'container'
+
+  describe parse_config_file('/etc/dnf/dnf.conf') do
+    its('main.clean_requirements_on_remove') { should match(/1|True|yes/i) }
+  end
 end

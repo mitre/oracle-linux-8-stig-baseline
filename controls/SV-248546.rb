@@ -16,18 +16,32 @@ $ sudo yum list installed krb5-workstation
 krb5-workstation.x86_64 1.17-9.el8 repository
 
 If the krb5-workstation package is installed and is not documented with the Information System Security Officer (ISSO) as an operational requirement, this is a finding.'
-  desc 'fix', 'Document the krb5-workstation package with the ISSO as an operational requirement or remove it from the system with the following command:
+  desc 'fix', 'Document the krb5-workstation package with the ISSO as an operational
+requirement or remove it from the system with the following command:
 
-$ sudo yum remove krb5-workstation'
+    $ sudo yum remove krb5-workstation'
   impact 0.5
-  tag check_id: 'C-51980r779202_chk'
   tag severity: 'medium'
+  tag gtitle: 'SRG-OS-000120-GPOS-00061'
   tag gid: 'V-248546'
   tag rid: 'SV-248546r971535_rule'
   tag stig_id: 'OL08-00-010162'
-  tag gtitle: 'SRG-OS-000120-GPOS-00061'
   tag fix_id: 'F-51934r779203_fix'
-  tag 'documentable'
   tag cci: ['CCI-000803']
   tag nist: ['IA-7']
+  tag 'host'
+  tag 'container'
+
+  krb5_workstation = package('krb5-workstation')
+
+  if krb5_workstation.installed? && krb5_workstation.version >= '1.17-18.el8'
+    impact 0.0
+    describe 'N/A' do
+      skip 'Kerberos installation is at version 1.17-18.el8 or greater; this control is Not Applicable'
+    end
+  else
+    describe krb5_workstation do
+      it { should_not be_installed }
+    end
+  end
 end

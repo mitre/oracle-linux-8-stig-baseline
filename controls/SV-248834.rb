@@ -1,8 +1,14 @@
 control 'SV-248834' do
   title 'OL 8 must disable IEEE 1394 (FireWire) Support.'
-  desc 'It is detrimental for operating systems to provide, or install by default, functionality exceeding requirements or mission objectives. These unnecessary capabilities or services are often overlooked and therefore may remain unsecured. They increase the risk to the platform by providing additional attack vectors.
+  desc 'It is detrimental for operating systems to provide, or install by
+default, functionality exceeding requirements or mission objectives. These
+unnecessary capabilities or services are often overlooked and therefore may
+remain unsecured. They increase the risk to the platform by providing
+additional attack vectors.
 
-The IEEE 1394 (FireWire) is a serial bus standard for high-speed real-time communication. Disabling FireWire protects the system against exploitation of any flaws in its implementation.'
+    The IEEE 1394 (FireWire) is a serial bus standard for high-speed real-time
+communication. Disabling FireWire protects the system against exploitation of
+any flaws in its implementation.'
   desc 'check', 'Verify the operating system disables the ability to load the firewire-core kernel module.
 
      $ sudo grep -ri firewire-core /etc/modprobe.d/* | grep -i "/bin/false"
@@ -27,14 +33,22 @@ Add or update the following lines in the file "/etc/modprobe.d/blacklist.conf":
 
 Reboot the system for the settings to take effect.'
   impact 0.3
-  tag check_id: 'C-52268r943084_chk'
   tag severity: 'low'
+  tag gtitle: 'SRG-OS-000095-GPOS-00049'
   tag gid: 'V-248834'
   tag rid: 'SV-248834r958478_rule'
   tag stig_id: 'OL08-00-040026'
-  tag gtitle: 'SRG-OS-000095-GPOS-00049'
   tag fix_id: 'F-52222r943085_fix'
-  tag 'documentable'
   tag cci: ['CCI-000381']
   tag nist: ['CM-7 a']
+  tag 'host'
+
+  only_if('This control is Not Applicable to containers', impact: 0.0) {
+    !virtualization.system.eql?('docker')
+  }
+
+  describe kernel_module('firewire_core') do
+    it { should be_disabled }
+    it { should be_blacklisted }
+  end
 end

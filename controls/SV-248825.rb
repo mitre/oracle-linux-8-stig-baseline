@@ -12,18 +12,23 @@ Verify the operating system is configured to disable non-essential capabilities.
 $ sudo yum list installed sendmail
 
 If the sendmail package is installed, this is a finding.'
-  desc 'fix', 'Configure the operating system to disable non-essential capabilities by removing the sendmail package from the system with the following command:
+  desc 'fix', 'Configure the operating system to disable non-essential capabilities by
+removing the sendmail package from the system with the following command:
 
-$ sudo yum remove sendmail'
+    $ sudo yum remove sendmail'
   impact 0.5
-  tag check_id: 'C-52259r780039_chk'
   tag severity: 'medium'
+  tag gtitle: 'SRG-OS-000095-GPOS-00049'
   tag gid: 'V-248825'
   tag rid: 'SV-248825r958478_rule'
   tag stig_id: 'OL08-00-040002'
-  tag gtitle: 'SRG-OS-000095-GPOS-00049'
   tag fix_id: 'F-52213r780040_fix'
-  tag 'documentable'
   tag cci: ['CCI-000381']
   tag nist: ['CM-7 a']
+  tag 'host'
+  tag 'container'
+
+  describe package('sendmail') do
+    it { should_not be_installed }
+  end
 end

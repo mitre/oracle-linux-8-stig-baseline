@@ -4,9 +4,7 @@ control 'SV-248524' do
 
 OL 8 uses GRUB 2 as the default bootloader. Note that GRUB 2 command-line parameters are defined in the "kernelopts" variable of the "/boot/grub2/grubenv" file for all kernel boot entries. The command "fips-mode-setup" modifies the "kernelopts" variable, which in turn updates all kernel boot entries.
 
-The fips=1 kernel option needs to be added to the kernel command line during system installation so that key generation is done with FIPS-approved algorithms and continuous monitoring tests in place. Users must also ensure the system has plenty of entropy during the installation process by moving the mouse around, or if no mouse is available, ensuring that many keystrokes are typed. The recommended amount of keystrokes is 256 and more. Less than 256 keystrokes may generate a nonunique key.
-
-'
+The fips=1 kernel option needs to be added to the kernel command line during system installation so that key generation is done with FIPS-approved algorithms and continuous monitoring tests in place. Users must also ensure the system has plenty of entropy during the installation process by moving the mouse around, or if no mouse is available, ensuring that many keystrokes are typed. The recommended amount of keystrokes is 256 and more. Less than 256 keystrokes may generate a nonunique key.'
   desc 'check', 'Verify the operating system implements DOD-approved encryption to protect the confidentiality of remote access sessions.
 
 Check to see if FIPS mode is enabled with the following command:
@@ -35,15 +33,40 @@ Enable FIPS mode after installation (not strict FIPS-compliant) with the followi
 
 Reboot the system for the changes to take effect.'
   impact 0.7
-  tag check_id: 'C-51958r1069153_chk'
   tag severity: 'high'
+  tag gtitle: 'SRG-OS-000033-GPOS-00014'
+  tag satisfies: ['SRG-OS-000033-GPOS-00014', 'SRG-OS-000125-GPOS-00065', 'SRG-OS-000396-GPOS-00176', 'SRG-OS-000423-GPOS-00187', 'SRG-OS-000478-GPOS-00223', 'SRG-OS-000250-GPOS-00093', 'SRG-OS-000393-GPOS-00173', 'SRG-OS-000394-GPOS-00174']
   tag gid: 'V-248524'
   tag rid: 'SV-248524r1069154_rule'
   tag stig_id: 'OL08-00-010020'
-  tag gtitle: 'SRG-OS-000033-GPOS-00014'
   tag fix_id: 'F-51912r928550_fix'
-  tag satisfies: ['SRG-OS-000033-GPOS-00014', 'SRG-OS-000125-GPOS-00065', 'SRG-OS-000250-GPOS-00093', 'SRG-OS-000393-GPOS-00173', 'SRG-OS-000394-GPOS-00174', 'SRG-OS-000423-GPOS-00187']
-  tag 'documentable'
   tag cci: ['CCI-000068', 'CCI-000877', 'CCI-001453', 'CCI-002418', 'CCI-002890', 'CCI-003123']
-  tag nist: ['AC-17 (2)', 'MA-4 c', 'AC-17 (2)', 'SC-8', 'MA-4 (6)', 'MA-4 (6)']
+  tag nist: ['AC-17 (2)', 'MA-4 c', 'SC-8', 'MA-4 (6)']
+  tag 'host'
+
+  if virtualization.system.eql?('docker')
+    impact 0.0
+    describe 'Control not applicable in a container' do
+      skip 'The host OS controls the FIPS mode settings. The host OS should also be scanned with the applicable OS validation profile.'
+    end
+  elsif input('use_fips') == false
+    impact 0.0
+    describe 'This control is Not Applicable as FIPS is not required for this system' do
+      skip 'This control is Not Applicable as FIPS is not required for this system'
+    end
+  else
+    describe command('fips-mode-setup --check') do
+      its('stdout.strip') { should match(/FIPS mode is enabled/) }
+    end
+
+    grub_config = command('grub2-editenv - list').stdout
+
+    describe parse_config(grub_config) do
+      its('kernelopts') { should match(/fips=1/) }
+    end
+
+    describe file('/proc/sys/crypto/fips_enabled') do
+      its('content.strip') { should cmp '1' }
+    end
+  end
 end

@@ -52,14 +52,39 @@ Load settings from all system configuration files with the following command:
 
 $ sudo sysctl --system'
   impact 0.3
-  tag check_id: 'C-52014r833202_chk'
   tag severity: 'low'
+  tag gtitle: 'SRG-OS-000138-GPOS-00069'
   tag gid: 'V-248580'
   tag rid: 'SV-248580r1117267_rule'
   tag stig_id: 'OL08-00-010376'
-  tag gtitle: 'SRG-OS-000138-GPOS-00069'
   tag fix_id: 'F-51968r858618_fix'
-  tag 'documentable'
   tag cci: ['CCI-001090']
   tag nist: ['SC-4']
+  tag 'host'
+
+  only_if('Control not applicable within a container', impact: 0.0) {
+    !virtualization.system.eql?('docker')
+  }
+
+  action = 'kernel.perf_event_paranoid'
+
+  describe kernel_parameter(action) do
+    its('value') { should eq 2 }
+  end
+
+  search_result = command("grep -r ^#{action} #{input('sysctl_conf_files').join(' ')}").stdout.strip
+
+  correct_result = search_result.lines.any? { |line| line.match(/#{action}\s*=\s*2$/) }
+  incorrect_results = search_result.lines.map(&:strip).select { |line| line.match(/#{action}\s*=\s*[^2]$/) }
+
+  describe 'Kernel config files' do
+    it "should configure '#{action}'" do
+      expect(correct_result).to eq(true), 'No config file was found that correctly sets this action'
+    end
+    unless incorrect_results.nil?
+      it 'should not have incorrect or conflicting setting(s) in the config files' do
+        expect(incorrect_results).to be_empty, "Incorrect or conflicting setting(s) found:\n\t- #{incorrect_results.join("\n\t- ")}"
+      end
+    end
+  end
 end

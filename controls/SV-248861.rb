@@ -8,9 +8,7 @@ Users' home directories/folders may contain information of a sensitive nature. N
 
 OL 8 ships with many optional packages. One such package is a file access policy daemon called "fapolicyd". This is a userspace daemon that determines access rights to files based on attributes of the process and file. It can be used to either blacklist or whitelist processes or file access.
 
-Proceed with caution with enforcing the use of this daemon. Improper configuration may render the system non-functional. The "fapolicyd" API is not namespace aware and can cause issues when launching or running containers.
-
-)
+Proceed with caution with enforcing the use of this daemon. Improper configuration may render the system non-functional. The "fapolicyd" API is not namespace aware and can cause issues when launching or running containers.)
   desc 'check', 'Verify the OL 8 "fapolicyd" employs a deny-all, permit-by-exception policy.
 
 Check that "fapolicyd" is in enforcement mode with the following command:
@@ -48,15 +46,52 @@ Once it is determined the whitelist is built correctly, set the fapolicyd to enf
 
 permissive = 0'
   impact 0.5
-  tag check_id: 'C-52295r858593_chk'
   tag severity: 'medium'
+  tag gtitle: 'SRG-OS-000368-GPOS-00154'
+  tag satisfies: ['SRG-OS-000368-GPOS-00154', 'SRG-OS-000370-GPOS-00155', 'SRG-OS-000480-GPOS-00232']
   tag gid: 'V-248861'
   tag rid: 'SV-248861r958804_rule'
   tag stig_id: 'OL08-00-040137'
-  tag gtitle: 'SRG-OS-000368-GPOS-00154'
   tag fix_id: 'F-52249r858594_fix'
-  tag satisfies: ['SRG-OS-000368-GPOS-00154', 'SRG-OS-000370-GPOS-00155']
-  tag 'documentable'
   tag cci: ['CCI-001764', 'CCI-001774']
   tag nist: ['CM-7 (2)', 'CM-7 (5) (b)']
+
+  # Check if the system is a Docker container or not using Fapolicyd
+  if virtualization.system.eql?('docker') || !input('use_fapolicyd')
+    impact 0.0
+    describe 'Control not applicable' do
+      skip 'The organization is not using the Fapolicyd service to manage firewall services, this control is Not Applicable' unless input('use_fapolicyd')
+      skip 'Control not applicable within a container' if virtualization.system.eql?('docker')
+    end
+  else
+    # Parse the fapolicyd configuration file
+    fapolicyd_config = parse_config_file('/etc/fapolicyd/fapolicyd.conf')
+
+    describe 'Fapolicyd configuration' do
+      it 'permissive should not be commented out' do
+        expect(fapolicyd_config.content).to match(/^permissive\s*=\s*0$/), 'permissive is commented out in the fapolicyd.conf file'
+      end
+      it 'should have permissive set to 0' do
+        expect(fapolicyd_config.params['permissive']).to cmp '0'
+      end
+    end
+
+    # Determine the rules file based on the OS release
+    rules_file = os.version.minor <= 4 ? '/etc/fapolicyd/fapolicyd.rules' : '/etc/fapolicyd/compiled.rules'
+
+    # Check if the rules file exists
+    describe file(rules_file) do
+      it { should exist }
+    end
+
+    # If the rules file exists, check the last rule
+    if file(rules_file).exist?
+      rules = file(rules_file).content.strip.split("\n")
+      last_rule = rules.last
+
+      describe 'Last rule in the rules file' do
+        it { expect(last_rule).to cmp 'deny perm=any all : all' }
+      end
+    end
+  end
 end

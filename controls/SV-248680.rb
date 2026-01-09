@@ -2,9 +2,7 @@ control 'SV-248680' do
   title 'OL 8 must automatically lock graphical user sessions after 15 minutes of inactivity.'
   desc "A session time-out lock is a temporary action taken when a user stops work and moves away from the immediate physical vicinity of the information system but does not log out because of the temporary nature of the absence. Rather than relying on the user to manually lock their operating system session prior to vacating the vicinity, operating systems must be able to identify when a user's session has idled and take action to initiate the session lock.
 
-The session lock is implemented at the point where session activity can be determined and/or controlled.
-
-"
+The session lock is implemented at the point where session activity can be determined and/or controlled."
   desc 'check', 'Note: This requirement assumes the use of the OL 8 default graphical user interface, Gnome Shell. If the system does not have any graphical user interface installed, this requirement is Not Applicable.
 
 Verify the operating system initiates a session lock after a 15-minute period of inactivity for graphical user interfaces with the following commands:
@@ -30,15 +28,30 @@ Update the system databases:
 
 $ sudo dconf update'
   impact 0.5
-  tag check_id: 'C-52114r779604_chk'
   tag severity: 'medium'
+  tag gtitle: 'SRG-OS-000029-GPOS-00010'
+  tag satisfies: ['SRG-OS-000029-GPOS-00010', 'SRG-OS-000031-GPOS-00012']
   tag gid: 'V-248680'
   tag rid: 'SV-248680r958402_rule'
   tag stig_id: 'OL08-00-020060'
-  tag gtitle: 'SRG-OS-000029-GPOS-00010'
   tag fix_id: 'F-52068r779605_fix'
-  tag satisfies: ['SRG-OS-000029-GPOS-00010', 'SRG-OS-000031-GPOS-00012']
-  tag 'documentable'
   tag cci: ['CCI-000057', 'CCI-000060']
   tag nist: ['AC-11 a', 'AC-11 (1)']
+  tag 'host'
+
+  only_if('This control is Not Applicable to containers', impact: 0.0) {
+    !virtualization.system.eql?('docker')
+  }
+
+  if package('gnome-desktop3').installed?
+    describe command("gsettings get org.gnome.desktop.session idle-delay | cut -d ' ' -f2") do
+      its('stdout.strip') { should cmp <= input('system_inactivity_timeout') }
+    end
+  else
+    impact 0.0
+    describe 'The system does not have GNOME installed' do
+      skip "The system does not have GNOME installed, this requirement is Not
+        Applicable."
+    end
+  end
 end

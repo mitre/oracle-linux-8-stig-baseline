@@ -18,14 +18,22 @@ Edit the "/etc/ssh/sshd_config" file to uncomment or add the line for the "X11Us
 
 X11UseLocalhost yes'
   impact 0.5
-  tag check_id: 'C-52335r951586_chk'
   tag severity: 'medium'
+  tag gtitle: 'SRG-OS-000480-GPOS-00227'
   tag gid: 'V-248901'
   tag rid: 'SV-248901r991589_rule'
   tag stig_id: 'OL08-00-040341'
-  tag gtitle: 'SRG-OS-000480-GPOS-00227'
   tag fix_id: 'F-52289r780268_fix'
-  tag 'documentable'
   tag cci: ['CCI-000366']
   tag nist: ['CM-6 b']
+  tag 'host'
+  tag 'container-conditional'
+
+  only_if('This control is Not Applicable to containers', impact: 0.0) {
+    !(virtualization.system.eql?('docker') && !file('/etc/ssh/sshd_config').exist?)
+  }
+
+  describe sshd_active_config do
+    its('X11UseLocalhost') { should cmp 'yes' }
+  end
 end

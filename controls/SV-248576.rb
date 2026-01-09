@@ -50,14 +50,39 @@ Load settings from all system configuration files with the following command:
 
 $ sudo sysctl --system'
   impact 0.5
-  tag check_id: 'C-52010r986334_chk'
   tag severity: 'medium'
+  tag gtitle: 'SRG-OS-000366-GPOS-00153'
   tag gid: 'V-248576'
   tag rid: 'SV-248576r1015033_rule'
   tag stig_id: 'OL08-00-010372'
-  tag gtitle: 'SRG-OS-000366-GPOS-00153'
   tag fix_id: 'F-51964r858608_fix'
-  tag 'documentable'
-  tag cci: ['CCI-003992', 'CCI-001749']
-  tag nist: ['CM-14', 'CM-5 (3)']
+  tag cci: ['CCI-001749', 'CCI-003992']
+  tag nist: ['CM-5 (3)', 'CM-14']
+  tag 'host'
+
+  only_if('Control not applicable within a container', impact: 0.0) {
+    !virtualization.system.eql?('docker')
+  }
+
+  action = 'kernel.kexec_load_disabled'
+
+  describe kernel_parameter(action) do
+    its('value') { should eq 1 }
+  end
+
+  search_result = command("grep -r ^#{action} #{input('sysctl_conf_files').join(' ')}").stdout.strip
+
+  correct_result = search_result.lines.any? { |line| line.match(/#{action}\s*=\s*1$/) }
+  incorrect_results = search_result.lines.map(&:strip).select { |line| line.match(/#{action}\s*=\s*[^1]$/) }
+
+  describe 'Kernel config files' do
+    it "should configure '#{action}'" do
+      expect(correct_result).to eq(true), 'No config file was found that correctly sets this action'
+    end
+    unless incorrect_results.nil?
+      it 'should not have incorrect or conflicting setting(s) in the config files' do
+        expect(incorrect_results).to be_empty, "Incorrect or conflicting setting(s) found:\n\t- #{incorrect_results.join("\n\t- ")}"
+      end
+    end
+  end
 end

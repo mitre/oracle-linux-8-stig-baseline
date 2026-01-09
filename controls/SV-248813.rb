@@ -23,18 +23,32 @@ rsyslog-gnutls.x86_64 8.1911.0-6.el8 @AppStream
 If the "rsyslog-gnutls" package is not installed, ask the administrator to indicate how audit logs are being encrypted during offloading and what packages are installed to support it.
 
 If there is no evidence of audit logs being encrypted during offloading, this is a finding.'
-  desc 'fix', 'Configure the operating system to encrypt offloaded audit logs by installing the required packages with the following command:
+  desc 'fix', 'Configure the operating system to encrypt offloaded audit logs by
+installing the required packages with the following command:
 
-$ sudo yum install rsyslog-gnutls'
+    $ sudo yum install rsyslog-gnutls'
   impact 0.5
-  tag check_id: 'C-52247r780003_chk'
   tag severity: 'medium'
+  tag gtitle: 'SRG-OS-000480-GPOS-00227'
   tag gid: 'V-248813'
   tag rid: 'SV-248813r991589_rule'
   tag stig_id: 'OL08-00-030680'
-  tag gtitle: 'SRG-OS-000480-GPOS-00227'
   tag fix_id: 'F-52201r780004_fix'
-  tag 'documentable'
   tag cci: ['CCI-000366']
   tag nist: ['CM-6 b']
+  tag 'host'
+
+  only_if('This control is Not Applicable to containers', impact: 0.0) {
+    !virtualization.system.eql?('docker')
+  }
+
+  if input('alternative_logging_method') != ''
+    describe 'manual check' do
+      skip 'Manual check required. Ask the administrator to indicate how logging is done for this system.'
+    end
+  else
+    describe package('rsyslog-gnutls') do
+      it { should be_installed }
+    end
+  end
 end

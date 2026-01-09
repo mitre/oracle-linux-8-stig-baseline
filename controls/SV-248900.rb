@@ -14,22 +14,33 @@ X11Forwarding no
 If the "X11Forwarding" keyword is set to "yes" and is not documented with the information system security officer (ISSO) as an operational requirement or is missing, this is a finding.
 
 If conflicting results are returned, this is a finding.)
-  desc 'fix', 'Edit the "/etc/ssh/sshd_config" file to uncomment or add the line for the "X11Forwarding" keyword and set its value to "no" (this file may be named differently or be in a different location if using a version of SSH that is provided by a third-party vendor):
+  desc 'fix', 'Edit the "/etc/ssh/sshd_config" file to uncomment or add the line for the
+"X11Forwarding" keyword and set its value to "no" (this file may be named
+differently or be in a different location if using a version of SSH that is
+provided by a third-party vendor):
 
-X11Forwarding no
+    X11Forwarding no
 
-The SSH service must be restarted for changes to take effect:
+    The SSH service must be restarted for changes to take effect:
 
-$ sudo systemctl restart sshd'
+    $ sudo systemctl restart sshd'
   impact 0.5
-  tag check_id: 'C-52334r951584_chk'
   tag severity: 'medium'
+  tag gtitle: 'SRG-OS-000480-GPOS-00227'
   tag gid: 'V-248900'
   tag rid: 'SV-248900r991589_rule'
   tag stig_id: 'OL08-00-040340'
-  tag gtitle: 'SRG-OS-000480-GPOS-00227'
   tag fix_id: 'F-52288r780265_fix'
-  tag 'documentable'
   tag cci: ['CCI-000366']
   tag nist: ['CM-6 b']
+  tag 'host'
+  tag 'container-conditional'
+
+  only_if('This control is Not Applicable to containers', impact: 0.0) {
+    !(virtualization.system.eql?('docker') && !file('/etc/ssh/sshd_config').exist?)
+  }
+
+  describe sshd_active_config do
+    its('X11Forwarding') { should cmp 'no' }
+  end
 end

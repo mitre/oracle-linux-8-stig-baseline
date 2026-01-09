@@ -22,9 +22,7 @@ By using this IS (which includes any device attached to this IS), you consent to
 
 Use the following verbiage for operating systems that have severe limitations on the number of characters that can be displayed in the banner:
 
-"I've read & consent to terms in IS user agreem't."
-
-)
+"I've read & consent to terms in IS user agreem't.")
   desc 'check', %q(Verify that any publicly accessible connection to the operating system displays the Standard Mandatory DOD Notice and Consent Banner before granting access to the system.
 
 Check for the location of the banner file being used with the following command:
@@ -78,15 +76,58 @@ Either create the file containing the banner or replace the text in the file wit
 
 The SSH service must be restarted for changes to take effect.'
   impact 0.5
-  tag check_id: 'C-51960r951549_chk'
   tag severity: 'medium'
+  tag gtitle: 'SRG-OS-000023-GPOS-00006'
+  tag satisfies: ['SRG-OS-000023-GPOS-00006', 'SRG-OS-000228-GPOS-00088']
   tag gid: 'V-248526'
   tag rid: 'SV-248526r958390_rule'
   tag stig_id: 'OL08-00-010040'
-  tag gtitle: 'SRG-OS-000023-GPOS-00006'
   tag fix_id: 'F-51914r951550_fix'
-  tag satisfies: ['SRG-OS-000023-GPOS-00006', 'SRG-OS-000228-GPOS-00088']
-  tag 'documentable'
   tag cci: ['CCI-000048', 'CCI-001384', 'CCI-001385', 'CCI-001386', 'CCI-001387', 'CCI-001388']
-  tag nist: ['AC-8 a', 'AC-8 c 1', 'AC-8 c 2', 'AC-8 c 2', 'AC-8 c 2', 'AC-8 c 3']
+  tag nist: ['AC-8 a', 'AC-8 c 1', 'AC-8 c 2', 'AC-8 c 3']
+  tag 'host'
+  tag 'container-conditional'
+
+  only_if('Control not applicable - SSH is not installed within containerized RHEL', impact: 0.0) {
+    !virtualization.system.eql?('docker') || file('/etc/ssh/sshd_config').exist?
+  }
+
+  # When Banner is commented, not found, disabled, or the specified file does not exist, this is a finding.
+  banner_file = sshd_active_config.banner
+
+  # Banner property is commented out.
+  if banner_file.nil?
+    describe 'The SSHD Banner is not set' do
+      subject { banner_file.nil? }
+      it { should be false }
+    end
+  end
+
+  # Banner property is set to "none"
+  if !banner_file.nil? && !banner_file.match(/none/i).nil?
+    describe 'The SSHD Banner is disabled' do
+      subject { banner_file.match(/none/i).nil? }
+      it { should be true }
+    end
+  end
+
+  # Banner property provides a path to a file, however, it does not exist.
+  if !banner_file.nil? && banner_file.match(/none/i).nil? && !file(banner_file).exist?
+    describe 'The SSHD Banner is set, but, the file does not exist' do
+      subject { file(banner_file).exist? }
+      it { should be true }
+    end
+  end
+
+  # Banner property provides a path to a file and it exists.
+  next unless !banner_file.nil? && banner_file.match(/none/i).nil? && file(banner_file).exist?
+
+  banner = file(banner_file).content.gsub(/[\r\n\s]/, '')
+  expected_banner = input('banner_message_text_ral').gsub(/[\r\n\s]/, '')
+
+  describe 'The SSHD Banner' do
+    it 'is set to the standard banner and has the correct text' do
+      expect(banner).to eq(expected_banner), 'Banner does not match expected text'
+    end
+  end
 end

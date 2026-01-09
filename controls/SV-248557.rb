@@ -10,18 +10,24 @@ $ sudo stat -c "%a %n" /var/log
 755 /var/log
 
 If a value of "0755" or less permissive is not returned, this is a finding.'
-  desc 'fix', 'Change the permissions of the directory "/var/log" to "0755" by running the following command:
+  desc 'fix', 'Change the permissions of the directory "/var/log" to "0755" by running
+the following command:
 
-$ sudo chmod 0755 /var/log'
+    $ sudo chmod 0755 /var/log'
   impact 0.5
-  tag check_id: 'C-51991r779235_chk'
   tag severity: 'medium'
+  tag gtitle: 'SRG-OS-000206-GPOS-00084'
   tag gid: 'V-248557'
   tag rid: 'SV-248557r958566_rule'
   tag stig_id: 'OL08-00-010240'
-  tag gtitle: 'SRG-OS-000206-GPOS-00084'
   tag fix_id: 'F-51945r779236_fix'
-  tag 'documentable'
   tag cci: ['CCI-001314']
   tag nist: ['SI-11 b']
+  tag 'host'
+  tag 'container'
+
+  describe directory('/var/log') do
+    it { should exist }
+    it { should_not be_more_permissive_than('0755') }
+  end
 end

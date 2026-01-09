@@ -22,14 +22,31 @@ If this command produces any file(s), this is a finding.'
 
 Remove any files with the .keytab extension from the operating system.'
   impact 0.5
-  tag check_id: 'C-51979r779199_chk'
   tag severity: 'medium'
+  tag gtitle: 'SRG-OS-000120-GPOS-00061'
   tag gid: 'V-248545'
   tag rid: 'SV-248545r971535_rule'
   tag stig_id: 'OL08-00-010161'
-  tag gtitle: 'SRG-OS-000120-GPOS-00061'
   tag fix_id: 'F-51933r779200_fix'
-  tag 'documentable'
   tag cci: ['CCI-000803']
   tag nist: ['IA-7']
+  tag 'host'
+  tag 'container'
+
+  krb5_server = package('krb5-server')
+  krb5_workstation = package('krb5-workstation')
+
+  if (krb5_server.installed? && krb5_server.version >= '1.17-18.el8') || (krb5_workstation.installed? && krb5_workstation.version >= '1.17-18.el8')
+    impact 0.0
+    describe 'The system has krb5-workstation and server version 1.17-18 or higher' do
+      skip 'The system has krb5-workstation and server version 1.17-18 or higner, this requirement is Not Applicable.'
+    end
+  else
+    keytabs = command('ls /etc/*.keytab').stdout.split
+    describe 'The system' do
+      it 'should not have keytab files for Kerberos' do
+        expect(keytabs).to be_empty, "Keytab files:\n\t- #{keytabs.join("\n\t- ")}"
+      end
+    end
+  end
 end

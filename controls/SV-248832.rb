@@ -1,10 +1,16 @@
 control 'SV-248832' do
   title 'OL 8 must disable the transparent inter-process communication (TIPC) protocol.'
-  desc 'It is detrimental for operating systems to provide, or install by default, functionality exceeding requirements or mission objectives. These unnecessary capabilities or services are often overlooked and therefore may remain unsecured. They increase the risk to the platform by providing additional attack vectors.
+  desc 'It is detrimental for operating systems to provide, or install by
+default, functionality exceeding requirements or mission objectives. These
+unnecessary capabilities or services are often overlooked and therefore may
+remain unsecured. They increase the risk to the platform by providing
+additional attack vectors.
 
-Failing to disconnect unused protocols can result in a system compromise.
+    Failing to disconnect unused protocols can result in a system compromise.
 
-The Transparent Inter-Process Communication (TIPC) protocol is designed to provide communications between nodes in a cluster. Disabling TIPC protects the system against exploitation of any flaws in its implementation.'
+    The Transparent Inter-Process Communication (TIPC) protocol is designed to
+provide communications between nodes in a cluster. Disabling TIPC protects the
+system against exploitation of any flaws in its implementation.'
   desc 'check', 'Verify the operating system disables the ability to load the TIPC protocol kernel module.
 
      $ sudo grep -r tipc /etc/modprobe.d/* | grep "/bin/false"
@@ -29,14 +35,22 @@ Add or update the following lines in the file "/etc/modprobe.d/blacklist.conf":
 
 Reboot the system for the settings to take effect.'
   impact 0.3
-  tag check_id: 'C-52266r943078_chk'
   tag severity: 'low'
+  tag gtitle: 'SRG-OS-000095-GPOS-00049'
   tag gid: 'V-248832'
   tag rid: 'SV-248832r958478_rule'
   tag stig_id: 'OL08-00-040024'
-  tag gtitle: 'SRG-OS-000095-GPOS-00049'
   tag fix_id: 'F-52220r943079_fix'
-  tag 'documentable'
   tag cci: ['CCI-000381']
   tag nist: ['CM-7 a']
+  tag 'host'
+
+  only_if('This control is Not Applicable to containers', impact: 0.0) {
+    !virtualization.system.eql?('docker')
+  }
+
+  describe kernel_module('tipc') do
+    it { should be_disabled }
+    it { should be_blacklisted }
+  end
 end

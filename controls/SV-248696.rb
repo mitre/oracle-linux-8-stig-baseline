@@ -13,14 +13,24 @@ Add or modify the following line in the "/etc/login.defs" file:
 
 PASS_MAX_DAYS 60'
   impact 0.5
-  tag check_id: 'C-52130r779652_chk'
   tag severity: 'medium'
+  tag gtitle: 'SRG-OS-000076-GPOS-00044'
   tag gid: 'V-248696'
   tag rid: 'SV-248696r1038967_rule'
   tag stig_id: 'OL08-00-020200'
-  tag gtitle: 'SRG-OS-000076-GPOS-00044'
   tag fix_id: 'F-52084r779653_fix'
-  tag 'documentable'
-  tag cci: ['CCI-004066', 'CCI-000199']
-  tag nist: ['IA-5 (1) (h)', 'IA-5 (1) (d)']
+  tag cci: ['CCI-000199', 'CCI-004066']
+  tag nist: ['IA-5 (1) (d)', 'IA-5 (1) (h)']
+  tag 'host'
+  tag 'container'
+
+  value = input('pass_max_days')
+  setting = input_object('pass_max_days').name.upcase
+
+  describe "/etc/login.defs does not have `#{setting}` configured" do
+    let(:config) { login_defs.read_params[setting] }
+    it "greater than #{value} day" do
+      expect(config).to cmp <= value
+    end
+  end
 end

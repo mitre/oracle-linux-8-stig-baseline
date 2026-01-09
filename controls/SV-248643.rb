@@ -1,6 +1,10 @@
 control 'SV-248643' do
   title 'All OL 8 local interactive user home directories defined in the "/etc/passwd" file must exist.'
-  desc 'If a local interactive user has a home directory defined that does not exist, the user may be given access to the "/" directory as the current working directory upon logon. This could create a denial of service because the user would not be able to access their logon configuration files, and it may give them visibility to system files they normally would not be able to access.'
+  desc 'If a local interactive user has a home directory defined that does not
+exist, the user may be given access to the "/" directory as the current
+working directory upon logon. This could create a denial of service because the
+user would not be able to access their logon configuration files, and it may
+give them visibility to system files they normally would not be able to access.'
   desc 'check', %q(Verify that the assigned home directory of all local interactive users on OL 8 exists with the following command:
 
 $ sudo ls -ld $(awk -F: '($3>=1000)&&($1!="nobody"){print $6}' /etc/passwd)
@@ -25,14 +29,40 @@ $ sudo chown smithj /home/smithj
 $ sudo chgrp users /home/smithj
 $ sudo chmod 0750 /home/smithj'
   impact 0.5
-  tag check_id: 'C-52077r779493_chk'
   tag severity: 'medium'
+  tag gtitle: 'SRG-OS-000480-GPOS-00227'
   tag gid: 'V-248643'
   tag rid: 'SV-248643r991589_rule'
   tag stig_id: 'OL08-00-010750'
-  tag gtitle: 'SRG-OS-000480-GPOS-00227'
   tag fix_id: 'F-52031r779494_fix'
-  tag 'documentable'
   tag cci: ['CCI-000366']
   tag nist: ['CM-6 b']
+  tag 'host'
+
+  only_if('This control is Not Applicable to containers', impact: 0.0) {
+    !virtualization.system.eql?('docker')
+  }
+
+  exempt_home_users = input('exempt_home_users')
+  uid_min = login_defs.read_params['UID_MIN'].to_i
+  uid_min = 1000 if uid_min.nil?
+
+  iuser_entries = passwd.where { uid.to_i >= uid_min && shell !~ /nologin/ && !exempt_home_users.include?(user) }
+
+  if !iuser_entries.users.nil? && !iuser_entries.users.empty?
+    failing_homedirs = iuser_entries.homes.reject { |home|
+      file(home).exist?
+    }
+    describe 'All non-exempt interactive user account home directories on the system' do
+      it 'should exist' do
+        expect(failing_homedirs).to be_empty, "Failing home directories:\n\t- #{failing_homedirs.join("\n\t- ")}"
+      end
+    end
+  else
+    describe 'No non-exempt interactive user accounts' do
+      it 'were detected on the system' do
+        expect(true).to eq(true)
+      end
+    end
+  end
 end

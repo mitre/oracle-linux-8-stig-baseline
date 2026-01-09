@@ -1,6 +1,7 @@
 control 'SV-248902' do
   title 'If the Trivial File Transfer Protocol (TFTP) server is required, the OL 8 TFTP daemon must be configured to operate in secure mode.'
-  desc 'Restricting TFTP to a specific directory prevents remote users from copying, transferring, or overwriting system files.'
+  desc 'Restricting TFTP to a specific directory prevents remote users from
+copying, transferring, or overwriting system files.'
   desc 'check', 'Note: If TFTP is not required, it must not be installed. If TFTP is not installed, this rule is not applicable.
 
 Check to see if TFTP server is installed with the following command:
@@ -25,14 +26,26 @@ After making changes, reload the systemd daemon and restart the TFTP service as 
 $ sudo systemctl daemon-reload
 $ sudo systemctl restart tftp.service'
   impact 0.5
-  tag check_id: 'C-52336r1106144_chk'
   tag severity: 'medium'
+  tag gtitle: 'SRG-OS-000480-GPOS-00227'
   tag gid: 'V-248902'
   tag rid: 'SV-248902r1106146_rule'
   tag stig_id: 'OL08-00-040350'
-  tag gtitle: 'SRG-OS-000480-GPOS-00227'
   tag fix_id: 'F-52290r1106145_fix'
-  tag 'documentable'
   tag cci: ['CCI-000366']
   tag nist: ['CM-6 b']
+  tag 'host'
+  tag 'container'
+
+  if package('tftp-server').installed?
+    impact 0.5
+    describe command('grep server_args /etc/xinetd.d/tftp') do
+      its('stdout.strip') { should match %r{^\s*server_args\s+=\s+(-s|--secure)\s(/\S+)$} }
+    end
+  else
+    impact 0.0
+    describe 'The TFTP package is not installed' do
+      skip 'If a TFTP server is not installed, this is Not Applicable.'
+    end
+  end
 end

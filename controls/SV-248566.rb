@@ -20,14 +20,25 @@ If the "gnutls.config" does not list "-VERS-DTLS0.9:-VERS-SSL3.0:-VERS-TLS1.0:-V
 
 A reboot is required for the changes to take effect.'
   impact 0.5
-  tag check_id: 'C-52000r818618_chk'
   tag severity: 'medium'
+  tag gtitle: 'SRG-OS-000250-GPOS-00093'
+  tag satisfies: ['SRG-OS-000250-GPOS-00093', 'SRG-OS-000423-GPOS-00187']
   tag gid: 'V-248566'
   tag rid: 'SV-248566r991554_rule'
   tag stig_id: 'OL08-00-010295'
-  tag gtitle: 'SRG-OS-000250-GPOS-00093'
   tag fix_id: 'F-51954r779263_fix'
-  tag 'documentable'
   tag cci: ['CCI-001453']
   tag nist: ['AC-17 (2)']
+  tag 'host'
+  tag 'container'
+
+  gnutls = file('/etc/crypto-policies/back-ends/gnutls.config').content.upcase.strip.split(':')
+  unapproved_versions = input('unapproved_ssl_tls_versions').map(&:upcase)
+  failing_versions = unapproved_versions - gnutls
+
+  describe 'GnuTLS' do
+    it 'should disable unapproved SSL/TLS versions' do
+      expect(failing_versions).to be_empty, "GnuTLS should not allow:\n\t- #{failing_versions.join("\n\t- ")}"
+    end
+  end
 end

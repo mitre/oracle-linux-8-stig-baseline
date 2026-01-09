@@ -33,4 +33,16 @@ Add the following line to the "/etc/pam.d/password-auth" file (or modify the lin
   tag 'documentable'
   tag cci: ['CCI-000366']
   tag nist: ['CM-6 b']
+  tag 'host'
+  tag 'container'
+
+  only_if('This requirement only applies to RHEL 8 versions below 8.4', impact: 0.0) {
+    os.version.minor < 4
+  }
+
+  pam_auth_files = input('pam_auth_files')
+
+  describe pam(pam_auth_files['password-auth']) do
+    its('lines') { should match_pam_rule('.* .* pam_pwquality.so').any_with_integer_arg('retry', '>=', input('min_retry')) }
+  end
 end

@@ -1,6 +1,7 @@
 control 'SV-248601' do
   title 'The OL 8 SSH public host key files must have mode "0644" or less permissive.'
-  desc 'If a public host key file is modified by an unauthorized user, the SSH service may be compromised.'
+  desc 'If a public host key file is modified by an unauthorized user, the SSH
+service may be compromised.'
   desc 'check', 'Verify the SSH public host key files have mode "0644" or less permissive with the following command:
 
 $ sudo ls -l /etc/ssh/*.pub
@@ -12,22 +13,39 @@ $ sudo ls -l /etc/ssh/*.pub
 If any "key.pub" file has a mode more permissive than "0644", this is a finding.
 
 Note: SSH public key files may be found in other directories on the system depending on the installation.'
-  desc 'fix', 'Change the mode of public host key files under "/etc/ssh" to "0644" with the following command:
+  desc 'fix', 'Change the mode of public host key files under "/etc/ssh" to "0644"
+with the following command:
 
-$ sudo chmod 0644 /etc/ssh/*key.pub
+    $ sudo chmod 0644 /etc/ssh/*key.pub
 
-The SSH daemon must be restarted for the changes to take effect. To restart the SSH daemon, run the following command:
+    The SSH daemon must be restarted for the changes to take effect. To restart
+the SSH daemon, run the following command:
 
-$ sudo systemctl restart sshd.service'
+    $ sudo systemctl restart sshd.service'
   impact 0.5
-  tag check_id: 'C-52035r779367_chk'
   tag severity: 'medium'
+  tag gtitle: 'SRG-OS-000480-GPOS-00227'
   tag gid: 'V-248601'
   tag rid: 'SV-248601r991589_rule'
   tag stig_id: 'OL08-00-010480'
-  tag gtitle: 'SRG-OS-000480-GPOS-00227'
   tag fix_id: 'F-51989r779368_fix'
-  tag 'documentable'
   tag cci: ['CCI-000366']
   tag nist: ['CM-6 b']
+  tag 'host'
+  tag 'container-conditional'
+
+  only_if('This control is Not Applicable to containers without SSH installed', impact: 0.0) {
+    !(virtualization.system.eql?('docker') && !directory('/etc/ssh').exist?)
+  }
+
+  ssh_host_key_dirs = input('ssh_host_key_dirs').join(' ')
+  pub_keys = command("find #{ssh_host_key_dirs} -xdev -name '*.pub'").stdout.split("\n")
+  mode = input('ssh_pub_key_mode')
+  failing_keys = pub_keys.select { |key| file(key).more_permissive_than?(mode) }
+
+  describe 'All SSH public keys on the filesystem' do
+    it "should be less permissive than #{mode}" do
+      expect(failing_keys).to be_empty, "Failing keyfiles:\n\t- #{failing_keys.join("\n\t- ")}"
+    end
+  end
 end

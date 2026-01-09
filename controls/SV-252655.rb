@@ -20,12 +20,12 @@ Verify the operating system does not have nested "include" files or directories 
 If results are returned, this is a finding.'
   desc 'fix', 'Configure the /etc/sudoers file to only include the /etc/sudoers.d directory.
 
-Edit the /etc/sudoers file with the following command:
+        Edit the /etc/sudoers file with the following command:
 
-     $ sudo visudo
+        $ sudo visudo
 
-Add or modify the following line:
-     #includedir /etc/sudoers.d'
+        Add or modify the following line:
+        #includedir /etc/sudoers.d'
   impact 0.5
   tag check_id: 'C-56111r880547_chk'
   tag severity: 'medium'
@@ -37,4 +37,27 @@ Add or modify the following line:
   tag 'documentable'
   tag cci: ['CCI-000366']
   tag nist: ['CM-6 b']
+  tag 'host'
+  tag 'container-conditional'
+
+  only_if('Control not applicable within a container without sudo enabled', impact: 0.0) do
+    virtualization.system.eql?('docker') && !command('sudo').exist?
+  end
+
+  if command('grep include /etc/sudoers').stdout.empty?
+    impact 0.0
+    describe 'This requirement is not applicable as "include" and "includedir" directives are not present in the /etc/sudoers file' do
+      skip 'This requirement is not applicable as "include" and "includedir" directives are not present in the /etc/sudoers file'
+    end
+  else
+    describe 'Only the default "include" directory for /etc/sudoers file should be specified' do
+      subject { command('grep include /etc/sudoers').stdout.strip }
+      it { should match %r{#includedir\s*/etc/sudoers.d\s*$} }
+    end
+
+    describe 'Nested "include" files or directories within /etc/sudoers.d directory should not exist' do
+      subject { command('grep -r include /etc/sudoers.d').stdout }
+      it { should be_empty }
+    end
+  end
 end

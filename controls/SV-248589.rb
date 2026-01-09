@@ -17,14 +17,37 @@ flags : fpu vme de pse tsc ms nx rdtscp lm constant_tsc
 If "flags" does not contain the "nx" flag, this is a finding.'
   desc 'fix', 'Enable the NX bit execute protection in the system BIOS.'
   impact 0.5
-  tag check_id: 'C-52023r779331_chk'
   tag severity: 'medium'
+  tag gtitle: 'SRG-OS-000433-GPOS-00192'
   tag gid: 'V-248589'
   tag rid: 'SV-248589r958928_rule'
   tag stig_id: 'OL08-00-010420'
-  tag gtitle: 'SRG-OS-000433-GPOS-00192'
   tag fix_id: 'F-51977r779332_fix'
-  tag 'documentable'
   tag cci: ['CCI-002824']
   tag nist: ['SI-16']
+  tag 'host'
+
+  only_if('This control is Not Applicable to containers', impact: 0.0) {
+    !virtualization.system.eql?('docker')
+  }
+
+  options = {
+    assignment_regex: /^\s*([^:]*?)\s*:\s*(.*?)\s*$/
+  }
+
+  dmesg_nx_conf = command('dmesg | grep NX').stdout.match(/:\s+(\S+)$/).captures.first
+  cpuinfo_flags = parse_config_file('/proc/cpuinfo', options).flags.split
+
+  describe.one do
+    describe 'The no-execution bit flag' do
+      it 'should be set in kernel messages' do
+        expect(dmesg_nx_conf).to eq('active'), "dmesg does not show NX protection set to 'active'"
+      end
+    end
+    describe 'The no-execution bit flag' do
+      it 'should be set in CPU info' do
+        expect(cpuinfo_flags).to include('nx'), "'nx' flag not set in /proc/cpuinfo flags"
+      end
+    end
+  end
 end

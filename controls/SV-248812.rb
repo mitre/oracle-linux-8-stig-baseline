@@ -14,27 +14,43 @@ TCP *.* @@remotesystemname
 RELP *.* :omrelp:remotesystemname:2514
 
 Note that a port number was given as there is no standard port for RELP.'
-  desc 'check', 'Verify the operating system has the packages required for offloading audit logs installed with the following commands:
+  desc 'check', 'Verify the operating system has the packages required for offloading audit
+logs installed with the following commands:
 
-$ sudo yum list installed rsyslog
+    $ sudo yum list installed rsyslog
 
-rsyslog.x86_64 8.1911.0-3.el8 @AppStream
+    rsyslog.x86_64          8.1911.0-3.el8          @AppStream
 
-If the "rsyslog" package is not installed, ask the administrator to indicate how audit logs are being offloaded and what packages are installed to support it.
+    If the "rsyslog" package is not installed, ask the administrator to
+indicate how audit logs are being offloaded and what packages are installed to
+support it.  If there is no evidence of audit logs being offloaded, this is a
+finding.'
+  desc 'fix', 'Configure the operating system to offload audit logs by installing the
+required packages with the following command:
 
-If there is no evidence of audit logs being offloaded, this is a finding.'
-  desc 'fix', 'Configure the operating system to offload audit logs by installing the required packages with the following command:
-
-$ sudo yum install rsyslog'
+    $ sudo yum install rsyslog'
   impact 0.5
-  tag check_id: 'C-52246r780000_chk'
   tag severity: 'medium'
+  tag gtitle: 'SRG-OS-000480-GPOS-00227'
   tag gid: 'V-248812'
   tag rid: 'SV-248812r991589_rule'
   tag stig_id: 'OL08-00-030670'
-  tag gtitle: 'SRG-OS-000480-GPOS-00227'
   tag fix_id: 'F-52200r780001_fix'
-  tag 'documentable'
   tag cci: ['CCI-000366']
   tag nist: ['CM-6 b']
+  tag 'host'
+
+  only_if('This control is Not Applicable to containers', impact: 0.0) {
+    !virtualization.system.eql?('docker')
+  }
+
+  if input('alternative_logging_method') != ''
+    describe 'manual check' do
+      skip 'Manual check required. Ask the administrator to indicate how logging is done for this system.'
+    end
+  else
+    describe package('rsyslog') do
+      it { should be_installed }
+    end
+  end
 end

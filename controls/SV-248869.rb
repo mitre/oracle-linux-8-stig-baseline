@@ -20,14 +20,28 @@ Reload the daemon to take effect:
 
 $ sudo systemctl daemon-reload'
   impact 0.7
-  tag check_id: 'C-52303r780171_chk'
   tag severity: 'high'
+  tag gtitle: 'SRG-OS-000480-GPOS-00227'
   tag gid: 'V-248869'
   tag rid: 'SV-248869r991589_rule'
   tag stig_id: 'OL08-00-040170'
-  tag gtitle: 'SRG-OS-000480-GPOS-00227'
   tag fix_id: 'F-52257r833245_fix'
-  tag 'documentable'
   tag cci: ['CCI-000366']
   tag nist: ['CM-6 b']
+  tag 'host'
+
+  only_if('This control is Not Applicable to containers', impact: 0.0) {
+    !virtualization.system.eql?('docker')
+  }
+
+  c = systemd_service('ctrl-alt-del.target')
+
+  describe.one do
+    describe c do
+      its('params.LoadState') { should eq 'masked' }
+    end
+    describe c do
+      its('params.LoadState') { should eq 'not-found' }
+    end
+  end
 end

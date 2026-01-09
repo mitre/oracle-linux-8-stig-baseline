@@ -26,14 +26,29 @@ $ sudo fips-mode-setup --enable
 
 A reboot is required for the changes to take effect.'
   impact 0.5
-  tag check_id: 'C-51998r1134842_chk'
   tag severity: 'medium'
+  tag gtitle: 'SRG-OS-000250-GPOS-00093'
+  tag satisfies: ['SRG-OS-000250-GPOS-00093', 'SRG-OS-000393-GPOS-00173', 'SRG-OS-000394-GPOS-00174', 'SRG-OS-000125-GPOS-00065']
   tag gid: 'V-248564'
   tag rid: 'SV-248564r1134844_rule'
   tag stig_id: 'OL08-00-010293'
-  tag gtitle: 'SRG-OS-000250-GPOS-00093'
   tag fix_id: 'F-51952r1134843_fix'
-  tag 'documentable'
   tag cci: ['CCI-001453']
   tag nist: ['AC-17 (2)']
+  tag 'host'
+  tag 'container-conditional'
+
+  only_if("Checking the host's FIPS compliance can't be done within the container and should be reveiwed manually.") {
+    !(virtualization.system.eql?('docker') && !file('/etc/pki/tls/openssl.cnf').exist?)
+  }
+
+  describe 'A line in the OpenSSL config file' do
+    subject { command('grep -i opensslcnf.config /etc/pki/tls/openssl.cnf').stdout.strip }
+    it { should match(/^\.include.*opensslcnf.config$/) }
+  end
+
+  describe 'System-wide crypto policy' do
+    subject { command('update-crypto-policies --show').stdout.strip }
+    it { should eq input('system_wide_crypto_policy') }
+  end
 end

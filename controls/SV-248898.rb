@@ -14,14 +14,20 @@ If the use of a display server on the system is not documented with the Informat
 
 $ sudo rpm -e xorg-x11-server-common'
   impact 0.5
-  tag check_id: 'C-52332r780258_chk'
   tag severity: 'medium'
+  tag gtitle: 'SRG-OS-000480-GPOS-00227'
   tag gid: 'V-248898'
   tag rid: 'SV-248898r991589_rule'
   tag stig_id: 'OL08-00-040320'
-  tag gtitle: 'SRG-OS-000480-GPOS-00227'
   tag fix_id: 'F-52286r780259_fix'
-  tag 'documentable'
   tag cci: ['CCI-000366']
   tag nist: ['CM-6 b']
+  tag 'host'
+  tag 'container'
+
+  input('remove_xorg_x11_server_packages').each do |p|
+    describe package(p) do
+      it { should_not be_installed }
+    end
+  end
 end

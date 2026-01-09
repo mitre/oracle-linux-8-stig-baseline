@@ -2,9 +2,7 @@ control 'SV-248735' do
   title 'The OL 8 audit log directory must be owned by root to prevent unauthorized read access.'
   desc 'Unauthorized disclosure of audit records can reveal system and configuration data to attackers, thus compromising its confidentiality.
 
-Audit information includes all information (e.g., audit records, audit settings, audit reports) needed to successfully audit OL 8 activity.
-
-'
+Audit information includes all information (e.g., audit records, audit settings, audit reports) needed to successfully audit OL 8 activity.'
   desc 'check', 'Verify the audit log directory is owned by "root" to prevent unauthorized read access.
 
 Determine where the audit logs are stored with the following command:
@@ -26,15 +24,22 @@ $ sudo chown root [audit_log_directory]
 
 Replace "[audit_log_directory]" with the correct audit log directory path. By default, this location is usually "/var/log/audit".'
   impact 0.5
-  tag check_id: 'C-52169r779769_chk'
   tag severity: 'medium'
+  tag gtitle: 'SRG-OS-000057-GPOS-00027'
+  tag satisfies: ['SRG-OS-000057-GPOS-00027', 'SRG-OS-000058-GPOS-00028', 'SRG-OS-000059-GPOS-00029']
   tag gid: 'V-248735'
   tag rid: 'SV-248735r958434_rule'
   tag stig_id: 'OL08-00-030100'
-  tag gtitle: 'SRG-OS-000057-GPOS-00027'
   tag fix_id: 'F-52123r779770_fix'
-  tag satisfies: ['SRG-OS-000057-GPOS-00027', 'SRG-OS-000058-GPOS-00028', 'SRG-OS-000059-GPOS-00029']
-  tag 'documentable'
   tag cci: ['CCI-000162', 'CCI-000163', 'CCI-000164']
-  tag nist: ['AU-9 a', 'AU-9 a', 'AU-9 a']
+  tag nist: ['AU-9', 'AU-9 a']
+  tag 'host'
+
+  only_if('This control is Not Applicable to containers', impact: 0.0) {
+    !virtualization.system.eql?('docker')
+  }
+  log_dir = auditd_conf('/etc/audit/auditd.conf').log_file.split('/')[0..-2].join('/')
+  describe directory(log_dir) do
+    its('owner') { should eq 'root' }
+  end
 end

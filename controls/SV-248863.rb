@@ -21,14 +21,41 @@ This command must be run from a root shell and will create an allow list for any
 
 Note: Enabling and starting usbguard without properly configuring it for an individual system will immediately prevent any access over a usb device such as a keyboard or mouse.'
   impact 0.5
-  tag check_id: 'C-52297r780153_chk'
   tag severity: 'medium'
+  tag gtitle: 'SRG-OS-000378-GPOS-00163'
   tag gid: 'V-248863'
   tag rid: 'SV-248863r958820_rule'
   tag stig_id: 'OL08-00-040140'
-  tag gtitle: 'SRG-OS-000378-GPOS-00163'
   tag fix_id: 'F-52251r780154_fix'
-  tag 'documentable'
   tag cci: ['CCI-001958']
   tag nist: ['IA-3']
+  tag 'host'
+
+  only_if('This control is Not Applicable to containers', impact: 0.0) {
+    !virtualization.system.eql?('docker')
+  }
+
+  peripherals_package = input('peripherals_package')
+  is_virtualized_system_no_usb_devices = input('is_virtualized_system_no_usb_devices')
+
+  if is_virtualized_system_no_usb_devices
+    impact 0.0
+    describe 'The system is a virtual machine with no virtual or physical USB peripherals attached' do
+      skip 'The system is a virtual machine with no virtual or physical USB peripherals attached, this control is Not Applicable.'
+    end
+  elsif peripherals_package != 'usbguard'
+    describe "Non-standard package #{peripherals_package}" do
+      it 'is handling peripherals' do
+        expect(peripherals_package).to exist
+      end
+    end
+  else
+    describe package('usbguard') do
+      it { should be_installed }
+    end
+    describe command('usbguard list-rules') do
+      its('stdout') { should_not be_empty }
+      its('exit_status') { should eq 0 }
+    end
+  end
 end

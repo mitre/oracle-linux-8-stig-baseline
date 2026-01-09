@@ -1,6 +1,11 @@
 control 'SV-248721' do
   title 'OL 8 must define default permissions for logon and non-logon shells.'
-  desc 'The umask controls the default access mode assigned to newly created files. A umask of 077 limits new files to mode 600 or less permissive. Although umask can be represented as a four-digit number, the first digit representing special access modes is typically ignored or required to be "0". This requirement applies to the globally configured system defaults and the local interactive user defaults for each account on the system.'
+  desc 'The umask controls the default access mode assigned to newly created
+files. A umask of 077 limits new files to mode 600 or less permissive. Although
+umask can be represented as a four-digit number, the first digit representing
+special access modes is typically ignored or required to be "0". This
+requirement applies to the globally configured system defaults and the local
+interactive user defaults for each account on the system.'
   desc 'check', 'Verify that the umask default for installed shells is "077".
 
 Check for the value of the "UMASK" parameter in the "/etc/bashrc", "/etc/csh.cshrc", and "/etc/profile" files with the following command:
@@ -23,14 +28,38 @@ Add or edit the lines for the "UMASK" parameter in the "/etc/bashrc", "etc/csh.c
 
 UMASK 077'
   impact 0.5
-  tag check_id: 'C-52155r818664_chk'
   tag severity: 'medium'
+  tag gtitle: 'SRG-OS-000480-GPOS-00228'
   tag gid: 'V-248721'
   tag rid: 'SV-248721r991590_rule'
   tag stig_id: 'OL08-00-020353'
-  tag gtitle: 'SRG-OS-000480-GPOS-00228'
   tag fix_id: 'F-52109r818665_fix'
-  tag 'documentable'
   tag cci: ['CCI-000366']
   tag nist: ['CM-6 b']
+  tag 'host'
+  tag 'container'
+
+  umask_regexp = /umask\s*(?<umask_code>\d\d\d)/
+
+  bashrc_umask = file('/etc/bashrc').content.match(umask_regexp)[:umask_code]
+  cshrc_umask = file('/etc/csh.cshrc').content.match(umask_regexp)[:umask_code]
+  profile_umask = file('/etc/profile').content.match(umask_regexp)[:umask_code]
+
+  if bashrc_umask == '000' || cshrc_umask == '000'
+    impact 0.7
+    tag severity: 'high'
+  end
+
+  describe 'umask value defined in /etc/bashrc' do
+    subject { bashrc_umask }
+    it { should cmp input('permissions_for_shells')['bashrc_umask'] }
+  end
+  describe 'umask value defined in /etc/csh.cshrc' do
+    subject { cshrc_umask }
+    it { should cmp input('permissions_for_shells')['cshrc_umask'] }
+  end
+  describe 'umask value defined in /etc/profile' do
+    subject { profile_umask }
+    it { should cmp input('permissions_for_shells')['profile_umask'] }
+  end
 end

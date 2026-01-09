@@ -18,6 +18,8 @@ inspec.lock
 .kitchen
 vendor/**
 saf-cli.log
+*.log
+delta/
 
 # Used by dotenv library to load environment variables.
 # .env

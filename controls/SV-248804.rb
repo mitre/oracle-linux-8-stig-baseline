@@ -6,9 +6,7 @@ If auditing is enabled late in the startup process, the actions of some startup 
 
 Audit records can be generated from various components within the information system (e.g., module or policy filter).
 
-Allocating an "audit_backlog_limit" of sufficient size is critical in maintaining a stable boot process. With an insufficient limit allocated, the system is susceptible to boot failures and crashes.
-
-'
+Allocating an "audit_backlog_limit" of sufficient size is critical in maintaining a stable boot process. With an insufficient limit allocated, the system is susceptible to boot failures and crashes.'
   desc 'check', 'Verify OL 8 allocates a sufficient "audit_backlog_limit" to capture processes that start prior to the audit daemon with the following commands:
 
 $ sudo grub2-editenv list | grep audit
@@ -34,15 +32,34 @@ GRUB_CMDLINE_LINUX="audit_backlog_limit=8192"
 
 If audit records are not stored on a partition made specifically for audit records, a new partition with sufficient space will need be to be created.'
   impact 0.3
-  tag check_id: 'C-52238r779976_chk'
   tag severity: 'low'
+  tag gtitle: 'SRG-OS-000037-GPOS-00015'
   tag gid: 'V-248804'
   tag rid: 'SV-248804r958412_rule'
   tag stig_id: 'OL08-00-030602'
-  tag gtitle: 'SRG-OS-000037-GPOS-00015'
   tag fix_id: 'F-52192r779977_fix'
-  tag satisfies: ['SRG-OS-000037-GPOS-00015', 'SRG-OS-000042-GPOS-00020', 'SRG-OS-000062-GPOS-00031', 'SRG-OS-000392-GPOS-00172', 'SRG-OS-000462-GPOS-00206', 'SRG-OS-000471-GPOS-00215']
-  tag 'documentable'
-  tag cci: ['CCI-000130', 'CCI-000135', 'CCI-000169', 'CCI-000172', 'CCI-002884']
-  tag nist: ['AU-3 a', 'AU-3 (1)', 'AU-12 a', 'AU-12 c', 'MA-4 (1) (a)']
+  tag cci: ['CCI-001849', 'CCI-000130', 'CCI-000135', 'CCI-000169', 'CCI-000172', 'CCI-002884']
+  tag nist: ['AU-4', 'AU-3 a', 'AU-3 (1)', 'AU-12 a', 'AU-12 c', 'MA-4 (1) (a)']
+  tag 'host'
+
+  only_if('This control is Not Applicable to containers', impact: 0.0) {
+    !virtualization.system.eql?('docker')
+  }
+
+  grub_config = command('grub2-editenv - list').stdout
+  kernelopts = parse_config(grub_config)['kernelopts'].strip.gsub(' ', "\n")
+  grub_cmdline_linux = parse_config_file('/etc/default/grub')['GRUB_CMDLINE_LINUX'].strip.gsub(' ', "\n").gsub('"',
+                                                                                                               '')
+
+  expected_backlog_limit = input('expected_backlog_limit')
+
+  describe 'kernelopts' do
+    subject { parse_config(kernelopts) }
+    its('audit_backlog_limit') { should cmp >= expected_backlog_limit }
+  end
+
+  describe 'persistant kernelopts' do
+    subject { parse_config(grub_cmdline_linux) }
+    its('audit_backlog_limit') { should cmp >= expected_backlog_limit }
+  end
 end

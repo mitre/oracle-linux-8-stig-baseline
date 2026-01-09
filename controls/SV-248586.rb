@@ -22,14 +22,28 @@ If there is no evidence of multifactor authentication being used, this is a find
 
 $ sudo yum install  openssl-pkcs11'
   impact 0.3
-  tag check_id: 'C-52020r779322_chk'
   tag severity: 'low'
+  tag gtitle: 'SRG-OS-000375-GPOS-00160'
   tag gid: 'V-248586'
   tag rid: 'SV-248586r1015037_rule'
   tag stig_id: 'OL08-00-010390'
-  tag gtitle: 'SRG-OS-000375-GPOS-00160'
   tag fix_id: 'F-51974r779323_fix'
-  tag 'documentable'
-  tag cci: ['CCI-004046', 'CCI-004047', 'CCI-001948']
-  tag nist: ['IA-2 (6) (a)', 'IA-2 (6) (b)', 'IA-2 (11)']
+  tag cci: ['CCI-001948', 'CCI-004046', 'CCI-004047']
+  tag nist: ['IA-2 (11)', 'IA-2 (6) (a)', 'IA-2 (6) (b)']
+  tag 'host'
+
+  only_if('This control is Not Applicable to containers', impact: 0.0) {
+    !virtualization.system.eql?('docker')
+  }
+
+  if input('smart_card_enabled')
+    describe package('openssl-pkcs11') do
+      it { should be_installed }
+    end
+  else
+    impact 0.0
+    describe 'The system is not smartcard enabled thus this control is Not Applicable' do
+      skip 'The system is not using Smartcards / PIVs to fulfil the MFA requirement, this control is Not Applicable.'
+    end
+  end
 end

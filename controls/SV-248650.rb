@@ -1,6 +1,7 @@
 control 'SV-248650' do
   title 'OL 8 must not allow users to override SSH environment variables.'
-  desc 'SSH environment options potentially allow users to bypass access restriction in some configurations.'
+  desc 'SSH environment options potentially allow users to bypass access
+restriction in some configurations.'
   desc 'check', %q(Verify that unattended or automatic login via SSH is disabled with the following command:
 
 $ sudo /usr/sbin/sshd -dd 2>&1 | awk '/filename/ {print $4}' | tr -d '\r' | tr '\n' ' ' | xargs sudo grep -iH '^\s*permituserenvironment'
@@ -20,14 +21,22 @@ The SSH daemon must be restarted for the changes to take effect. To restart the 
 
 $ sudo systemctl restart sshd.service'
   impact 0.7
-  tag check_id: 'C-52084r951573_chk'
   tag severity: 'high'
+  tag gtitle: 'SRG-OS-000480-GPOS-00229'
   tag gid: 'V-248650'
   tag rid: 'SV-248650r991591_rule'
   tag stig_id: 'OL08-00-010830'
-  tag gtitle: 'SRG-OS-000480-GPOS-00229'
   tag fix_id: 'F-52038r779515_fix'
-  tag 'documentable'
   tag cci: ['CCI-000366']
   tag nist: ['CM-6 b']
+  tag 'host'
+  tag 'container-conditional'
+
+  only_if('This requirement is Not Applicable inside a container, the containers host manages the containers filesystems') {
+    !(virtualization.system.eql?('docker') && !file('/etc/ssh/sshd_config').exist?)
+  }
+
+  describe sshd_active_config do
+    its('PermitUserEnvironment') { should eq 'no' }
+  end
 end

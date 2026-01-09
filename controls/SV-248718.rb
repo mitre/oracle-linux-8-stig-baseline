@@ -1,6 +1,8 @@
 control 'SV-248718' do
   title 'OL 8 must display the date and time of the last successful account logon upon an SSH logon.'
-  desc 'Providing users with feedback on when account accesses via SSH last occurred facilitates user recognition and reporting of unauthorized account use.'
+  desc 'Providing users with feedback on when account accesses via SSH last
+occurred facilitates user recognition and reporting of unauthorized account
+use.'
   desc 'check', %q(Verify SSH provides users with feedback on when account accesses last occurred with the following command:
 
 $ sudo /usr/sbin/sshd -dd 2>&1 | awk '/filename/ {print $4}' | tr -d '\r' | tr '\n' ' ' | xargs sudo grep -iH '^\s*printlastlog'
@@ -18,14 +20,25 @@ PrintLastLog yes
 
 The SSH service must be restarted for changes to "sshd_config" to take effect.'
   impact 0.5
-  tag check_id: 'C-52152r951577_chk'
   tag severity: 'medium'
+  tag gtitle: 'SRG-OS-000480-GPOS-00227'
   tag gid: 'V-248718'
   tag rid: 'SV-248718r991589_rule'
   tag stig_id: 'OL08-00-020350'
-  tag gtitle: 'SRG-OS-000480-GPOS-00227'
   tag fix_id: 'F-52106r779719_fix'
-  tag 'documentable'
-  tag cci: ['CCI-000052']
-  tag nist: ['AC-9']
+  tag cci: ['CCI-000366', 'CCI-000052']
+  tag nist: ['CM-6 b', 'AC-9']
+  tag 'host'
+  tag 'container-conditional'
+
+  if virtualization.system.eql?('docker') && !file('/etc/ssh/sshd_config').exist?
+    impact 0.0
+    describe 'Control not applicable - SSH is not installed within containerized RHEL' do
+      skip 'Control not applicable - SSH is not installed within containerized RHEL'
+    end
+  else
+    describe sshd_active_config do
+      its('PrintLastLog') { should cmp 'yes' }
+    end
+  end
 end

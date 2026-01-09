@@ -1,6 +1,7 @@
 control 'SV-248719' do
   title 'OL 8 default permissions must be defined in such a way that all authenticated users can read and modify only their own files.'
-  desc 'Setting the most restrictive default permissions ensures that when new accounts are created, they do not have unnecessary access.'
+  desc 'Setting the most restrictive default permissions ensures that when new
+accounts are created, they do not have unnecessary access.'
   desc 'check', 'Verify OL 8 defines default permissions for all authenticated users in such a way that the user can read and modify only their own files with the following command:
 
 $ sudo grep -i "umask" /etc/login.defs
@@ -16,14 +17,20 @@ Edit the "UMASK" parameter in the "/etc/login.defs" file to match the example be
 
 UMASK 077'
   impact 0.5
-  tag check_id: 'C-52153r779721_chk'
   tag severity: 'medium'
+  tag gtitle: 'SRG-OS-000480-GPOS-00228'
   tag gid: 'V-248719'
   tag rid: 'SV-248719r991590_rule'
   tag stig_id: 'OL08-00-020351'
-  tag gtitle: 'SRG-OS-000480-GPOS-00228'
   tag fix_id: 'F-52107r779722_fix'
-  tag 'documentable'
   tag cci: ['CCI-000366']
   tag nist: ['CM-6 b']
+  tag 'host'
+  tag 'container'
+
+  permissions_for_shells = input('permissions_for_shells')
+
+  describe login_defs do
+    its('UMASK') { should cmp permissions_for_shells['default_umask'] }
+  end
 end

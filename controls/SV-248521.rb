@@ -16,14 +16,35 @@ Current End of Premier Support for Oracle Linux 8 is July 2029, while Extended S
 If the release is not supported by the vendor, this is a finding.'
   desc 'fix', 'Upgrade to a supported version of the operating system.'
   impact 0.7
-  tag check_id: 'C-51955r779127_chk'
   tag severity: 'high'
+  tag gtitle: 'SRG-OS-000480-GPOS-00227'
   tag gid: 'V-248521'
   tag rid: 'SV-248521r991589_rule'
   tag stig_id: 'OL08-00-010000'
-  tag gtitle: 'SRG-OS-000480-GPOS-00227'
   tag fix_id: 'F-51909r779128_fix'
-  tag 'documentable'
   tag cci: ['CCI-000366']
   tag nist: ['CM-6 b']
+  tag 'host'
+  tag 'container'
+
+  release = os.release
+
+  EOMS_DATE = {
+    /^8\.1$/ => '30 November 2021',
+    /^8\.2$/ => '30 April 2022',
+    /^8\.3$/ => '30 April 2021',
+    /^8\.4$/ => '31 May 2023',
+    /^8\.5$/ => '31 May 2022',
+    /^8\.6$/ => '31 May 2024',
+    /^8\.7$/ => '31 May 2023',
+    /^8\.8$/ => '31 May 2025',
+    /^8\.9$/ => '31 May 2024',
+    /^8\.10$/ => '31 May 2029'
+  }.find { |k, _v| k.match(release) }&.last
+
+  describe "The release \"#{release}\" is still be within the support window" do
+    it "ending on #{EOMS_DATE}" do
+      expect(Date.today).to be <= Date.parse(EOMS_DATE)
+    end
+  end
 end

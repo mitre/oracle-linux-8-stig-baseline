@@ -20,14 +20,20 @@ name_format = hostname
 
 The audit daemon must be restarted for changes to take effect.'
   impact 0.5
-  tag check_id: 'C-52164r779754_chk'
   tag severity: 'medium'
+  tag gtitle: 'SRG-OS-000342-GPOS-00133'
   tag gid: 'V-248730'
   tag rid: 'SV-248730r958754_rule'
   tag stig_id: 'OL08-00-030062'
-  tag gtitle: 'SRG-OS-000342-GPOS-00133'
   tag fix_id: 'F-52118r779755_fix'
-  tag 'documentable'
   tag cci: ['CCI-001851']
   tag nist: ['AU-4 (1)']
+  tag 'host'
+
+  only_if('This control is Not Applicable to containers', impact: 0.0) {
+    !virtualization.system.eql?('docker')
+  }
+  describe parse_config_file('/etc/audit/auditd.conf') do
+    its('name_format') { should match(/^hostname$|^fqd$|^numeric$/i) }
+  end
 end

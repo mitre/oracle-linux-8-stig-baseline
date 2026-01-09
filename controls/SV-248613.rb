@@ -20,14 +20,22 @@ The SSH daemon must be restarted for the changes to take effect. To restart the 
 
 $ sudo systemctl restart sshd.service'
   impact 0.5
-  tag check_id: 'C-52047r951571_chk'
   tag severity: 'medium'
+  tag gtitle: 'SRG-OS-000109-GPOS-00056'
   tag gid: 'V-248613'
   tag rid: 'SV-248613r1015039_rule'
   tag stig_id: 'OL08-00-010550'
-  tag gtitle: 'SRG-OS-000109-GPOS-00056'
   tag fix_id: 'F-52001r779404_fix'
-  tag 'documentable'
-  tag cci: ['CCI-004045', 'CCI-000770']
-  tag nist: ['IA-2 (5)', 'IA-2 (5)']
+  tag cci: ['CCI-000770', 'CCI-004045']
+  tag nist: ['IA-2 (5)']
+  tag 'host'
+  tag 'container-conditional'
+
+  only_if('This control is Not Applicable to containers without SSH installed', impact: 0.0) {
+    !(virtualization.system.eql?('docker') && !directory('/etc/ssh').exist?)
+  }
+
+  describe sshd_active_config do
+    its('PermitRootLogin') { should cmp input('permit_root_login') }
+  end
 end

@@ -17,14 +17,23 @@ If the "cmdport" option is not set to "0" or is commented out or missing, this i
 
      cmdport 0'
   impact 0.3
-  tag check_id: 'C-52256r928557_chk'
   tag severity: 'low'
+  tag gtitle: 'SRG-OS-000095-GPOS-00049'
   tag gid: 'V-248822'
   tag rid: 'SV-248822r958478_rule'
   tag stig_id: 'OL08-00-030742'
-  tag gtitle: 'SRG-OS-000095-GPOS-00049'
   tag fix_id: 'F-52210r928558_fix'
-  tag 'documentable'
   tag cci: ['CCI-000381']
   tag nist: ['CM-7 a']
+  tag 'host'
+
+  only_if('This control is Not Applicable to containers', impact: 0.0) {
+    !(virtualization.system.eql?('docker') && !file('/etc/chrony.conf').exist?)
+  }
+
+  chrony_conf = ntp_conf('/etc/chrony.conf')
+
+  describe chrony_conf do
+    its('cmdport') { should cmp 0 }
+  end
 end

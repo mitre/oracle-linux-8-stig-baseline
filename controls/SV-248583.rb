@@ -1,6 +1,10 @@
 control 'SV-248583' do
   title 'OL 8 must restrict privilege elevation to authorized personnel.'
-  desc 'The sudo command allows a user to execute programs with elevated (administrator) privileges. It prompts the user for their password and confirms your request to execute a command by checking a file, called sudoers. If the "sudoers" file is not configured correctly, any user defined on the system can initiate privileged actions on the target system.'
+  desc 'The sudo command allows a user to execute programs with elevated
+(administrator) privileges. It prompts the user for their password and confirms
+your request to execute a command by checking a file, called sudoers. If the
+"sudoers" file is not configured correctly, any user defined on the system
+can initiate privileged actions on the target system.'
   desc 'check', %q(Verify the "sudoers" file restricts sudo access to authorized personnel.
 $ sudo grep -iwR 'ALL' /etc/sudoers /etc/sudoers.d/ | grep -v '#'
 
@@ -11,14 +15,30 @@ ALL     ALL=(ALL:ALL) ALL)
 ALL     ALL=(ALL) ALL
 ALL     ALL=(ALL:ALL) ALL'
   impact 0.5
-  tag check_id: 'C-52017r1101873_chk'
   tag severity: 'medium'
+  tag gtitle: 'SRG-OS-000480-GPOS-00227'
   tag gid: 'V-248583'
   tag rid: 'SV-248583r1101874_rule'
   tag stig_id: 'OL08-00-010382'
-  tag gtitle: 'SRG-OS-000480-GPOS-00227'
   tag fix_id: 'F-51971r779314_fix'
-  tag 'documentable'
   tag cci: ['CCI-000366']
   tag nist: ['CM-6 b']
+  tag 'host'
+
+  only_if('This control is Not Applicable to containers without sudo installed', impact: 0.0) {
+    !(virtualization.system.eql?('docker') && !command('sudo').exist?)
+  }
+
+  bad_sudoers_rules = sudoers(input('sudoers_config_files').join(' ')).rules.where {
+    users == 'ALL' &&
+      hosts == 'ALL' &&
+      run_as.start_with?('ALL') &&
+      commands == 'ALL'
+  }
+
+  describe 'Sudoers file(s)' do
+    it 'should not contain any unrestricted sudo rules' do
+      expect(bad_sudoers_rules.entries).to be_empty, "Unrestricted sudo rules found; check sudoers file(s):\n\t- #{input('sudoers_config_files').join("\n\t- ")}"
+    end
+  end
 end

@@ -19,14 +19,18 @@ dictcheck=1
 
 Remove any configurations that conflict with the above value.'
   impact 0.5
-  tag check_id: 'C-52145r833237_chk'
   tag severity: 'medium'
+  tag gtitle: 'SRG-OS-000480-GPOS-00225'
   tag gid: 'V-248711'
   tag rid: 'SV-248711r991587_rule'
   tag stig_id: 'OL08-00-020300'
-  tag gtitle: 'SRG-OS-000480-GPOS-00225'
   tag fix_id: 'F-52099r858648_fix'
-  tag 'documentable'
   tag cci: ['CCI-000366']
   tag nist: ['CM-6 b']
+  tag 'host'
+  tag 'container'
+
+  describe parse_config_file('/etc/security/pwquality.conf') do
+    its('dictcheck') { should eq '1' }
+  end
 end

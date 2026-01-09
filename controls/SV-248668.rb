@@ -6,9 +6,7 @@ In OL 8.2 the "/etc/security/faillock.conf" file was incorporated to centralize 
 
 From "faillock.conf" man pages: Note that the default directory that "pam_faillock" uses is usually cleared on system boot so the access will be reenabled after system reboot. If that is undesirable a different tally directory must be set with the "dir" option.
 
-The preauth argument must be used when the module is called before the modules that ask for user credentials, such as the password.
-
-'
+The preauth argument must be used when the module is called before the modules that ask for user credentials, such as the password.'
   desc 'check', 'Note: This check applies to OL versions 8.2 or newer, if the system is OL version 8.0 or 8.1, this check is not applicable.
 
 Verify the pam_faillock.so module is present in the "/etc/pam.d/password-auth" file:
@@ -20,24 +18,40 @@ auth               required                            pam_faillock.so authfail
 account          required                            pam_faillock.so
 
 If the pam_faillock.so module is not present in the "/etc/pam.d/password-auth" file with the "preauth" line listed before pam_unix.so, this is a finding.'
-  desc 'fix', 'Configure the operating system to include the use of the pam_faillock.so module in the /etc/pam.d/password-auth file.
+  desc 'fix', 'Configure the operating system to include the use of the pam_faillock.so
+module in the /etc/pam.d/password-auth file.
 
-Add/Modify the appropriate sections of the "/etc/pam.d/password-auth" file to match the following lines:
-Note: The "preauth" line must be listed before pam_unix.so.
+    Add/Modify the appropriate sections of the "/etc/pam.d/password-auth"
+file to match the following lines:
+    Note: The "preauth" line must be listed before pam_unix.so.
 
-auth required pam_faillock.so preauth
-auth required pam_faillock.so authfail
-account required pam_faillock.so'
+    auth required pam_faillock.so preauth
+    auth required pam_faillock.so authfail
+    account required pam_faillock.so'
   impact 0.5
-  tag check_id: 'C-52102r779568_chk'
   tag severity: 'medium'
+  tag gtitle: 'SRG-OS-000021-GPOS-00005'
+  tag satisfies: ['SRG-OS-000021-GPOS-00005', 'SRG-OS-000329-GPOS-00128']
   tag gid: 'V-248668'
   tag rid: 'SV-248668r958388_rule'
   tag stig_id: 'OL08-00-020026'
-  tag gtitle: 'SRG-OS-000021-GPOS-00005'
   tag fix_id: 'F-52056r779569_fix'
-  tag satisfies: ['SRG-OS-000021-GPOS-00005', 'SRG-OS-000329-GPOS-00128']
-  tag 'documentable'
   tag cci: ['CCI-000044', 'CCI-002238']
   tag nist: ['AC-7 a', 'AC-7 b']
+  tag 'host'
+  tag 'container'
+
+  message = <<~MESSAGE
+    \n\nThis check only applies to RHEL versions 8.0 or 8.1.\n
+    The system is running RHEL version: #{os.version}, this requirement is Not Applicable.
+  MESSAGE
+  only_if(message, impact: 0.0) do
+    os.version.minor.between?(0, 1)
+  end
+
+  describe pam('/etc/pam.d/password-auth') do
+    its('lines') { should match_pam_rule('auth required pam_faillock.so preauth') }
+    its('lines') { should match_pam_rule('auth required pam_faillock.so authfail') }
+    its('lines') { should match_pam_rule('account required pam_faillock.so') }
+  end
 end

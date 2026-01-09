@@ -14,14 +14,26 @@ Run the following command, replacing "[FILE]" with any system command with a mod
 
 $ sudo chmod 755 [FILE]'
   impact 0.5
-  tag check_id: 'C-52001r818620_chk'
   tag severity: 'medium'
+  tag gtitle: 'SRG-OS-000259-GPOS-00100'
   tag gid: 'V-248567'
   tag rid: 'SV-248567r991560_rule'
   tag stig_id: 'OL08-00-010300'
-  tag gtitle: 'SRG-OS-000259-GPOS-00100'
   tag fix_id: 'F-51955r818621_fix'
-  tag 'documentable'
   tag cci: ['CCI-001499']
   tag nist: ['CM-5 (6)']
+  tag 'host'
+  tag 'container'
+
+  system_command_dirs = input('system_command_dirs').join(' ')
+
+  failing_files = command("find -L #{system_command_dirs} -perm /0022 -exec ls -l '{}' \\;").stdout.split("\n")
+
+  # failing_files = command("find -L #{input('system_command_dirs').join(' ')} -perm /0022 -exec ls -d '{}'' \\;").stdout.split("\n")
+
+  describe 'System commands' do
+    it "should have mode '0755' or less permissive" do
+      expect(failing_files).to be_empty, "Files with excessive permissions:\n\t- #{failing_files.join("\n\t- ")}"
+    end
+  end
 end

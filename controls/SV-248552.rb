@@ -4,9 +4,7 @@ control 'SV-248552' do
 
 Terminating network connections associated with communications sessions includes, for example, de-allocating associated TCP/IP address/port pairs at the operating system level and de-allocating networking assignments at the application level if multiple application sessions are using a single operating system-level network connection. This does not mean that the operating system terminates all sessions or network access; it only ends the unresponsive session and releases the resources associated with that session.
 
-OL 8 uses "/etc/ssh/sshd_config" for configurations of OpenSSH. Within the "sshd_config", the product of the values of "ClientAliveInterval" and "ClientAliveCountMax" is used to establish the inactivity threshold. The "ClientAliveInterval" is a timeout interval in seconds after which if no data has been received from the client, sshd will send a message through the encrypted channel to request a response from the client. The "ClientAliveCountMax" is the number of client alive messages that may be sent without sshd receiving any messages back from the client. If this threshold is met, sshd will disconnect the client. For more information on these settings and others, refer to the sshd_config man pages.
-
-'
+OL 8 uses "/etc/ssh/sshd_config" for configurations of OpenSSH. Within the "sshd_config", the product of the values of "ClientAliveInterval" and "ClientAliveCountMax" is used to establish the inactivity threshold. The "ClientAliveInterval" is a timeout interval in seconds after which if no data has been received from the client, sshd will send a message through the encrypted channel to request a response from the client. The "ClientAliveCountMax" is the number of client alive messages that may be sent without sshd receiving any messages back from the client. If this threshold is met, sshd will disconnect the client. For more information on these settings and others, refer to the sshd_config man pages.'
   desc 'check', %q(Verify the SSH server automatically terminates a user session after the SSH client has become unresponsive.
 
 Check that the "ClientAliveCountMax" is set to "1" by running the following command:
@@ -30,15 +28,34 @@ For the changes to take effect, the SSH daemon must be restarted.
 
      $ sudo systemctl restart sshd.service'
   impact 0.5
-  tag check_id: 'C-51986r951554_chk'
   tag severity: 'medium'
+  tag gtitle: 'SRG-OS-000126-GPOS-00066'
+  tag satisfies: ['SRG-OS-000163-GPOS-00072', 'SRG-OS-000126-GPOS-00066', 'SRG-OS-000279-GPOS-00109']
   tag gid: 'V-248552'
   tag rid: 'SV-248552r986329_rule'
   tag stig_id: 'OL08-00-010200'
-  tag gtitle: 'SRG-OS-000126-GPOS-00066'
   tag fix_id: 'F-51940r917895_fix'
-  tag satisfies: ['SRG-OS-000126-GPOS-00066', 'SRG-OS-000163-GPOS-00072', 'SRG-OS-000279-GPOS-00109']
-  tag 'documentable'
   tag cci: ['CCI-001133', 'CCI-002361']
   tag nist: ['SC-10', 'AC-12']
+  tag 'host'
+  tag 'container-conditional'
+
+  only_if('SSH is not installed on the system this requirement is Not Applicable', impact: 0.0) {
+    service('sshd').enabled? || package('openssh-server').installed?
+  }
+
+  client_alive_count = input('sshd_client_alive_count_max')
+
+  if virtualization.system.eql?('docker') && !file('/etc/ssh/sshd_config').exist?
+    impact 0.0
+    describe 'skip' do
+      skip 'SSH configuration does not apply inside containers. This control is Not Applicable.'
+    end
+  else
+    describe 'SSH ClientAliveCountMax configuration' do
+      it "should be set to #{client_alive_count}" do
+        expect(sshd_active_config.ClientAliveCountMax).to(cmp(client_alive_count), "SSH ClientAliveCountMax is commented out or not set to the expected value (#{client_alive_count})")
+      end
+    end
+  end
 end

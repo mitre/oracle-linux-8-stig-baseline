@@ -37,14 +37,27 @@ SELINUXTYPE=targeted
 
 A reboot is required for the changes to take effect.'
   impact 0.5
-  tag check_id: 'C-52030r779352_chk'
   tag severity: 'medium'
+  tag gtitle: 'SRG-OS-000445-GPOS-00199'
   tag gid: 'V-248596'
   tag rid: 'SV-248596r958944_rule'
   tag stig_id: 'OL08-00-010450'
-  tag gtitle: 'SRG-OS-000445-GPOS-00199'
   tag fix_id: 'F-51984r779353_fix'
-  tag 'documentable'
   tag cci: ['CCI-002696']
   tag nist: ['SI-6 a']
+  tag 'host'
+
+  only_if('This control is Not Applicable to containers', impact: 0.0) {
+    !virtualization.system.eql?('docker')
+  }
+
+  describe selinux do
+    it { should_not be_disabled }
+    it { should be_enforcing }
+    its('policy') { should eq 'targeted' }
+  end
+
+  describe parse_config_file('/etc/selinux/config') do
+    its('SELINUXTYPE') { should eq 'targeted' }
+  end
 end

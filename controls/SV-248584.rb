@@ -1,7 +1,12 @@
 control 'SV-248584' do
   title %q(OL 8 must use the invoking user's password for privilege escalation when using "sudo".)
-  desc %q(The sudoers security policy requires that users authenticate themselves before they can use sudo. When sudoers requires authentication, it validates the invoking user's credentials. If the rootpw, targetpw, or runaspw flags are defined and not disabled, by default the operating system will prompt the invoking user for the "root" user password.
-For more information on each of the listed configurations, reference the sudoers(5) manual page.)
+  desc %q(The sudoers security policy requires that users authenticate
+themselves before they can use sudo. When sudoers requires authentication, it
+validates the invoking user's credentials. If the rootpw, targetpw, or runaspw
+flags are defined and not disabled, by default the operating system will prompt
+the invoking user for the "root" user password.
+    For more information on each of the listed configurations, reference the
+sudoers(5) manual page.)
   desc 'check', %q(Verify that the sudoers security policy is configured to use the invoking user's password for privilege escalation.
 
      $ sudo grep -Eir '(rootpw|targetpw|runaspw)' /etc/sudoers /etc/sudoers.d* | grep -v '#'
@@ -23,14 +28,34 @@ Remove any configurations that conflict with the above from the following locati
      /etc/sudoers
      /etc/sudoers.d/'
   impact 0.5
-  tag check_id: 'C-52018r880552_chk'
   tag severity: 'medium'
+  tag gtitle: 'SRG-OS-000480-GPOS-00227'
   tag gid: 'V-248584'
   tag rid: 'SV-248584r991589_rule'
   tag stig_id: 'OL08-00-010383'
-  tag gtitle: 'SRG-OS-000480-GPOS-00227'
   tag fix_id: 'F-51972r880553_fix'
-  tag 'documentable'
-  tag cci: ['CCI-000366']
-  tag nist: ['CM-6 b']
+  tag cci: ['CCI-002227', 'CCI-000366']
+  tag nist: ['AC-6 (5)', 'CM-6 b']
+  tag 'host'
+
+  only_if('This control is Not Applicable to containers without sudo installed', impact: 0.0) {
+    !(virtualization.system.eql?('docker') && !command('sudo').exist?)
+  }
+
+  settings = sudoers(input('sudoers_config_files').join(' ')).settings['Defaults']
+
+  describe 'Sudoers file(s) settings' do
+    it 'should set !targetpw' do
+      expect(settings).to include('!targetpw'), 'Sudoers file(s) do not set !targetpw'
+      expect(settings).not_to include('targetpw'), 'Sudoers file(s) set targetpw'
+    end
+    it 'should set !rootpw' do
+      expect(settings).to include('!rootpw'), 'Sudoers file(s) do not set !rootpw'
+      expect(settings).not_to include('rootpw'), 'Sudoers file(s) set rootpw'
+    end
+    it 'should set !runaspw' do
+      expect(settings).to include('!runaspw'), 'Sudoers file(s) do not set !runaspw'
+      expect(settings).not_to include('runaspw'), 'Sudoers file(s) set runaspw'
+    end
+  end
 end

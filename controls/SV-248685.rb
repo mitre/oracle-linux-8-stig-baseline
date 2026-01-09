@@ -37,14 +37,22 @@ The "sssd" service must be restarted for the changes to take effect. To restart 
 
 $ sudo systemctl restart sssd.service'
   impact 0.5
-  tag check_id: 'C-52119r858605_chk'
   tag severity: 'medium'
+  tag gtitle: 'SRG-OS-000068-GPOS-00036'
   tag gid: 'V-248685'
   tag rid: 'SV-248685r958452_rule'
   tag stig_id: 'OL08-00-020090'
-  tag gtitle: 'SRG-OS-000068-GPOS-00036'
   tag fix_id: 'F-52073r779620_fix'
-  tag 'documentable'
   tag cci: ['CCI-000187']
-  tag nist: ['IA-5 (2) (a) (2)']
+  tag nist: ['IA-5 (2) (c)', 'IA-5 (2) (a) (2)']
+  tag 'host'
+
+  only_if('This control is Not Applicable to containers', impact: 0.0) {
+    !virtualization.system.eql?('docker')
+  }
+
+  describe file('/etc/sssd/sssd.conf') do
+    it { should exist }
+    its('content') { should match(/^\s*\[certmap.*\]\s*$/) }
+  end
 end

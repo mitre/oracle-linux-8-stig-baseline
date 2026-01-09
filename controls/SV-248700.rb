@@ -18,14 +18,24 @@ Add or modify the following line in the "/etc/login.defs" file:
 
 PASS_MIN_LEN 15'
   impact 0.5
-  tag check_id: 'C-52134r779664_chk'
   tag severity: 'medium'
+  tag gtitle: 'SRG-OS-000078-GPOS-00046'
   tag gid: 'V-248700'
   tag rid: 'SV-248700r1015059_rule'
   tag stig_id: 'OL08-00-020231'
-  tag gtitle: 'SRG-OS-000078-GPOS-00046'
   tag fix_id: 'F-52088r779665_fix'
-  tag 'documentable'
-  tag cci: ['CCI-004066', 'CCI-000205']
-  tag nist: ['IA-5 (1) (h)', 'IA-5 (1) (a)']
+  tag cci: ['CCI-000205', 'CCI-004066']
+  tag nist: ['IA-5 (1) (a)', 'IA-5 (1) (h)']
+  tag 'host'
+  tag 'container'
+
+  value = input('pass_min_len')
+  setting = input_object('pass_min_len').name.upcase
+
+  describe "/etc/login.defs does not have `#{setting}` configured" do
+    let(:config) { login_defs.read_params[setting] }
+    it "greater than #{value} day" do
+      expect(config).to cmp >= value
+    end
+  end
 end

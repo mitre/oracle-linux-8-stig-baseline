@@ -4,9 +4,7 @@ control 'SV-248815' do
 
 Offloading is a common process in information systems with limited audit storage capacity.
 
-OL 8 installation media provides "rsyslogd". This is a system utility providing support for message logging. Support for both internet and UNIX domain sockets enables this utility to support both local and remote logging. Coupling this utility with "gnutls" (which is a secure communications library implementing the SSL, TLS and DTLS protocols) provides a method to securely encrypt and offload auditing.
-
-'
+OL 8 installation media provides "rsyslogd". This is a system utility providing support for message logging. Support for both internet and UNIX domain sockets enables this utility to support both local and remote logging. Coupling this utility with "gnutls" (which is a secure communications library implementing the SSL, TLS and DTLS protocols) provides a method to securely encrypt and offload auditing.'
   desc 'check', 'Verify the audit system is configured to take an appropriate action when the internal event queue is full:
 
 $ sudo grep -i overflow_action /etc/audit/auditd.conf
@@ -22,15 +20,28 @@ overflow_action = syslog
 
 The audit daemon must be restarted for changes to take effect.'
   impact 0.5
-  tag check_id: 'C-52249r780009_chk'
   tag severity: 'medium'
+  tag gtitle: 'SRG-OS-000342-GPOS-00133'
+  tag satisfies: ['SRG-OS-000342-GPOS-00133', 'SRG-OS-000479-GPOS-00224']
   tag gid: 'V-248815'
   tag rid: 'SV-248815r958754_rule'
   tag stig_id: 'OL08-00-030700'
-  tag gtitle: 'SRG-OS-000342-GPOS-00133'
   tag fix_id: 'F-52203r780010_fix'
-  tag satisfies: ['SRG-OS-000342-GPOS-00133', 'SRG-OS-000479-GPOS-00224']
-  tag 'documentable'
   tag cci: ['CCI-001851']
   tag nist: ['AU-4 (1)']
+  tag 'host'
+
+  only_if('This control is Not Applicable to containers', impact: 0.0) {
+    !virtualization.system.eql?('docker')
+  }
+
+  if input('alternative_logging_method') != ''
+    describe 'manual check' do
+      skip 'Manual check required. Ask the administrator to indicate how logging is done for this system.'
+    end
+  else
+    describe parse_config_file('/etc/audit/auditd.conf') do
+      its('overflow_action') { should match(/syslog$|single$|halt$/i) }
+    end
+  end
 end

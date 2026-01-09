@@ -20,14 +20,22 @@ The SSH daemon must be restarted for the settings to take effect.
 
 $ sudo systemctl restart sshd.service'
   impact 0.5
-  tag check_id: 'C-52302r951582_chk'
   tag severity: 'medium'
+  tag gtitle: 'SRG-OS-000033-GPOS-00014'
+  tag satisfies: ['SRG-OS-000033-GPOS-00014', 'SRG-OS-000420-GPOS-00186', 'SRG-OS-000424-GPOS-00188']
   tag gid: 'V-248868'
   tag rid: 'SV-248868r958408_rule'
   tag stig_id: 'OL08-00-040161'
-  tag gtitle: 'SRG-OS-000033-GPOS-00014'
   tag fix_id: 'F-52256r780169_fix'
-  tag 'documentable'
   tag cci: ['CCI-000068']
   tag nist: ['AC-17 (2)']
+  tag 'host'
+
+  only_if('This control is Not Applicable to containers without SSH enabled', impact: 0.0) {
+    !(virtualization.system.eql?('docker') && !file('/etc/ssh/sshd_config').exist?)
+  }
+
+  describe sshd_active_config do
+    its('RekeyLimit') { should cmp '1G 1h' }
+  end
 end

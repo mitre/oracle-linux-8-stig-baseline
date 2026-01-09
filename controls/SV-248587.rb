@@ -4,9 +4,7 @@ control 'SV-248587' do
 
 Multifactor solutions that require devices separate from information systems gaining access include, for example, hardware tokens providing time-based or challenge-response authenticators and smart cards such as the U.S. Government Personal Identity Verification (PIV) card and the DOD CAC.
 
-OL 8 includes multiple options for configuring certificate status checking but for this requirement focuses on the system security services daemon (sssd). By default, sssd performs Online Certificate Status Protocol (OCSP) checking and certificate verification using a sha256 digest function.
-
-'
+OL 8 includes multiple options for configuring certificate status checking but for this requirement focuses on the system security services daemon (sssd). By default, sssd performs Online Certificate Status Protocol (OCSP) checking and certificate verification using a sha256 digest function.'
   desc 'check', 'Verify the operating system implements certificate status checking for multifactor authentication.
 
 Note: If the system administrator (SA) demonstrates the use of an approved alternate multifactor authentication method, this requirement is not applicable.
@@ -30,15 +28,40 @@ The "sssd" service must be restarted for the changes to take effect. To restart 
 
 $ sudo systemctl restart sssd.service'
   impact 0.5
-  tag check_id: 'C-52021r986341_chk'
   tag severity: 'medium'
+  tag gtitle: 'SRG-OS-000375-GPOS-00160'
+  tag satisfies: ['SRG-OS-000375-GPOS-00160', 'SRG-OS-000377-GPOS-00162']
   tag gid: 'V-248587'
   tag rid: 'SV-248587r1015038_rule'
   tag stig_id: 'OL08-00-010400'
-  tag gtitle: 'SRG-OS-000375-GPOS-00160'
   tag fix_id: 'F-51975r818643_fix'
-  tag satisfies: ['SRG-OS-000375-GPOS-00160', 'SRG-OS-000377-GPOS-00162']
-  tag 'documentable'
-  tag cci: ['CCI-004046', 'CCI-001954', 'CCI-004047', 'CCI-001948']
-  tag nist: ['IA-2 (6) (a)', 'IA-2 (12)', 'IA-2 (6) (b)', 'IA-2 (11)']
+  tag cci: ['CCI-001948', 'CCI-004046', 'CCI-001954', 'CCI-004047']
+  tag nist: ['IA-2 (11)', 'IA-2 (6) (a)', 'IA-2 (12)', 'IA-2 (6) (b)']
+  tag 'host'
+
+  only_if('This requirement is Not Applicable inside the container', impact: 0.0) {
+    !virtualization.system.eql?('docker')
+  }
+
+  if input('alternate_mfa_method').nil?
+    describe 'Manual Review' do
+      skip "Alternate MFA method selected:\t\nConsult with ISSO to determine that alternate MFA method is approved; manually review system to ensure alternate MFA method is functioning"
+    end
+  else
+    sssd_conf_files = input('sssd_conf_files')
+    sssd_conf_contents = ini({ command: "cat #{input('sssd_conf_files').join(' ')}" })
+    sssd_certificate_verification = input('sssd_certificate_verification')
+
+    describe 'SSSD' do
+      it 'should be installed and enabled' do
+        expect(service('sssd')).to be_installed.and be_enabled
+        expect(sssd_conf_contents.params).to_not be_empty, "SSSD configuration files not found or have no content; files checked:\n\t- #{sssd_conf_files.join("\n\t- ")}"
+      end
+      if sssd_conf_contents.params.nil?
+        it "should configure certificate_verification to be '#{sssd_certificate_verification}'" do
+          expect(sssd_conf_contents.sssd.certificate_verification).to eq(sssd_certificate_verification)
+        end
+      end
+    end
+  end
 end

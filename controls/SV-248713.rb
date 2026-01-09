@@ -1,6 +1,9 @@
 control 'SV-248713' do
   title 'OL 8 must not have unnecessary accounts.'
-  desc 'Accounts providing no operational purpose provide additional opportunities for system compromise. Unnecessary accounts include user accounts for individuals not requiring access to the system and application accounts for applications not installed on the system.'
+  desc 'Accounts providing no operational purpose provide additional
+opportunities for system compromise. Unnecessary accounts include user accounts
+for individuals not requiring access to the system and application accounts for
+applications not installed on the system.'
   desc 'check', 'Verify all accounts on the system are assigned to an active system, application, or user account.
 
 Obtain the list of authorized system accounts from the Information System Security Officer (ISSO).
@@ -27,14 +30,23 @@ Remove accounts that do not support approved system activities or that allow for
 
 Document all authorized accounts on the system.'
   impact 0.5
-  tag check_id: 'C-52147r779703_chk'
   tag severity: 'medium'
+  tag gtitle: 'SRG-OS-000480-GPOS-00227'
   tag gid: 'V-248713'
   tag rid: 'SV-248713r991589_rule'
   tag stig_id: 'OL08-00-020320'
-  tag gtitle: 'SRG-OS-000480-GPOS-00227'
   tag fix_id: 'F-52101r779704_fix'
-  tag 'documentable'
   tag cci: ['CCI-000366']
   tag nist: ['CM-6 b']
+  tag 'host'
+  tag 'container'
+
+  # Identifies a list of user accounts that are not in the combined list of known system and user accounts
+  failing_users = passwd.users.reject { |u| (input('known_system_accounts') + input('user_accounts')).uniq.include?(u) }
+
+  describe 'All users' do
+    it 'should have an explicit, authorized purpose (either a known user account or a required system account)' do
+      expect(failing_users).to be_empty, "Failing users:\n\t- #{failing_users.join("\n\t- ")}"
+    end
+  end
 end

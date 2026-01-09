@@ -4,9 +4,7 @@ control 'SV-248656' do
 
 OL 8 can use the "pam_faillock.so" for this purpose. Note that manual changes to the listed files may be overwritten by the "authselect" program.
 
-From "Pam_Faillock" man pages: Note that the default directory that "pam_faillock" uses is usually cleared on system boot so the access will be reenabled after system reboot. If that is undesirable, a different tally directory must be set with the "dir" option.
-
-'
+From "Pam_Faillock" man pages: Note that the default directory that "pam_faillock" uses is usually cleared on system boot so the access will be reenabled after system reboot. If that is undesirable, a different tally directory must be set with the "dir" option.'
   desc 'check', 'Verify the system locks an account after three unsuccessful logon attempts within a period of 15 minutes until released by an administrator with the following commands.
 
 Note: If the System Administrator demonstrates the use of an approved centralized account management method that locks an account after three unsuccessful logon attempts within a period of 15 minutes, this requirement is not applicable.
@@ -40,15 +38,44 @@ The "sssd" service must be restarted for the changes to take effect. To restart 
 
 $ sudo systemctl restart sssd.service'
   impact 0.5
-  tag check_id: 'C-52090r779532_chk'
   tag severity: 'medium'
+  tag gtitle: 'SRG-OS-000021-GPOS-00005'
+  tag satisfies: ['SRG-OS-000021-GPOS-00005', 'SRG-OS-000329-GPOS-00128']
   tag gid: 'V-248656'
   tag rid: 'SV-248656r958388_rule'
   tag stig_id: 'OL08-00-020014'
-  tag gtitle: 'SRG-OS-000021-GPOS-00005'
   tag fix_id: 'F-52044r779533_fix'
-  tag satisfies: ['SRG-OS-000021-GPOS-00005', 'SRG-OS-000329-GPOS-00128']
-  tag 'documentable'
   tag cci: ['CCI-000044', 'CCI-002238']
   tag nist: ['AC-7 a', 'AC-7 b']
+  tag 'host'
+  tag 'container'
+
+  message = <<~MESSAGE
+    \n\nThis check only applies to RHEL versions 8.0 or 8.1.\n
+    The system is running RHEL version: #{os.version}, this requirement is Not Applicable.
+  MESSAGE
+  only_if(message, impact: 0.0) do
+    os.version.minor.between?(0, 1)
+  end
+
+  pam_auth_files = input('pam_auth_files')
+
+  describe pam(pam_auth_files['password-auth']) do
+    its('lines') do
+      should match_pam_rule('auth [default=die]|required pam_faillock.so').all_with_args('unlock_time=(0|never)').or \
+        (match_pam_rule('auth [default=die]|required pam_faillock.so').all_with_integer_arg('unlock_time', '<=',
+                                                                                            604_800).and \
+                                                                                              match_pam_rule('auth [default=die]|required pam_faillock.so').all_with_integer_arg('unlock_time', '>=',
+                                                                                                                                                                                 input('lockout_time')))
+    end
+  end
+  describe pam(pam_auth_files['system-auth']) do
+    its('lines') do
+      should match_pam_rule('auth [default=die]|required pam_faillock.so').all_with_args('unlock_time=(0|never)').or \
+        (match_pam_rule('auth [default=die]|required pam_faillock.so').all_with_integer_arg('unlock_time', '<=',
+                                                                                            604_800).and \
+                                                                                              match_pam_rule('auth [default=die]|required pam_faillock.so').all_with_integer_arg('unlock_time', '>=',
+                                                                                                                                                                                 input('lockout_time')))
+    end
+  end
 end

@@ -21,14 +21,34 @@ maxclassrepeat = 4
 
 Remove any configurations that conflict with the above value.'
   impact 0.5
-  tag check_id: 'C-52124r833225_chk'
   tag severity: 'medium'
+  tag gtitle: 'SRG-OS-000072-GPOS-00040'
   tag gid: 'V-248690'
   tag rid: 'SV-248690r1015050_rule'
   tag stig_id: 'OL08-00-020140'
-  tag gtitle: 'SRG-OS-000072-GPOS-00040'
   tag fix_id: 'F-52078r858636_fix'
-  tag 'documentable'
-  tag cci: ['CCI-004066', 'CCI-000195']
-  tag nist: ['IA-5 (1) (h)', 'IA-5 (1) (b)']
+  tag cci: ['CCI-000195', 'CCI-004066']
+  tag nist: ['IA-5 (1) (b)', 'IA-5 (1) (h)']
+  tag 'host'
+  tag 'container'
+
+  value = input('maxclassrepeat')
+  setting = 'maxclassrepeat'
+
+  describe 'pwquality.conf settings' do
+    let(:config) { parse_config_file('/etc/security/pwquality.conf', multiple_values: true) }
+    let(:setting_value) { config.params[setting].is_a?(Integer) ? [config.params[setting]] : Array(config.params[setting]) }
+
+    it "has `#{setting}` set" do
+      expect(setting_value).not_to be_empty, "#{setting} is not set in pwquality.conf"
+    end
+
+    it "only sets `#{setting}` once" do
+      expect(setting_value.length).to eq(1), "#{setting} is commented or set more than once in pwquality.conf"
+    end
+
+    it "does not set `#{setting}` to more than #{value}" do
+      expect(setting_value.first.to_i).to be <= value.to_i, "#{setting} is set to a value greater than #{value} in pwquality.conf"
+    end
+  end
 end

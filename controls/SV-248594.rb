@@ -46,14 +46,20 @@ Issue the following command to make the changes take effect:
 
 $ sudo sysctl --system'
   impact 0.5
-  tag check_id: 'C-52028r858625_chk'
   tag severity: 'medium'
+  tag gtitle: 'SRG-OS-000433-GPOS-00193'
   tag gid: 'V-248594'
   tag rid: 'SV-248594r958928_rule'
   tag stig_id: 'OL08-00-010430'
-  tag gtitle: 'SRG-OS-000433-GPOS-00193'
   tag fix_id: 'F-51982r858626_fix'
-  tag 'documentable'
   tag cci: ['CCI-002824']
   tag nist: ['SI-16']
+  tag 'host'
+
+  only_if('This control is Not Applicable to containers', impact: 0.0) {
+    !virtualization.system.eql?('docker')
+  }
+  describe kernel_parameter('kernel.randomize_va_space') do
+    its('value') { should eq 2 }
+  end
 end

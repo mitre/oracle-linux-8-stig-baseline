@@ -20,14 +20,18 @@ Edit/modify the following line in the "/etc/login.defs" file and set "[ENCRYPT_M
 
 ENCRYPT_METHOD SHA512'
   impact 0.5
-  tag check_id: 'C-51967r779163_chk'
   tag severity: 'medium'
+  tag gtitle: 'SRG-OS-000073-GPOS-00041'
   tag gid: 'V-248533'
   tag rid: 'SV-248533r1015028_rule'
   tag stig_id: 'OL08-00-010110'
-  tag gtitle: 'SRG-OS-000073-GPOS-00041'
   tag fix_id: 'F-51921r986325_fix'
-  tag 'documentable'
-  tag cci: ['CCI-004062', 'CCI-000196']
-  tag nist: ['IA-5 (1) (d)', 'IA-5 (1) (c)']
+  tag cci: ['CCI-000196', 'CCI-004062']
+  tag nist: ['IA-5 (1) (c)', 'IA-5 (1) (d)']
+  tag 'host'
+  tag 'container'
+
+  describe login_defs do
+    its('ENCRYPT_METHOD') { should cmp 'SHA512' }
+  end
 end

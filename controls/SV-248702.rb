@@ -4,9 +4,7 @@ control 'SV-248702' do
 
 Multifactor solutions that require devices separate from information systems gaining access include, for example, hardware tokens providing time-based or challenge-response authenticators and smart cards such as the U.S. Government Personal Identity Verification card and the DOD CAC.
 
-There are various methods of implementing multifactor authentication for OL 8. Some methods include a local system multifactor account mapping or joining the system to a domain and using an idM server or Microsoft Windows Active Directory server. Any of these methods will require that the client operating system handle the multifactor authentication correctly.
-
-'
+There are various methods of implementing multifactor authentication for OL 8. Some methods include a local system multifactor account mapping or joining the system to a domain and using an idM server or Microsoft Windows Active Directory server. Any of these methods will require that the client operating system handle the multifactor authentication correctly.'
   desc 'check', 'Verify OL 8 uses multifactor authentication for local access to accounts.
 
 Note: If the system administrator (SA) demonstrates the use of an approved alternate multifactor authentication method, this requirement is Not Applicable.
@@ -41,15 +39,41 @@ The "sssd" service must be restarted for the changes to take effect. To restart 
 
      $ sudo systemctl restart sssd.service'
   impact 0.5
-  tag check_id: 'C-52136r986367_chk'
   tag severity: 'medium'
+  tag gtitle: 'SRG-OS-000105-GPOS-00052'
+  tag satisfies: ['SRG-OS-000105-GPOS-00052', 'SRG-OS-000106-GPOS-00053', 'SRG-OS-000107-GPOS-00054', 'SRG-OS-000108-GPOS-00055']
   tag gid: 'V-248702'
   tag rid: 'SV-248702r1015060_rule'
   tag stig_id: 'OL08-00-020250'
-  tag gtitle: 'SRG-OS-000105-GPOS-00052'
   tag fix_id: 'F-52090r943097_fix'
-  tag satisfies: ['SRG-OS-000105-GPOS-00052', 'SRG-OS-000106-GPOS-00053', 'SRG-OS-000107-GPOS-00054', 'SRG-OS-000108-GPOS-00055']
-  tag 'documentable'
   tag cci: ['CCI-000765', 'CCI-000766', 'CCI-004047', 'CCI-000767', 'CCI-000768']
   tag nist: ['IA-2 (1)', 'IA-2 (2)', 'IA-2 (6) (b)', 'IA-2 (3)', 'IA-2 (4)']
+  tag 'host'
+
+  only_if('If the System Administrator demonstrates the use of an approved alternate multifactor authentication method, this requirement is not applicable.', impact: 0.0) {
+    input('smart_card_enabled')
+  }
+
+  sssd_conf_files = input('sssd_conf_files')
+  sssd_conf_contents = ini({ command: "cat #{input('sssd_conf_files').join(' ')}" })
+
+  pam_auth_files = input('pam_auth_files')
+
+  describe 'SSSD' do
+    it 'should be installed and enabled' do
+      expect(service('sssd')).to be_installed.and be_enabled
+      expect(sssd_conf_contents.params).to_not be_empty, "SSSD configuration files not found or have no content; files checked:\n\t- #{sssd_conf_files.join("\n\t- ")}"
+    end
+    if sssd_conf_contents.params.nil?
+      it 'should configure pam_cert_auth' do
+        expect(sssd_conf_contents.sssd.pam_cert_auth).to eq(true)
+      end
+    end
+  end
+
+  [pam_auth_files['system-auth'], pam_auth_files['smartcard-auth']].each do |path|
+    describe pam(path) do
+      its('lines') { should match_pam_rule('.* .* pam_sss.so (try_cert_auth|require_cert_auth)') }
+    end
+  end
 end

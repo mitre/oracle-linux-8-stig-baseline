@@ -23,14 +23,18 @@ minlen = 15
 
 Remove any configurations that conflict with the above value.'
   impact 0.5
-  tag check_id: 'C-52133r833233_chk'
   tag severity: 'medium'
+  tag gtitle: 'SRG-OS-000078-GPOS-00046'
   tag gid: 'V-248699'
   tag rid: 'SV-248699r1015058_rule'
   tag stig_id: 'OL08-00-020230'
-  tag gtitle: 'SRG-OS-000078-GPOS-00046'
   tag fix_id: 'F-52087r858644_fix'
-  tag 'documentable'
-  tag cci: ['CCI-004066', 'CCI-000205']
-  tag nist: ['IA-5 (1) (h)', 'IA-5 (1) (a)']
+  tag cci: ['CCI-000205', 'CCI-004066']
+  tag nist: ['IA-5 (1) (a)', 'IA-5 (1) (h)']
+  tag 'host'
+  tag 'container'
+
+  describe parse_config_file('/etc/security/pwquality.conf') do
+    its('minlen.to_i') { should cmp >= input('pass_min_len') }
+  end
 end

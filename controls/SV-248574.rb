@@ -18,14 +18,37 @@ If there is no process to validate certificates that is approved by the organiza
 
 gpgcheck=1'
   impact 0.7
-  tag check_id: 'C-52008r986331_chk'
   tag severity: 'high'
+  tag gtitle: 'SRG-OS-000366-GPOS-00153'
   tag gid: 'V-248574'
   tag rid: 'SV-248574r1015031_rule'
   tag stig_id: 'OL08-00-010370'
-  tag gtitle: 'SRG-OS-000366-GPOS-00153'
   tag fix_id: 'F-51962r779287_fix'
-  tag 'documentable'
-  tag cci: ['CCI-003992', 'CCI-001749']
-  tag nist: ['CM-14', 'CM-5 (3)']
+  tag cci: ['CCI-001749', 'CCI-003992']
+  tag nist: ['CM-5 (3)', 'CM-14']
+  tag 'host'
+  tag 'container'
+
+  # TODO: create a plural resource for repo def files (`repositories`?)
+
+  # get list of all repo files
+  repo_def_files = command('ls /etc/yum.repos.d/*.repo').stdout.split("\n")
+
+  if repo_def_files.empty?
+    describe 'No repos found in /etc/yum.repos.d/*.repo' do
+      skip 'No repos found in /etc/yum.repos.d/*.repo'
+    end
+  else
+    # pull out all repo definitions from all files into one big hash
+    repos = repo_def_files.map { |file| parse_config_file(file).params }.inject(&:merge)
+
+    # check big hash for repos that fail the test condition
+    failing_repos = repos.keys.reject { |repo_name| repos[repo_name]['gpgcheck'] == '1' }
+
+    describe 'All repositories' do
+      it 'should be configured to verify digital signatures' do
+        expect(failing_repos).to be_empty, "Misconfigured repositories:\n\t- #{failing_repos.join("\n\t- ")}"
+      end
+    end
+  end
 end

@@ -4,9 +4,7 @@ control 'SV-248686' do
 
 OL 8 uses "pwquality" as a mechanism to enforce password complexity. This is set in both of the following:
 /etc/pam.d/password-auth
-/etc/pam.d/system-auth
-
-'
+/etc/pam.d/system-auth'
   desc 'check', 'Verify the operating system uses "pwquality" to enforce the password complexity rules.
 
 Check for the use of "pwquality" in the password-auth file with the following command:
@@ -22,15 +20,23 @@ Add the following line to the "/etc/pam.d/password-auth" file (or modify the lin
 
      password requisite pam_pwquality.so'
   impact 0.5
-  tag check_id: 'C-52120r902807_chk'
   tag severity: 'medium'
+  tag gtitle: 'SRG-OS-000069-GPOS-00037'
   tag gid: 'V-248686'
   tag rid: 'SV-248686r982195_rule'
   tag stig_id: 'OL08-00-020100'
-  tag gtitle: 'SRG-OS-000069-GPOS-00037'
   tag fix_id: 'F-52074r902808_fix'
-  tag satisfies: ['SRG-OS-000069-GPOS-00037', 'SRG-OS-000070-GPOS-00038']
-  tag 'documentable'
-  tag cci: ['CCI-000366']
-  tag nist: ['CM-6 b']
+  tag cci: ['CCI-000192', 'CCI-000366']
+  tag nist: ['IA-5 (1) (a)', 'CM-6 b']
+  tag 'host'
+  tag 'container'
+
+  pam_auth_files = input('pam_auth_files')
+
+  describe pam(pam_auth_files['password-auth']) do
+    its('lines') { should match_pam_rule('password (required|requisite) pam_pwquality.so') }
+  end
+  describe pam(pam_auth_files['system-auth']) do
+    its('lines') { should match_pam_rule('password (required|requisite) pam_pwquality.so') }
+  end
 end

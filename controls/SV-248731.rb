@@ -18,14 +18,20 @@ log_format = ENRICHED
 
 The audit daemon must be restarted for changes to take effect.'
   impact 0.5
-  tag check_id: 'C-52165r779757_chk'
   tag severity: 'medium'
+  tag gtitle: 'SRG-OS-000480-GPOS-00227'
   tag gid: 'V-248731'
   tag rid: 'SV-248731r991589_rule'
   tag stig_id: 'OL08-00-030063'
-  tag gtitle: 'SRG-OS-000480-GPOS-00227'
   tag fix_id: 'F-52119r779758_fix'
-  tag 'documentable'
   tag cci: ['CCI-000366']
   tag nist: ['CM-6 b']
+  tag 'host'
+
+  only_if('This control is Not Applicable to containers', impact: 0.0) {
+    !virtualization.system.eql?('docker')
+  }
+  describe parse_config_file('/etc/audit/auditd.conf') do
+    its('log_format') { should eq 'ENRICHED' }
+  end
 end

@@ -22,14 +22,29 @@ $ sudo systemctl mask systemd-coredump.socket
 
 Created symlink /etc/systemd/system/systemd-coredump.socket -> /dev/null'
   impact 0.5
-  tag check_id: 'C-52064r779454_chk'
   tag severity: 'medium'
+  tag gtitle: 'SRG-OS-000480-GPOS-00227'
   tag gid: 'V-248630'
   tag rid: 'SV-248630r991589_rule'
   tag stig_id: 'OL08-00-010672'
-  tag gtitle: 'SRG-OS-000480-GPOS-00227'
   tag fix_id: 'F-52018r779455_fix'
-  tag 'documentable'
   tag cci: ['CCI-000366']
+  tag legacy: []
   tag nist: ['CM-6 b']
+  tag 'host'
+
+  only_if('This control is Not Applicable to containers', impact: 0.0) {
+    !virtualization.system.eql?('docker')
+  }
+
+  s = systemd_service('systemd-coredump.socket')
+
+  describe.one do
+    describe s do
+      its('params.LoadState') { should eq 'masked' }
+    end
+    describe s do
+      its('params.LoadState') { should eq 'not-found' }
+    end
+  end
 end

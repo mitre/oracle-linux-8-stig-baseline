@@ -12,18 +12,24 @@ Verify the operating system is configured to disable non-essential capabilities.
 $ sudo yum list installed abrt*
 
 If any automated bug reporting package is installed, this is a finding.'
-  desc 'fix', 'Configure the operating system to disable non-essential capabilities by removing automated bug reporting packages from the system with the following command:
+  desc 'fix', 'Configure the operating system to disable non-essential capabilities by
+removing automated bug reporting packages from the system with the following
+command:
 
-$ sudo yum remove abrt*'
+    $ sudo yum remove abrt*'
   impact 0.5
-  tag check_id: 'C-52258r780036_chk'
   tag severity: 'medium'
+  tag gtitle: 'SRG-OS-000095-GPOS-00049'
   tag gid: 'V-248824'
   tag rid: 'SV-248824r958478_rule'
   tag stig_id: 'OL08-00-040001'
-  tag gtitle: 'SRG-OS-000095-GPOS-00049'
   tag fix_id: 'F-52212r780037_fix'
-  tag 'documentable'
   tag cci: ['CCI-000381']
   tag nist: ['CM-7 a']
+  tag 'host'
+  tag 'container'
+
+  describe packages(/abrt/) do
+    its('statuses') { should_not cmp 'installed' }
+  end
 end

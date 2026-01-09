@@ -18,14 +18,30 @@ $ sudo grub2-setpassword
 Enter password:
 Confirm password:'
   impact 0.7
-  tag check_id: 'C-51971r779175_chk'
   tag severity: 'high'
+  tag gtitle: 'SRG-OS-000080-GPOS-00048'
   tag gid: 'V-248537'
   tag rid: 'SV-248537r1117265_rule'
   tag stig_id: 'OL08-00-010140'
-  tag gtitle: 'SRG-OS-000080-GPOS-00048'
   tag fix_id: 'F-51925r779176_fix'
-  tag 'documentable'
   tag cci: ['CCI-000213']
   tag nist: ['AC-3']
+  tag 'host'
+
+  only_if('Control not applicable within a container without sudo enabled', impact: 0.0) do
+    !virtualization.system.eql?('docker')
+  end
+
+  if file('/sys/firmware/efi').exist?
+    input('grub_uefi_user_boot_files').each do |grub_user_file|
+      describe parse_config_file(grub_user_file) do
+        its('GRUB2_PASSWORD') { should include 'grub.pbkdf2.sha512' }
+      end
+    end
+  else
+    impact 0.0
+    describe 'System running BIOS' do
+      skip 'The System is running BIOS, this control is Not Applicable.'
+    end
+  end
 end

@@ -12,14 +12,21 @@ If the "policycoreutils" package is not installed, this is a finding.'
 
 $ sudo yum install policycoreutils'
   impact 0.3
-  tag check_id: 'C-51983r779211_chk'
   tag severity: 'low'
+  tag gtitle: 'SRG-OS-000134-GPOS-00068'
   tag gid: 'V-248549'
   tag rid: 'SV-248549r958518_rule'
   tag stig_id: 'OL08-00-010171'
-  tag gtitle: 'SRG-OS-000134-GPOS-00068'
   tag fix_id: 'F-51937r779212_fix'
-  tag 'documentable'
   tag cci: ['CCI-001084']
   tag nist: ['SC-3']
+  tag 'host'
+
+  only_if('Control not applicable within a container', impact: 0.0) do
+    !virtualization.system.eql?('docker')
+  end
+
+  describe package('policycoreutils') do
+    it { should be_installed }
+  end
 end

@@ -21,14 +21,21 @@ SELINUX=enforcing
 
 A reboot is required for the changes to take effect.'
   impact 0.5
-  tag check_id: 'C-51982r779208_chk'
   tag severity: 'medium'
+  tag gtitle: 'SRG-OS-000134-GPOS-00068'
   tag gid: 'V-248548'
   tag rid: 'SV-248548r958518_rule'
   tag stig_id: 'OL08-00-010170'
-  tag gtitle: 'SRG-OS-000134-GPOS-00068'
   tag fix_id: 'F-51936r779209_fix'
-  tag 'documentable'
   tag cci: ['CCI-001084']
   tag nist: ['SC-3']
+  tag 'host'
+
+  only_if('Control not applicable within a container', impact: 0.0) do
+    !virtualization.system.eql?('docker')
+  end
+
+  describe selinux do
+    it { should be_enforcing }
+  end
 end

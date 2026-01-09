@@ -14,14 +14,22 @@ If any output is returned, this is a finding.)
 
 $ sudo find /lib /lib64 /usr/lib /usr/lib64 -type f -name '*.so*' -perm /022 -exec chmod go-w {} +)
   impact 0.5
-  tag check_id: 'C-52004r1101860_chk'
   tag severity: 'medium'
+  tag gtitle: 'SRG-OS-000259-GPOS-00100'
   tag gid: 'V-248570'
   tag rid: 'SV-248570r1101862_rule'
   tag stig_id: 'OL08-00-010330'
-  tag gtitle: 'SRG-OS-000259-GPOS-00100'
   tag fix_id: 'F-51958r1101861_fix'
-  tag 'documentable'
   tag cci: ['CCI-001499']
   tag nist: ['CM-5 (6)']
+  tag 'host'
+  tag 'container'
+
+  failing_files = command("find -L #{input('system_libraries').join(' ')} -perm /0022 -type f -exec ls -d {} \\;").stdout.split("\n")
+
+  describe 'System libraries' do
+    it "should have mode '0755' or less permissive" do
+      expect(failing_files).to be_empty, "Files with excessive permissions:\n\t- #{failing_files.join("\n\t- ")}"
+    end
+  end
 end

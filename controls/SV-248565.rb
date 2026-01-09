@@ -6,9 +6,7 @@ Remote access (e.g., RDP) is access to DoD nonpublic information systems by an a
 
 Cryptographic mechanisms used for protecting the integrity of information include, for example, signed hash functions using asymmetric cryptography, enabling distribution of the public key to verify the hash information while maintaining the confidentiality of the secret key used to generate the hash.
 
-OL 8 incorporates system-wide crypto policies by default. The employed algorithms can be viewed in the "/etc/crypto-policies/back-ends/openssl.config" file.
-
-'
+OL 8 incorporates system-wide crypto policies by default. The employed algorithms can be viewed in the "/etc/crypto-policies/back-ends/openssl.config" file.'
   desc 'check', 'Verify the OpenSSL library is configured to use only DoD-approved TLS encryption:
 
 For versions prior to crypto-policies-20210617-1.gitc776d3e.el8.noarch:
@@ -39,15 +37,28 @@ DTLS.MinProtocol = DTLSv1.2
 
 A reboot is required for the changes to take effect.'
   impact 0.5
-  tag check_id: 'C-51999r818615_chk'
   tag severity: 'medium'
+  tag gtitle: 'SRG-OS-000250-GPOS-00093'
+  tag satisfies: ['SRG-OS-000250-GPOS-00093', 'SRG-OS-000393-GPOS-00173', 'SRG-OS-000394-GPOS-00174', 'SRG-OS-000125-GPOS-00065']
   tag gid: 'V-248565'
   tag rid: 'SV-248565r991554_rule'
   tag stig_id: 'OL08-00-010294'
-  tag gtitle: 'SRG-OS-000250-GPOS-00093'
   tag fix_id: 'F-51953r818616_fix'
-  tag satisfies: ['SRG-OS-000250-GPOS-00093', 'SRG-OS-000393-GPOS-00173', 'SRG-OS-000394-GPOS-00174', 'SRG-OS-000125-GPOS-00065']
-  tag 'documentable'
   tag cci: ['CCI-001453']
   tag nist: ['AC-17 (2)']
+  tag 'host'
+  tag 'container'
+
+  crypto_policies = package('crypto-policies')
+
+  if crypto_policies.version < '20210617-1.gitc776d3e.el8.noarch'
+    describe parse_config_file('/etc/crypto-policies/back-ends/opensslcnf.config') do
+      its('MinProtocol') { should be_in ['TLSv1.2', 'TLSv1.3'] }
+    end
+  else
+    describe parse_config_file('/etc/crypto-policies/back-ends/opensslcnf.config') do
+      its(['TLS.MinProtocol']) { should be_in ['TLSv1.2', 'TLSv1.3'] }
+      its(['DTLS.MinProtocol']) { should be_in ['DTLSv1.2', 'DTLSv1.3'] }
+    end
+  end
 end

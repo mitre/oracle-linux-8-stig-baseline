@@ -38,14 +38,29 @@ Add or update the line:
 
 Reboot the system for the settings to take effect.'
   impact 0.5
-  tag check_id: 'C-52277r943090_chk'
   tag severity: 'medium'
+  tag gtitle: 'SRG-OS-000300-GPOS-00118'
   tag gid: 'V-248843'
   tag rid: 'SV-248843r991569_rule'
   tag stig_id: 'OL08-00-040111'
-  tag gtitle: 'SRG-OS-000300-GPOS-00118'
   tag fix_id: 'F-52231r943091_fix'
-  tag 'documentable'
   tag cci: ['CCI-001443', 'CCI-001444', 'CCI-002418']
-  tag nist: ['AC-18 (1)', 'AC-18 (1)', 'SC-8']
+  tag nist: ['AC-18 (1)', 'SC-8']
+  tag 'host'
+
+  only_if('This control is Not Applicable to containers', impact: 0.0) {
+    !virtualization.system.eql?('docker')
+  }
+
+  if input('bluetooth_installed')
+    describe kernel_module('bluetooth') do
+      it { should be_disabled }
+      it { should be_blacklisted }
+    end
+  else
+    impact 0.0
+    describe 'Device or operating system does not have a Bluetooth adapter installed' do
+      skip 'If the device or operating system does not have a Bluetooth adapter installed, this requirement is not applicable.'
+    end
+  end
 end

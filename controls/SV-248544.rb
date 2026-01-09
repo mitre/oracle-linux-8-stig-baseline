@@ -18,14 +18,20 @@ Edit/modify the following line in the "/etc/pam.d/password-auth" file to include
 
 password sufficient pam_unix.so sha512'
   impact 0.5
-  tag check_id: 'C-51978r818609_chk'
   tag severity: 'medium'
+  tag gtitle: 'SRG-OS-000120-GPOS-00061'
   tag gid: 'V-248544'
   tag rid: 'SV-248544r971535_rule'
   tag stig_id: 'OL08-00-010160'
-  tag gtitle: 'SRG-OS-000120-GPOS-00061'
   tag fix_id: 'F-51932r818610_fix'
-  tag 'documentable'
   tag cci: ['CCI-000803']
   tag nist: ['IA-7']
+  tag 'host'
+  tag 'container'
+
+  pam_auth_files = input('pam_auth_files')
+
+  describe pam(pam_auth_files['password-auth']) do
+    its('lines') { should match_pam_rule('.* .* pam_unix.so sha512') }
+  end
 end

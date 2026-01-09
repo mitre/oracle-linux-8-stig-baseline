@@ -4,9 +4,7 @@ control 'SV-248661' do
 
 In OL 8.2, the "/etc/security/faillock.conf" file was incorporated to centralize the configuration of the" pam_faillock.so" module. Also introduced is a "local_users_only" option that will only track failed user authentication attempts for local users in "/etc/passwd" and ignore centralized (AD, IdM, LDAP, etc.) users to allow the centralized platform to solely manage user lockout.
 
-From "faillock.conf" man pages: Note that the default directory that "pam_faillock" uses is usually cleared on system boot so the access will be reenabled after system reboot. If that is undesirable, a different tally directory must be set with the "dir" option.
-
-'
+From "faillock.conf" man pages: Note that the default directory that "pam_faillock" uses is usually cleared on system boot so the access will be reenabled after system reboot. If that is undesirable, a different tally directory must be set with the "dir" option.'
   desc 'check', 'Note: This check applies to OL versions 8.2 or newer. If the system is OL version 8.0 or 8.1, this check is not applicable.
 
 Verify the "/etc/security/faillock.conf" file is configured to prevent informative messages from being presented at logon attempts:
@@ -22,15 +20,36 @@ Add/modify the "/etc/security/faillock.conf" file to match the following line:
 
 silent'
   impact 0.5
-  tag check_id: 'C-52095r779547_chk'
   tag severity: 'medium'
+  tag gtitle: 'SRG-OS-000021-GPOS-00005'
+  tag satisfies: ['SRG-OS-000021-GPOS-00005', 'SRG-OS-000329-GPOS-00128']
   tag gid: 'V-248661'
   tag rid: 'SV-248661r958388_rule'
   tag stig_id: 'OL08-00-020019'
-  tag gtitle: 'SRG-OS-000021-GPOS-00005'
   tag fix_id: 'F-52049r779548_fix'
-  tag satisfies: ['SRG-OS-000021-GPOS-00005', 'SRG-OS-000329-GPOS-00128']
-  tag 'documentable'
   tag cci: ['CCI-000044', 'CCI-002238']
   tag nist: ['AC-7 a', 'AC-7 b']
+  tag 'host'
+  tag 'container'
+
+  message = <<~MESSAGE
+    \n\nThis check only applies to RHEL versions 8.0 or 8.1.\n
+    The system is running RHEL version: #{os.version}, this requirement is Not Applicable.
+  MESSAGE
+  only_if(message, impact: 0.0) do
+    os.version.minor.between?(0, 1)
+  end
+
+  pam_auth_files = input('pam_auth_files')
+
+  describe pam(pam_auth_files['password-auth']) do
+    its('lines') {
+      should match_pam_rule('auth [default=die]|required pam_faillock.so preauth').all_with_args('silent')
+    }
+  end
+  describe pam(pam_auth_files['system-auth']) do
+    its('lines') {
+      should match_pam_rule('auth [default=die]|required pam_faillock.so preauth').all_with_args('silent')
+    }
+  end
 end

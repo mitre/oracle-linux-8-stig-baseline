@@ -1,6 +1,8 @@
 control 'SV-248819' do
   title 'OL 8 must notify the System Administrator (SA) and Information System Security Officer (ISSO) (at a minimum) when allocated audit record storage volume 75 percent utilization.'
-  desc 'If security personnel are not notified immediately when storage volume reaches 75 percent utilization, they are unable to plan for audit record storage capacity expansion.'
+  desc 'If security personnel are not notified immediately when storage volume
+reaches 75 percent utilization, they are unable to plan for audit record
+storage capacity expansion.'
   desc 'check', 'Verify OL 8 notifies the SA and ISSO (at a minimum) when allocated audit record storage volume reaches 75 percent of the repository maximum audit record storage capacity with the following command:
 
 $ sudo grep -w space_left_action /etc/audit/auditd.conf
@@ -10,20 +12,32 @@ space_left_action = email
 If the value of the "space_left_action" is not set to "email", or if the line is commented out, ask the System Administrator to indicate how the system is providing real-time alerts to the SA and ISSO.
 
 If there is no evidence that real-time alerts are configured on the system, this is a finding.'
-  desc 'fix', 'Configure the operating system to initiate an action to notify the SA and ISSO (at a minimum) when allocated audit record storage volume reaches 75 percent of the repository maximum audit record storage capacity by adding/modifying the following line in the /etc/audit/auditd.conf file.
+  desc 'fix', 'Configure the operating system to initiate an action to notify the SA and
+ISSO (at a minimum) when allocated audit record storage volume reaches 75
+percent of the repository maximum audit record storage capacity by
+adding/modifying the following line in the /etc/audit/auditd.conf file.
 
-space_left_action = email
+    space_left_action = email
 
-Note: Option names and values in the auditd.conf file are case insensitive.'
+    Note: Option names and values in the auditd.conf file are case insensitive.'
   impact 0.5
-  tag check_id: 'C-52253r780021_chk'
   tag severity: 'medium'
+  tag gtitle: 'SRG-OS-000343-GPOS-00134'
   tag gid: 'V-248819'
   tag rid: 'SV-248819r971542_rule'
   tag stig_id: 'OL08-00-030731'
-  tag gtitle: 'SRG-OS-000343-GPOS-00134'
   tag fix_id: 'F-52207r780022_fix'
-  tag 'documentable'
   tag cci: ['CCI-001855']
   tag nist: ['AU-5 (1)']
+  tag 'host'
+
+  alert_method = input('alert_method')
+
+  only_if('This requirement is Not Applicable in the container', impact: 0.0) {
+    !virtualization.system.eql?('docker')
+  }
+
+  describe auditd_conf do
+    its('space_left_action.downcase') { should cmp alert_method }
+  end
 end

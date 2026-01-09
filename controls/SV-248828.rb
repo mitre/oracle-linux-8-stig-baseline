@@ -1,8 +1,16 @@
 control 'SV-248828' do
   title 'OL 8 must cover or disable the built-in or attached camera when not in use.'
-  desc 'It is detrimental for operating systems to provide, or install by default, functionality exceeding requirements or mission objectives. These unnecessary capabilities or services are often overlooked and therefore may remain unsecured. They increase the risk to the platform by providing additional attack vectors.
+  desc 'It is detrimental for operating systems to provide, or install by
+default, functionality exceeding requirements or mission objectives. These
+unnecessary capabilities or services are often overlooked and therefore may
+remain unsecured. They increase the risk to the platform by providing
+additional attack vectors.
 
-Failing to disconnect from collaborative computing devices (i.e., cameras) can result in subsequent compromises of organizational information. Providing easy methods to physically disconnect from such devices after a collaborative computing session helps to ensure participants actually carry out the disconnect activity without having to go through complex and tedious procedures.'
+    Failing to disconnect from collaborative computing devices (i.e., cameras)
+can result in subsequent compromises of organizational information. Providing
+easy methods to physically disconnect from such devices after a collaborative
+computing session helps to ensure participants actually carry out the
+disconnect activity without having to go through complex and tedious procedures.'
   desc 'check', 'If the device or operating system does not have a camera installed, this requirement is not applicable.
 
 This requirement is not applicable to mobile devices (smartphones and tablets), where the use of the camera is a local AO decision.
@@ -39,14 +47,30 @@ Build or modify the "/etc/modprobe.d/blacklist.conf" file by using the following
 
 Reboot the system for the settings to take effect.'
   impact 0.5
-  tag check_id: 'C-52262r943066_chk'
   tag severity: 'medium'
+  tag gtitle: 'SRG-OS-000095-GPOS-00049'
+  tag satisfies: ['SRG-OS-000095-GPOS-00049', 'SRG-OS-000370-GPOS-00155']
   tag gid: 'V-248828'
   tag rid: 'SV-248828r958478_rule'
   tag stig_id: 'OL08-00-040020'
-  tag gtitle: 'SRG-OS-000095-GPOS-00049'
   tag fix_id: 'F-52216r943067_fix'
-  tag 'documentable'
   tag cci: ['CCI-000381']
   tag nist: ['CM-7 a']
+  tag 'host'
+
+  only_if('This control is Not Applicable to containers', impact: 0.0) {
+    !virtualization.system.eql?('docker')
+  }
+
+  if input('camera_installed')
+    describe kernel_module('uvcvideo') do
+      it { should_not be_loaded }
+      it { should be_blacklisted }
+    end
+  else
+    impact 0.0
+    describe 'Device or operating system does not have a camera installed' do
+      skip 'Device or operating system does not have a camera installed, this control is Not Applicable.'
+    end
+  end
 end

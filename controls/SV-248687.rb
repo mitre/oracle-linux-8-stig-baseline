@@ -4,9 +4,7 @@ control 'SV-248687' do
 
 Password complexity is one factor of several that determines how long it takes to crack a password. The more complex the password, the greater the number of possible combinations that need to be tested before the password is compromised.
 
-OL 8 uses pwquality as a mechanism to enforce password complexity. Note that in order to require uppercase characters without degrading the "minlen" value, the credit value must be expressed as a negative number in "/etc/security/pwquality.conf".
-
-'
+OL 8 uses pwquality as a mechanism to enforce password complexity. Note that in order to require uppercase characters without degrading the "minlen" value, the credit value must be expressed as a negative number in "/etc/security/pwquality.conf".'
   desc 'check', 'Verify the value for "ucredit" in "/etc/security/pwquality.conf" or "/etc/security/pwquality.conf.d/*.conf" files with the following command:
 
 $ sudo grep -r ucredit /etc/security/pwquality.conf*
@@ -23,15 +21,32 @@ ucredit = -1
 
 Remove any configurations that conflict with the above value.'
   impact 0.3
-  tag check_id: 'C-52121r833219_chk'
   tag severity: 'low'
+  tag gtitle: 'SRG-OS-000069-GPOS-00037'
   tag gid: 'V-248687'
   tag rid: 'SV-248687r1015047_rule'
   tag stig_id: 'OL08-00-020110'
-  tag gtitle: 'SRG-OS-000069-GPOS-00037'
   tag fix_id: 'F-52075r858630_fix'
-  tag satisfies: ['SRG-OS-000069-GPOS-00037', 'SRG-OS-000070-GPOS-00038']
-  tag 'documentable'
-  tag cci: ['CCI-004066', 'CCI-000192', 'CCI-000193']
-  tag nist: ['IA-5 (1) (h)', 'IA-5 (1) (a)', 'IA-5 (1) (a)']
+  tag cci: ['CCI-000192', 'CCI-004066', 'CCI-000193']
+  tag nist: ['IA-5 (1) (a)', 'IA-5 (1) (h)']
+  tag 'host'
+  tag 'container'
+
+  describe 'pwquality.conf:' do
+    let(:config) { parse_config_file('/etc/security/pwquality.conf', multiple_values: true) }
+    let(:setting) { 'ucredit' }
+    let(:value) { Array(config.params[setting]) }
+
+    it 'has `ucredit` set' do
+      expect(value).not_to be_empty, 'ucredit is not set in pwquality.conf'
+    end
+
+    it 'only sets `ucredit` once' do
+      expect(value.length).to eq(1), 'ucredit is commented or set more than once in pwquality.conf'
+    end
+
+    it 'does not set `ucredit` to a positive value' do
+      expect(value.first.to_i).to cmp < 0, 'ucredit is not set to a negative value in pwquality.conf'
+    end
+  end
 end

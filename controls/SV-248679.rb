@@ -6,9 +6,7 @@ The session lock is implemented at the point where session activity can be deter
 
 Regardless of where the session lock is determined and implemented, once invoked, the session lock must remain in place until the user reauthenticates. No other activity aside from reauthentication must unlock the system.
 
-OL 8 includes "authselect" as a tool to configure system identity, authentication sources, and providers by selecting a specific profile. A profile is a set of files that describes the resulting system configuration. When a profile is selected, "authselect" will create the "nsswitch.conf" and "PAM" stack to use identity and authentication sources defined by the profile.
-
-'
+OL 8 includes "authselect" as a tool to configure system identity, authentication sources, and providers by selecting a specific profile. A profile is a set of files that describes the resulting system configuration. When a profile is selected, "authselect" will create the "nsswitch.conf" and "PAM" stack to use identity and authentication sources defined by the profile.'
   desc 'check', %q(Verify the operating system enables a user's session lock until that user reestablishes access using established identification and authentication procedures with the following command:
 
 This requirement assumes the use of the OL 8 default graphical user interface, Gnome Shell. If the system does not have any graphical user interface installed, this requirement is Not Applicable.
@@ -34,15 +32,43 @@ Update the system databases:
 
 $ sudo dconf update)
   impact 0.5
-  tag check_id: 'C-52113r818654_chk'
   tag severity: 'medium'
+  tag gtitle: 'SRG-OS-000028-GPOS-00009'
+  tag satisfies: ['SRG-OS-000028-GPOS-00009', 'SRG-OS-000030-GPOS-00011']
   tag gid: 'V-248679'
   tag rid: 'SV-248679r1015046_rule'
   tag stig_id: 'OL08-00-020050'
-  tag gtitle: 'SRG-OS-000028-GPOS-00009'
   tag fix_id: 'F-52067r779602_fix'
-  tag satisfies: ['SRG-OS-000028-GPOS-00009', 'SRG-OS-000030-GPOS-00011']
-  tag 'documentable'
   tag cci: ['CCI-000056', 'CCI-000057', 'CCI-000058']
-  tag nist: ['AC-11 b', 'AC-11 a', 'AC-11 a']
+  tag nist: ['AC-11 b', 'AC-11 a']
+  tag 'host'
+
+  only_if('This control is Not Applicable to containers', impact: 0.0) {
+    !virtualization.system.eql?('docker')
+  }
+
+  if !input('smart_card_enabled')
+    impact 0.0
+    describe "The system is not smartcard enabled thus this control is Not
+    Applicable" do
+      skip "The system is not using Smartcards / PIVs to fulfil the MFA
+      requirement, this control is Not Applicable."
+    end
+  elsif !package('gnome-desktop3').installed?
+    impact 0.0
+    describe 'The system does not have GNOME installed' do
+      skip "The system does not have GNOME installed, this requirement is Not
+      Applicable."
+    end
+  else
+
+    # we're going to do this with grep to avoid doing really complicated tree parsing logic
+    dconf = command('grep -R removal-action /etc/dconf/db/*').stdout.strip
+
+    describe 'The dconf database' do
+      it 'should be set to initate a session lock when a smartcard is removed' do
+        expect(dconf).to match(/removal-action\s*=\s*['"]lock-screen['"]/), 'lock-screen setting not found'
+      end
+    end
+  end
 end

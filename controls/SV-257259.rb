@@ -26,4 +26,15 @@ The "logind" service must be restarted for the changes to take effect. To restar
   tag 'documentable'
   tag cci: ['CCI-001133']
   tag nist: ['SC-10']
+  tag 'container'
+  tag 'host'
+
+  only_if('This check applies to RHEL versions 8.7 or newer, if the system is RHEL version 8.6  or below, this check is not applicable.', impact: 0.0) {
+    os.version.minor >= 7
+  }
+  stop_idle_session_sec = input('stop_idle_session_sec')
+
+  describe parse_config_file('/etc/systemd/logind.conf') do
+    its('Login') { should include('StopIdleSessionSec' => stop_idle_session_sec.to_s) }
+  end
 end

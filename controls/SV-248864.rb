@@ -26,14 +26,36 @@ $ sudo systemctl start usbguard.service
 
 Note: Enabling and starting usbguard without properly configuring it for an individual system will immediately prevent any access over a usb device such as a keyboard or mouse.'
   impact 0.5
-  tag check_id: 'C-52298r780156_chk'
   tag severity: 'medium'
+  tag gtitle: 'SRG-OS-000378-GPOS-00163'
   tag gid: 'V-248864'
   tag rid: 'SV-248864r986388_rule'
   tag stig_id: 'OL08-00-040141'
-  tag gtitle: 'SRG-OS-000378-GPOS-00163'
   tag fix_id: 'F-52252r780157_fix'
-  tag 'documentable'
   tag cci: ['CCI-001958', 'CCI-003959']
   tag nist: ['IA-3', 'CM-7 (9) (b)']
+  tag 'host'
+
+  only_if('This requirement does not apply to containers', impact: 0.0) {
+    !virtualization.system.eql?('docker')
+  }
+  is_virtualized_system_no_usb_devices = input('is_virtualized_system_no_usb_devices')
+
+  if is_virtualized_system_no_usb_devices
+    impact 0.0
+    describe 'The system is a virtual machine with no virtual or physical USB peripherals attached' do
+      skip 'The system is a virtual machine with no virtual or physical USB peripherals attached, this control is Not Applicable.'
+    end
+  else
+    peripherals_service = input('peripherals_service')
+
+    describe service(peripherals_service) do
+      it "is expected to be running. \n\tPlease ensure to configure the service to ensure your devices function as expected." do
+        expect(subject.running?).to be(true), "The #{peripherals_service} service is not running"
+      end
+      it "is expected to be enabled. \n\tPlease ensure to configure the service to ensure your devices function as expected." do
+        expect(subject.enabled?).to be(true), "The #{peripherals_service} service is not enabled"
+      end
+    end
+  end
 end

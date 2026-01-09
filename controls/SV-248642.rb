@@ -1,6 +1,7 @@
 control 'SV-248642' do
   title 'OL 8 must be configured so that all files and directories contained in local interactive user home directories are group-owned by a group of which the home directory owner is a member.'
-  desc "If a local interactive user's files are group-owned by a group of which the user is not a member, unintended users may be able to access them."
+  desc "If a local interactive user's files are group-owned by a group of
+which the user is not a member, unintended users may be able to access them."
   desc 'check', %q(Verify all files and directories in a local interactive user home directory are group-owned by a group that the user is a member.
 
 Check the group owner of all files and directories in a local interactive user's home directory with the following command:
@@ -19,20 +20,36 @@ sa:x:100:juan,shelley,bob,smithj
 smithj:x:521:smithj
 
 If any files or directories are group owned by a group that the directory owner is not a member of, this is a finding.)
-  desc 'fix', %q(Change the group of a local interactive user's files and directories to a group that the interactive user is a member. To change the group owner of a local interactive user's files and directories, use the following command:
+  desc 'fix', %q(Change the group of a local interactive user's files and directories to a
+group that the interactive user is a member. To change the group owner of a
+local interactive user's files and directories, use the following command:
 
-Note: The example will be for the user smithj, who has a home directory of "/home/smithj" and is a member of the users group.
+    Note: The example will be for the user smithj, who has a home directory of
+"/home/smithj" and is a member of the users group.
 
-$ sudo chgrp smithj /home/smithj/<file or directory>)
+    $ sudo chgrp smithj /home/smithj/<file or directory>)
   impact 0.5
-  tag check_id: 'C-52076r779490_chk'
   tag severity: 'medium'
+  tag gtitle: 'SRG-OS-000480-GPOS-00227'
   tag gid: 'V-248642'
   tag rid: 'SV-248642r991589_rule'
   tag stig_id: 'OL08-00-010741'
-  tag gtitle: 'SRG-OS-000480-GPOS-00227'
   tag fix_id: 'F-52030r779491_fix'
-  tag 'documentable'
   tag cci: ['CCI-000366']
   tag nist: ['CM-6 b']
+  tag 'host'
+  tag 'container'
+
+  ignore_shells = input('non_interactive_shells').join('|')
+  exempt_home_users = input('exempt_home_users').join('|')
+
+  findings = Set[]
+  users.where { !username.match(exempt_home_users) && !shell.match(ignore_shells) && (uid >= 1000 || uid.zero?) }.entries.each do |user_info|
+    findings += command("find #{user_info.home} -xdev -not -gid #{user_info.gid}").stdout.split("\n")
+  end
+  describe 'All files in the users home directory' do
+    it 'are expected to be owned by the user' do
+      expect(findings).to be_empty, "Some files in the users home directory are not owned by the user. Please ensure all files are owned by thier user. Findings:\n\t- #{findings.join("\n\t- ")}"
+    end
+  end
 end

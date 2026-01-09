@@ -1,10 +1,17 @@
 control 'SV-248833' do
   title 'OL 8 must disable mounting of cramfs.'
-  desc 'It is detrimental for operating systems to provide, or install by default, functionality exceeding requirements or mission objectives. These unnecessary capabilities or services are often overlooked and therefore may remain unsecured. They increase the risk to the platform by providing additional attack vectors.
+  desc 'It is detrimental for operating systems to provide, or install by
+default, functionality exceeding requirements or mission objectives. These
+unnecessary capabilities or services are often overlooked and therefore may
+remain unsecured. They increase the risk to the platform by providing
+additional attack vectors.
 
-Removing support for unneeded filesystem types reduces the local attack surface of the server.
+    Removing support for unneeded filesystem types reduces the local attack
+surface of the server.
 
-Compressed ROM/RAM file system (or cramfs) is a read-only file system designed for simplicity and space-efficiency. It is mainly used in embedded and small-footprint systems.'
+    Compressed ROM/RAM file system (or cramfs) is a read-only file system
+designed for simplicity and space-efficiency.  It is mainly used in embedded
+and small-footprint systems.'
   desc 'check', 'Verify the operating system disables the ability to load the cramfs kernel module.
 
      $ sudo grep -ri cramfs /etc/modprobe.d/* | grep -i "/bin/false"
@@ -29,14 +36,21 @@ Add or update the following lines in the file "/etc/modprobe.d/blacklist.conf":
 
 Reboot the system for the settings to take effect.'
   impact 0.3
-  tag check_id: 'C-52267r943081_chk'
   tag severity: 'low'
+  tag gtitle: 'SRG-OS-000095-GPOS-00049'
   tag gid: 'V-248833'
   tag rid: 'SV-248833r958478_rule'
   tag stig_id: 'OL08-00-040025'
-  tag gtitle: 'SRG-OS-000095-GPOS-00049'
   tag fix_id: 'F-52221r943082_fix'
-  tag 'documentable'
   tag cci: ['CCI-000381']
   tag nist: ['CM-7 a']
+  tag 'host'
+
+  only_if('This control is Not Applicable to containers', impact: 0.0) {
+    !virtualization.system.eql?('docker')
+  }
+  describe kernel_module('cramfs') do
+    it { should be_disabled }
+    it { should be_blacklisted }
+  end
 end
