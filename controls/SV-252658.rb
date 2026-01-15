@@ -38,7 +38,7 @@ Add the following line to the "/etc/pam.d/system-auth" file (or modify the line 
 
   pam_auth_files = input('pam_auth_files')
 
-  only_if('This requirement only applies to RHEL 8 versions below 8.4', impact: 0.0) do
+  only_if('This requirement only applies to OL 8 versions below 8.4', impact: 0.0) do
     os.version.minor < 4
   end
 

@@ -45,7 +45,7 @@ deny = 3'
   MESSAGE
   if os.version.minor >= 2
     impact 0.0
-    describe 'This requirement only applies to RHEL 8 version(s) 8.0 and 8.1' do
+    describe 'This requirement only applies to OL 8 version(s) 8.0 and 8.1' do
       skip message
     end
   else

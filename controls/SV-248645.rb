@@ -44,7 +44,7 @@ following command:
   expected_mode = input('initialization_file_mode')
   failing_files = ifiles.select { |ifile| file(ifile).more_permissive_than?(expected_mode) }
 
-  describe 'All RHEL 8 local initialization files' do
+  describe 'All OL 8 local initialization files' do
     it "must have mode '#{expected_mode}' or less permissive" do
       expect(failing_files).to be_empty, "Failing files:\n\t- #{failing_files.join("\n\t- ")}"
     end

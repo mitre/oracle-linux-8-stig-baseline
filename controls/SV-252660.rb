@@ -46,7 +46,7 @@ Remove any configurations that conflict with the above value.'
   tag 'host'
   tag 'container'
 
-  only_if('This requirement only applies to RHEL 8 versions 8.4 or above', impact: 0.0) {
+  only_if('This requirement only applies to OL 8 versions 8.4 or above', impact: 0.0) {
     os.version.minor >= 4
   }
 

@@ -36,7 +36,7 @@ Add the following line to the "/etc/pam.d/password-auth" file (or modify the lin
   tag 'host'
   tag 'container'
 
-  only_if('This requirement only applies to RHEL 8 versions below 8.4', impact: 0.0) {
+  only_if('This requirement only applies to OL 8 versions below 8.4', impact: 0.0) {
     os.version.minor < 4
   }
 

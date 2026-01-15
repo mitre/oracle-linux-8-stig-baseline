@@ -36,7 +36,7 @@ $ sudo chgrp <group> <file>'
       failing_files += command("find / -xdev -xautofs -fstype #{fs} -nogroup").stdout.strip.split("\n")
     end
 
-    describe 'All files on RHEL 8' do
+    describe 'All files on OL 8' do
       it 'should have a group' do
         expect(failing_files).to be_empty, "Files with no group:\n\t- #{failing_files.join("\n\t- ")}"
       end
