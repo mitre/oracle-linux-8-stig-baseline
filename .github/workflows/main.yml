@@ -24,7 +24,7 @@ jobs:
       OCI_CLI_TENANCY: ${{ secrets.OCI_CLI_TENANCY }}
       OCI_CLI_REGION: ${{ vars.OCI_CLI_REGION }}
       OCI_CLI_KEY_CONTENT: ${{ secrets.OCI_CLI_KEY_CONTENT }}
-      OCI_COMPARTMENT_OCID: ${{ secrets.OCI_CLI_TENANCY }}
+      OCI_COMPARTMENT_OCID: ${{ secrets.OCI_COMPARTMENT_OCID }}
       OCI_SUBNET_OCID: ${{ secrets.OCI_SUBNET_OCID }}
       OCI_INSTANCE_SHAPE: ${{ vars.OCI_INSTANCE_SHAPE }}
       OCI_AVAILABILITY_DOMAIN: ${{ vars.OCI_AVAILABILITY_DOMAIN }}
@@ -138,3 +138,11 @@ jobs:
         uses: mitre/saf_action@v1
         with:
           command_string: "validate threshold -i spec/results/${{ env.PLATFORM }}_${{ env.SUITE }}.json -F ${{ env.SUITE }}.threshold.yml"
+
+      - name: Save Kitchen logs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ github.workflow }}-${{ env.COMMIT_SHORT_SHA }}-kitchen-logs
+          if-no-files-found: warn
+          path: .kitchen/logs/

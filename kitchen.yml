@@ -4,9 +4,9 @@ platforms:
 
 driver:
   name: oci
-  compartment_id: <%= ENV['OCI_CLI_TENANCY'] %>
+  compartment_id: <%= ENV['OCI_COMPARTMENT_OCID'] %>
   availability_domain: <%= ENV['OCI_AVAILABILITY_DOMAIN'] %>
-  image_name: Oracle Linux 8.\d+
+  image_name: 'Oracle-Linux-8'
   shape: <%= ENV['OCI_INSTANCE_SHAPE'] %>
   subnet_id: <%= ENV['OCI_SUBNET_OCID'] %>
   ssh_keygen: true
