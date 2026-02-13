@@ -19,7 +19,7 @@ inspec.lock
 vendor/**
 saf-cli.log
 *.log
-delta/
+*results*.json
 
 # Used by dotenv library to load environment variables.
 # .env
