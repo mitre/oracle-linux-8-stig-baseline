@@ -31,30 +31,30 @@ verifier:
 suites:
   - name: baseline
 
-lifecycle:
-  pre_converge:
-    - remote: |
-        # echo "+++ Refreshing DNF package cache +++"
-        # sudo dnf -y clean all
-        echo ""
-        echo "+++ Updating DNF Packages +++"
-        sudo dnf -y update --nogpgcheck --nobest
-        echo ""
-        echo "+++ Installing needed packages for workflow and utility +++\n\n"
-        sudo dnf -y install --nogpgcheck bc bind-utils redhat-lsb-core vim git wget gcc openssl-devel libffi-devel bzip2-devel
-        echo ""
-        echo "+++ Installing Python 3.9 +++\n\n"
-        export PATH=/usr/local/bin:$PATH
-        sudo dnf -y install python3.9
-        sudo dnf -y install python3-pip
-        sudo update-alternatives --set python3 /usr/bin/python3.9
-        sudo python3 -m pip install jmespath
-        echo ""
-        echo "+++ Updating the opc user to keep sudo working after hardening phase +++\n\n"
-        sudo chage -d $(( $( date +%s ) / 86400 )) opc
-        echo ""
-        echo "+++ updating opc sudo config for hardening phase +++\n\n"
-        sudo chmod 600 /etc/sudoers && sudo sed -i'' "/opc/d" /etc/sudoers && sudo chmod 400 /etc/sudoers
+# lifecycle:
+#   pre_converge:
+#     - remote: |
+#         # echo "+++ Refreshing DNF package cache +++"
+#         # sudo dnf -y clean all
+#         echo ""
+#         echo "+++ Updating DNF Packages +++"
+#         sudo dnf -y update --nogpgcheck --nobest
+#         echo ""
+#         echo "+++ Installing needed packages for workflow and utility +++\n\n"
+#         sudo dnf -y install --nogpgcheck bc bind-utils redhat-lsb-core vim git wget gcc openssl-devel libffi-devel bzip2-devel
+#         echo ""
+#         echo "+++ Installing Python 3.9 +++\n\n"
+#         export PATH=/usr/local/bin:$PATH
+#         sudo dnf -y install python3.9
+#         sudo dnf -y install python3-pip
+#         sudo update-alternatives --set python3 /usr/bin/python3.9
+#         sudo python3 -m pip install jmespath
+#         echo ""
+#         echo "+++ Updating the opc user to keep sudo working after hardening phase +++\n\n"
+#         sudo chage -d $(( $( date +%s ) / 86400 )) opc
+#         echo ""
+#         echo "+++ updating opc sudo config for hardening phase +++\n\n"
+#         sudo chmod 600 /etc/sudoers && sudo sed -i'' "/opc/d" /etc/sudoers && sudo chmod 400 /etc/sudoers
 
 transport:
   username: opc
