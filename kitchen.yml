@@ -10,7 +10,6 @@ driver:
   shape: <%= ENV['OCI_INSTANCE_SHAPE'] %>
   subnet_id: <%= ENV['OCI_SUBNET_OCID'] %>
   ssh_keygen: true
-  ssh_keytype: ed25519
   
 provisioner:
   name: shell
@@ -26,7 +25,6 @@ verifier:
     - name: OL8 STIG Baseline
       path: .
   load_plugins: true
-
 
 suites:
   - name: baseline
