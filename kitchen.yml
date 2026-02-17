@@ -10,9 +10,6 @@ driver:
   shape: <%= ENV['OCI_INSTANCE_SHAPE'] %>
   subnet_id: <%= ENV['OCI_SUBNET_OCID'] %>
   ssh_keygen: true
-  shape_config:
-    ocpus: 1
-    memory_in_gbs: 1
   
 provisioner:
   name: shell
