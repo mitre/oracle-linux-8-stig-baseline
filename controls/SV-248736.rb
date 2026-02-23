@@ -38,7 +38,7 @@ Replace "[audit_log_directory]" with the correct audit log directory path. By de
   only_if('This control is Not Applicable to containers', impact: 0.0) {
     !virtualization.system.eql?('docker')
   }
-  describe directory(auditd_conf('/etc/audit/auditd.conf').log_file.split('/')[0..-2].join('/')) do
+  describe directory(auditd_conf('/etc/audit/auditd.conf').log_file.to_s.split('/')[0..-2].join('/')) do
     its('group') { should be_in input('var_log_audit_group') }
   end
 end
