@@ -30,4 +30,19 @@ $ sudo systemctl daemon-reload'
   tag 'documentable'
   tag cci: ['CCI-000366']
   tag nist: ['CM-6 b']
+
+  only_if('This control is Not Applicable to containers', impact: 0.0) {
+    !virtualization.system.eql?('docker')
+  }
+
+  d = systemd_service('debug-shell.service')
+
+  describe.one do
+    describe d do
+      its('params.LoadState') { should eq 'masked' }
+    end
+    describe d do
+      its('params.LoadState') { should eq 'not-found' }
+    end
+  end
 end

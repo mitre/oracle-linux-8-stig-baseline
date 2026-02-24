@@ -20,4 +20,14 @@ $ sudo yum remove iprutils'
   tag 'documentable'
   tag cci: ['CCI-000366']
   tag nist: ['CM-6 b']
+
+  if input('iprutils_required')
+    describe package('iprutils') do
+      it { should be_installed }
+    end
+  else
+    describe package('iprutils') do
+      it { should_not be_installed }
+    end
+  end
 end

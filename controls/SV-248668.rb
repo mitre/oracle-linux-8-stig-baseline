@@ -42,8 +42,8 @@ file to match the following lines:
   tag 'container'
 
   message = <<~MESSAGE
-    \n\nThis check only applies to RHEL versions 8.0 or 8.1.\n
-    The system is running RHEL version: #{os.version}, this requirement is Not Applicable.
+    \n\nThis check only applies to OL versions 8.0 or 8.1.\n
+    The system is running OL version: #{os.version}, this requirement is Not Applicable.
   MESSAGE
   only_if(message, impact: 0.0) do
     os.version.minor.between?(0, 1)

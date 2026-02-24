@@ -24,4 +24,14 @@ $ sudo yum remove gssproxy'
   tag 'documentable'
   tag cci: ['CCI-000366']
   tag nist: ['CM-6 b']
+
+  if input('gssproxy_required')
+    describe package('gssproxy') do
+      it { should be_installed }
+    end
+  else
+    describe package('gssproxy') do
+      it { should_not be_installed }
+    end
+  end
 end

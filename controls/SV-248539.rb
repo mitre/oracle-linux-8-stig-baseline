@@ -33,4 +33,19 @@ $ sudo grub2-mkconfig -o /boot/grub2/grub.cfg'
   tag 'documentable'
   tag cci: ['CCI-000213']
   tag nist: ['AC-3']
+
+  only_if('This requirement is Not Applicable in the container', impact: 0.0) {
+    !virtualization.system.eql?('docker')
+  }
+
+  if file('/sys/firmware/efi').exist?
+    impact 0.0
+    describe 'System running UEFI' do
+      skip 'The System is running UEFI, this control is Not Applicable.'
+    end
+  else
+    describe parse_config_file(input('grub_main_cfg')) do
+      its('set superusers') { should_not be_empty }
+    end
+  end
 end

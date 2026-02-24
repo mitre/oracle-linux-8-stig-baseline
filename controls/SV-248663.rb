@@ -33,4 +33,16 @@ audit'
   tag 'documentable'
   tag cci: ['CCI-000044', 'CCI-002238']
   tag nist: ['AC-7 a', 'AC-7 b']
+
+  message = <<~MESSAGE
+    \n\nThis check only applies to OL versions 8.0 or 8.1.\n
+    The system is running OL version: #{os.version}, this requirement is Not Applicable.
+  MESSAGE
+  only_if(message, impact: 0.0) do
+    os.version.minor.between?(0, 1)
+  end
+
+  describe parse_config_file('/etc/security/faillock.conf') do
+    its('audit') { should_not be_nil }
+  end
 end

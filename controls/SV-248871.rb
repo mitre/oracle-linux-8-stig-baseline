@@ -26,4 +26,12 @@ $ sudo systemctl daemon-reload'
   tag 'documentable'
   tag cci: ['CCI-000366']
   tag nist: ['CM-6 b']
+
+  only_if('This control is Not Applicable to containers', impact: 0.0) {
+    !virtualization.system.eql?('docker')
+  }
+
+  describe parse_config_file('/etc/systemd/system.conf') do
+    its('Manager') { should include('CtrlAltDelBurstAction' => 'none') }
+  end
 end

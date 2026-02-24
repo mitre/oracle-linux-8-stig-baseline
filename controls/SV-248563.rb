@@ -28,4 +28,19 @@ The SSH service must be restarted for changes to take effect.'
   tag 'documentable'
   tag cci: ['CCI-000366']
   tag nist: ['CM-6 b']
+
+  describe parse_config_file('/etc/sysconfig/sshd') do
+    its('SSH_USE_STRONG_RNG') { should cmp '32' }
+  end
+
+  if virtualization.system.eql?('docker') && !file('/etc/sysconfig/sshd').exist?
+    impact 0.0
+    describe 'Control not applicable - SSH is not installed within containerized OL' do
+      skip 'Control not applicable - SSH is not installed within containerized OL'
+    end
+  else
+    describe parse_config_file('/etc/sysconfig/sshd') do
+      its('SSH_USE_STRONG_RNG') { should cmp 32 }
+    end
+  end
 end

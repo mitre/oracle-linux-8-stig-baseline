@@ -20,4 +20,14 @@ $ sudo yum remove tuned'
   tag 'documentable'
   tag cci: ['CCI-000366']
   tag nist: ['CM-6 b']
+
+  if input('tuned_required')
+    describe package('tuned') do
+      it { should be_installed }
+    end
+  else
+    describe package('tuned') do
+      it { should_not be_installed }
+    end
+  end
 end

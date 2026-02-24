@@ -29,4 +29,13 @@ $ sudo yum install kbd.x86_64'
   tag 'documentable'
   tag cci: ['CCI-000056', 'CCI-000057', 'CCI-000058']
   tag nist: ['AC-11 b', 'AC-11 a', 'AC-11 a']
+
+  only_if('This control is Not Applicable to containers', impact: 0.0) {
+    !virtualization.system.eql?('docker')
+  }
+
+  describe file('/usr/bin/vlock') do
+    it { should exist }
+    it { should be_executable }
+  end
 end

@@ -22,4 +22,12 @@ If a separate entry for the file system/partition "/tmp" does not exist, this is
   tag 'documentable'
   tag cci: ['CCI-000366']
   tag nist: ['CM-6 b']
+
+  only_if('This control is Not Applicable to containers', impact: 0.0) {
+    !virtualization.system.eql?('docker')
+  }
+
+  describe etc_fstab.where { mount_point == '/tmp' } do
+    it { should exist }
+  end
 end

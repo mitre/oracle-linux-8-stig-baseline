@@ -61,4 +61,26 @@ $ sudo service auditd restart'
   tag 'documentable'
   tag cci: ['CCI-000130', 'CCI-000135', 'CCI-000169', 'CCI-000172', 'CCI-002884']
   tag nist: ['AU-3 a', 'AU-3 (1)', 'AU-12 a', 'AU-12 c', 'MA-4 (1) (a)']
+
+  if os.version.minor < 2
+    m = /dir=(?<dir>\S*)/
+    s = command('grep -i pam_faillock.so /etc/pam.d/system-auth').stdout
+    dir_match = m.match(s)
+    audit_command = (dir_match[:dir] if dir_match)
+  else
+    audit_command = parse_config_file('/etc/security/faillock.conf').params('dir')
+  end
+
+  only_if('This control is Not Applicable to containers', impact: 0.0) {
+    !virtualization.system.eql?('docker')
+  }
+
+  describe 'Command' do
+    it "#{audit_command} is audited properly" do
+      audit_rule = auditd.file(audit_command)
+      expect(audit_rule).to exist
+      expect(audit_rule.permissions.flatten).to include('w', 'a')
+      expect(audit_rule.key.uniq).to include(input('audit_rule_keynames').merge(input('audit_rule_keynames_overrides'))[audit_command])
+    end
+  end
 end

@@ -33,8 +33,8 @@ The SSH service must be restarted for changes to "sshd_config" to take effect.'
 
   if virtualization.system.eql?('docker') && !file('/etc/ssh/sshd_config').exist?
     impact 0.0
-    describe 'Control not applicable - SSH is not installed within containerized RHEL' do
-      skip 'Control not applicable - SSH is not installed within containerized RHEL'
+    describe 'Control not applicable - SSH is not installed within containerized OL' do
+      skip 'Control not applicable - SSH is not installed within containerized OL'
     end
   else
     describe sshd_active_config do

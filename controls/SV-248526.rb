@@ -88,7 +88,7 @@ The SSH service must be restarted for changes to take effect.'
   tag 'host'
   tag 'container-conditional'
 
-  only_if('Control not applicable - SSH is not installed within containerized RHEL', impact: 0.0) {
+  only_if('Control not applicable - SSH is not installed within containerized OL', impact: 0.0) {
     !virtualization.system.eql?('docker') || file('/etc/ssh/sshd_config').exist?
   }
 

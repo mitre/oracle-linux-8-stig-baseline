@@ -32,4 +32,23 @@ A reboot is required for the changes to take effect.)
   tag 'documentable'
   tag cci: ['CCI-000877']
   tag nist: ['MA-4 c']
+
+  only_if('Control not applicable - SSH is not installed within containerized OL', impact: 0.0) {
+    !(virtualization.system.eql?('docker') && !file('/etc/sysconfig/sshd').exist?)
+  }
+
+  required_ciphers = input('openssh_client_required_ciphers')
+
+  describe parse_config_file('/etc/crypto-policies/back-ends/opensshserver.config') do
+    its('CRYPTO_POLICY') { should_not be_nil }
+  end
+
+  crypto_policy = parse_config_file('/etc/crypto-policies/back-ends/opensshserver.config')['CRYPTO_POLICY']
+
+  unless crypto_policy.nil?
+    describe parse_config(crypto_policy.gsub(/\s|'/, "\n")) do
+      # -oCiphers is a single line of comma-delineated cipher values
+      its('-oCiphers') { should cmp required_ciphers.join(',') }
+    end
+  end
 end

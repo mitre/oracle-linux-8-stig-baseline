@@ -51,4 +51,19 @@ Add the following setting to prevent non-privileged users from modifying it:
   tag 'documentable'
   tag cci: ['CCI-000057', 'CCI-000060']
   tag nist: ['AC-11 a', 'AC-11 (1)']
+
+  only_if('This requirement is Not Applicable in the container', impact: 0.0) {
+    !virtualization.system.eql?('docker')
+  }
+
+  if !package('gnome-desktop3').installed?
+    impact 0.0
+    describe 'The GNOME desktop is not installed, this control is Not Applicable.' do
+      skip 'The GNOME desktop is not installed, this control is Not Applicable.'
+    end
+  else
+    describe command('grep -i lock-enabled /etc/dconf/db/local.d/locks/*') do
+      its('stdout.split') { should include '/org/gnome/desktop/screensaver/lock-enabled' }
+    end
+  end
 end
