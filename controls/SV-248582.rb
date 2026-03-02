@@ -23,4 +23,12 @@ If any occurrences of "!authenticate" return from the command, this is a finding
   tag 'documentable'
   tag cci: ['CCI-004895', 'CCI-002038']
   tag nist: ['SC-11 b', 'IA-11']
+
+  only_if('Control not applicable within a container without sudo installed', impact: 0.0) {
+    !(virtualization.system.eql?('docker') && !command('sudo').exist?)
+  }
+
+  describe sudoers(input('sudoers_config_files')) do
+    its('settings.Defaults') { should_not include '!authenticate' }
+  end
 end

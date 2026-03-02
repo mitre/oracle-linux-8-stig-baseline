@@ -38,4 +38,15 @@ $ sudo reboot'
   tag 'documentable'
   tag cci: ['CCI-001084']
   tag nist: ['SC-3']
+
+  only_if('This control is Not Applicable to containers', impact: 0.0) {
+    !virtualization.system.eql?('docker')
+  }
+
+  grub_stdout = command('grep -i grub_cmdline_linux /etc/default/grub').stdout.strip
+
+  describe 'GRUB2 is configured to mitigate use-after-free vulnerabilities by employing memory poisoning' do
+    subject { grub_stdout }
+    it { should match(/\binit_on_free=1\b/i) }
+  end
 end
