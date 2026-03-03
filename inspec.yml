@@ -485,7 +485,7 @@ inputs:
 
   # SV-230353
   - name: system_inactivity_timeout
-    description: Maximum system inactivity timeout (time in seconds).
+    description: Maximum system inactivity timeout (time in seconds)
     type: Numeric
     value: 900
 
@@ -647,7 +647,7 @@ inputs:
 
   # SV-230392
   - name: disk_full_action
-    description: Audit system must take appropriate action when the audit storage volume is full.
+    description: Audit system must take appropriate action when the audit storage volume is full
     type: Array
     value:
       - SYSLOG
@@ -739,7 +739,7 @@ inputs:
 
   # SV-230334
   - name: pam_auth_files
-    description: THe pam.d auth paths
+    description: The pam.d auth paths
     type: Hash
     value:
       system-auth: /etc/pam.d/system-auth
@@ -773,7 +773,7 @@ inputs:
 
   # SV-230511, SV-230512, SV-230513
   - name: mount_tmp_options
-    description: rhel_08_04012[3-5] - OL 8 must mount /tmp with the (nodev|nosuid|noexec) option.
+    description: rhel_08_04012[3-5] - OL 8 must mount /tmp with the (nodev|nosuid|noexec) option
     type: Hash
     value:
       nodev: true
@@ -782,7 +782,7 @@ inputs:
 
   # SV-245540
   - name: skip_endpoint_security_tool
-    description: rhel_08_010001 - The OL 8 operating system must implement the Endpoint Security for Linux Threat Prevention tool.
+    description: rhel_08_010001 - The OL 8 operating system must implement the Endpoint Security for Linux Threat Prevention tool
     type: Boolean
     value: false
 
