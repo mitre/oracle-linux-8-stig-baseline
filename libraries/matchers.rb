@@ -5,6 +5,7 @@ RSpec::Matchers.define :match_pam_rule do |expected|
     @expected = expected.to_s
     actual_munge = {}
     retval = initialize_retval
+    matched_potentials = false
 
     validate_operator if integer_arg?
 
@@ -14,10 +15,13 @@ RSpec::Matchers.define :match_pam_rule do |expected|
         potentials = actual.find_all { |line| line.match?(expected_line) }
         next unless potentials.any?
 
+        matched_potentials = true
         actual_munge[service] ||= []
         actual_munge[service] += potentials.map(&:to_s)
         retval = process_potentials(potentials, retval)
       end
+
+      retval = false unless matched_potentials
     else
       retval = actual.include?(expected, { service_name: actual.service })
     end
