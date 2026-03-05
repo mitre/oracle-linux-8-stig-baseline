@@ -30,4 +30,21 @@ $ sudo augenrules --load'
   tag 'documentable'
   tag cci: ['CCI-000172']
   tag nist: ['AU-12 c']
+
+  only_if('This control is Not Applicable to containers', impact: 0.0) {
+    !virtualization.system.eql?('docker')
+  }
+
+  describe 'Cron auditing configuration' do
+    cron_paths = ['/etc/cron.d', '/var/spool/cron']
+
+    cron_paths.each do |cron_path|
+      it "#{cron_path} is audited with correct permissions and key" do
+        audit_rule = auditd.file(cron_path)
+        expect(audit_rule).to exist
+        expect(audit_rule.permissions.flatten).to include('w', 'a')
+        expect(audit_rule.key.uniq).to include('cronjobs')
+      end
+    end
+  end
 end

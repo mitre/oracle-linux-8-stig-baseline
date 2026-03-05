@@ -30,4 +30,22 @@ Reboot the system for the change to take effect.'
   tag 'documentable'
   tag cci: ['CCI-000366']
   tag nist: ['CM-6 b']
+
+  only_if('This control is Not Applicable to containers', impact: 0.0) {
+    !virtualization.system.eql?('docker')
+  }
+
+  describe 'GRUB mitigations configuration' do
+    grub_stdout = command('grub2-editenv - list').stdout
+    parsed_grub = parse_config(grub_stdout)
+    parsed_default = parse_config_file('/etc/default/grub')
+
+    it 'should not have mitigations disabled in current config' do
+      expect(parsed_grub['kernelopts']).not_to match(/mitigations=off/)
+    end
+
+    it 'should not have mitigations disabled in default config' do
+      expect(parsed_default['GRUB_CMDLINE_LINUX']).not_to match(/mitigations=off/)
+    end
+  end
 end
