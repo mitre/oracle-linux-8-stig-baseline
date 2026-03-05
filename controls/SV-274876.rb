@@ -1,5 +1,5 @@
 control 'SV-274876' do
-  title 'OL 8  must audit any script or executable called by cron as root or by any privileged user.'
+  title 'OL 8 must audit any script or executable called by cron as root or by any privileged user.'
   desc 'Any script or executable called by cron as root or by any privileged user must be owned by that user and must have the permissions 755 or more restrictive and should have no extended rights that allow any nonprivileged user to modify the script or executable.'
   desc 'check', 'Verify that OL 8 is configured to audit the execution of any system call made by cron as root or as any privileged user.
 
@@ -35,16 +35,15 @@ $ sudo augenrules --load'
     !virtualization.system.eql?('docker')
   }
 
-cron_paths = ['/etc/cron.d', '/var/spool/cron']
+  cron_paths = ['/etc/cron.d', '/var/spool/cron']
 
   describe 'Cron auditing configuration' do
-    
     cron_paths.each do |cron_path|
-      it "#{cron_path} is audited with correct permissions and key" do
+      it "#{cron_path} is audited with proper permissions and key" do
         audit_rule = auditd.file(cron_path)
         expect(audit_rule).to exist
         expect(audit_rule.permissions.flatten).to include('w', 'a')
-        expect(audit_rule.key.uniq).to include('cronjobs')
+        expect(Array(audit_rule.key).flatten).to include('cronjobs')
       end
     end
   end
