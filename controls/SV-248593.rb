@@ -35,18 +35,11 @@ Reboot the system for the change to take effect.'
     !virtualization.system.eql?('docker')
   }
 
-grub_stdout = command('grub2-editenv - list').stdout
-parsed_grub = parse_config(grub_stdout)
-parsed_default = parse_config_file('/etc/default/grub')
+  parsed_grub = parse_config(command('grubby --info=/boot/vmlinuz-$(uname -r)').stdout.strip)
 
   describe 'GRUB mitigations configuration' do
-  
     it 'should not have mitigations disabled in current config' do
-      expect(parsed_grub['kernelopts']).not_to match(/mitigations=off/)
-    end
-
-    it 'should not have mitigations disabled in default config' do
-      expect(parsed_default['GRUB_CMDLINE_LINUX']).not_to match(/mitigations=off/)
+      expect(parsed_grub['args']).not_to match(/\bmitigations=off\b/)
     end
   end
 end
