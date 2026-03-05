@@ -35,9 +35,10 @@ $ sudo augenrules --load'
     !virtualization.system.eql?('docker')
   }
 
-  describe 'Cron auditing configuration' do
-    cron_paths = ['/etc/cron.d', '/var/spool/cron']
+cron_paths = ['/etc/cron.d', '/var/spool/cron']
 
+  describe 'Cron auditing configuration' do
+    
     cron_paths.each do |cron_path|
       it "#{cron_path} is audited with correct permissions and key" do
         audit_rule = auditd.file(cron_path)

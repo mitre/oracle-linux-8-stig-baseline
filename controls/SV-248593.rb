@@ -35,11 +35,12 @@ Reboot the system for the change to take effect.'
     !virtualization.system.eql?('docker')
   }
 
-  describe 'GRUB mitigations configuration' do
-    grub_stdout = command('grub2-editenv - list').stdout
-    parsed_grub = parse_config(grub_stdout)
-    parsed_default = parse_config_file('/etc/default/grub')
+grub_stdout = command('grub2-editenv - list').stdout
+parsed_grub = parse_config(grub_stdout)
+parsed_default = parse_config_file('/etc/default/grub')
 
+  describe 'GRUB mitigations configuration' do
+  
     it 'should not have mitigations disabled in current config' do
       expect(parsed_grub['kernelopts']).not_to match(/mitigations=off/)
     end
