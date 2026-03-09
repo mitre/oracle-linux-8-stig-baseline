@@ -16,9 +16,7 @@ DoD has defined the list of events for which OL 8 will provide an audit record g
 
 4) All kernel module load, unload, and restart actions.
 
-From "Pam_Faillock man" pages: Note the default directory that "pam_faillock" uses is usually cleared on system boot so the access will be reenabled after system reboot. If that is undesirable, a different tally directory must be set with the "dir" option.
-
-'
+From "Pam_Faillock man" pages: Note the default directory that "pam_faillock" uses is usually cleared on system boot so the access will be reenabled after system reboot. If that is undesirable, a different tally directory must be set with the "dir" option.'
   desc 'check', 'Verify OL 8 generates an audit record for any attempted modifications to the "faillock" file.
 
 Determine where the faillock tallies are stored with the following commands:

@@ -9,13 +9,15 @@ additional attack vectors.
     A core dump includes a memory image taken at the time the operating system
 terminates an application. The memory image could contain sensitive data and is
 generally useful only for developers trying to debug problems.'
-  desc 'check', 'Verify the operating system disables storing core dumps for all users with the following command:
+  desc 'check', 'Note: If kernel dumps are disabled in accordance with OL08-00-010671, this requirement is not applicable.
 
-$ sudo grep -i storage /etc/systemd/coredump.conf
-
-Storage=none
-
-If the "Storage" item is missing or commented out or the value is anything other than "none", and the need for core dumps is not documented with the Information System Security Officer (ISSO) as an operational requirement for all domains that have the "core" item assigned, this is a finding.'
+Verify OL 8 disables storing core dumps for all users with the following command: 
+ 
+$ sudo grep -i storage /etc/systemd/coredump.conf 
+ 
+Storage=none 
+ 
+If the "Storage" item is missing or commented out or the value is anything other than "none", and the need for core dumps is not documented with the information system security officer (ISSO) as an operational requirement for all domains that have the "core" item assigned, this is a finding.'
   desc 'fix', 'Configure OL 8 to disable storing core dumps for all users.
 
 Add or modify the following line in "/etc/systemd/coredump.conf":
@@ -25,7 +27,7 @@ Storage=none'
   tag severity: 'medium'
   tag gtitle: 'SRG-OS-000480-GPOS-00227'
   tag gid: 'V-248632'
-  tag rid: 'SV-248632r991589_rule'
+  tag rid: 'SV-248632r1156671_rule'
   tag stig_id: 'OL08-00-010674'
   tag fix_id: 'F-52020r779461_fix'
   tag cci: ['CCI-000366']

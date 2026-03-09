@@ -6,9 +6,7 @@ The session lock is implemented at the point where session activity can be deter
 
 Implementing session settings will have little value if a user is able to manipulate these settings from the defaults prescribed in the other requirements of this implementation guide.
 
-Locking these settings from non-privileged users is crucial to maintaining a protected baseline.
-
-"
+Locking these settings from non-privileged users is crucial to maintaining a protected baseline."
   desc 'check', 'Note: This requirement assumes the use of the OL 8 default graphical user interface, Gnome Shell. If the system does not have any graphical user interface installed, this requirement is Not Applicable.
 
 Verify the operating system prevents a user from overriding settings for graphical user interfaces.

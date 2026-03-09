@@ -8,9 +8,7 @@ init_on_free is a Linux kernel boot parameter that enhances security by initiali
 
 SLUB canaries add a randomized value (canary) at the end of SLUB-allocated objects to detect memory corruption caused by buffer overflows or underflows. Redzoning adds padding (red zones) around SLUB-allocated objects to detect overflows or underflows by triggering a fault when adjacent memory is accessed. SLUB canaries are often more efficient and provide stronger detection against buffer overflows compared to redzoning. SLUB canaries are supported in hardened Linux kernels like the ones provided by Linux-hardened.
 
-SLAB objects are blocks of physically contiguous memory. SLUB is the unqueued SLAB allocator.
-
-'
+SLAB objects are blocks of physically contiguous memory. SLUB is the unqueued SLAB allocator.'
   desc 'check', 'Verify GRUB2 is configured to mitigate use-after-free vulnerabilities by employing memory poisoning.
 
 Inspect the "GRUB_CMDLINE_LINUX" entry of /etc/default/grub as follows:

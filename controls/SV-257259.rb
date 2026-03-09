@@ -1,28 +1,37 @@
 control 'SV-257259' do
   title 'OL 8 must terminate idle user sessions.'
   desc 'Terminating an idle session within a short time period reduces the window of opportunity for unauthorized personnel to take control of a management session enabled on the console or console port that has been left unattended.'
-  desc 'check', 'Verify that OL 8 logs out sessions that are idle for 15 minutes with the following command:
+  desc 'check', 'Verify OL 8 logs out sessions that are idle for 10 minutes with the following command:
 
-     $ sudo grep -i ^StopIdleSessionSec /etc/systemd/logind.conf
+$ systemd-analyze cat-config systemd/logind.conf | grep StopIdleSessionSec
 
-     StopIdleSessionSec=900
+#StopIdleSessionSec=infinity
+StopIdleSessionSec=600
 
-If "StopIdleSessionSec" is not configured to 900 seconds, this is a finding.'
-  desc 'fix', 'Configure OL 8 to log out idle sessions by editing the /etc/systemd/logind.conf file with the following line:
+If "StopIdleSessionSec" is not configured to "600" seconds, this is a finding.'
+  desc 'fix', 'Configure OL 8 to log out idle sessions.
 
-     StopIdleSessionSec=900
+Create the directory if necessary:
 
-The "logind" service must be restarted for the changes to take effect. To restart the "logind" service, run the following command:
+$ mkdir -p /etc/systemd/logind.conf.d/
 
-     $ sudo systemctl restart systemd-logind'
+Create a *.conf file in /etc/systemd/logind.conf.d/ with the following content:
+
+[Login]
+StopIdleSessionSec=600
+KillUserProcesses=no
+
+Restart systemd-logind:
+
+$ systemctl restart systemd-logind'
   impact 0.5
-  tag check_id: 'C-60943r917917_chk'
+  tag check_id: 'C-60943r1155560_chk'
   tag severity: 'medium'
   tag gid: 'V-257259'
-  tag rid: 'SV-257259r970703_rule'
+  tag rid: 'SV-257259r1156674_rule'
   tag stig_id: 'OL08-00-020035'
   tag gtitle: 'SRG-OS-000163-GPOS-00072'
-  tag fix_id: 'F-60885r917918_fix'
+  tag fix_id: 'F-60885r1155561_fix'
   tag 'documentable'
   tag cci: ['CCI-001133']
   tag nist: ['SC-10']
