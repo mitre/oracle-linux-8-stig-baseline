@@ -489,6 +489,12 @@ inputs:
     type: Numeric
     value: 900
 
+  # SV-279934
+  - name: required_tmout
+    description: Maximum TMOUT value permitted for interactive shell timeout (time in seconds)
+    type: Numeric
+    value: 600
+
   # SV-230373
   - name: days_of_inactivity
     description: Maximum number of days if account inactivity before account lockout

@@ -29,4 +29,24 @@ declare -xr TMOUT=600'
   tag 'documentable'
   tag cci: ['CCI-001133']
   tag nist: ['SC-10']
+
+  required_tmout = input('required_tmout')
+  
+  tmout_cmd = command('grep -i tmout /etc/profile /etc/profile.d/*.sh')
+  tmout_values = tmout_cmd.stdout.lines.filter_map do |line|
+    next if line.match?(/:\s*#/) || line.match?(/^\s*#/)
+
+    match = line.match(/\bTMOUT\s*=\s*(\d+)/i)
+    match[1].to_i unless match.nil?
+  end
+
+  describe 'TMOUT configuration' do
+    it "should set TMOUT to #{required_tmout} or less in the grep command output" do
+      expect(tmout_values).not_to be_empty,
+        'No active TMOUT assignment was found in /etc/profile or /etc/profile.d/*.sh'
+
+      expect(tmout_values.all? { |value| value <= required_tmout }).to eq(true),
+        "TMOUT is set higher than #{required_tmout}: #{tmout_cmd.stdout.strip}"
+    end
+  end
 end
