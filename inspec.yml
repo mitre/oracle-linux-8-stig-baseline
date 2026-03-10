@@ -483,11 +483,11 @@ inputs:
       issuer_dn: '/C=US/O=U.S. Government/OU=DoD/OU=PKI/CN=DoD Root CA 3'
       subject_dn: '/C=US/O=U.S. Government/OU=DoD/OU=PKI/CN=DoD Root CA 3'
 
-  # SV-230353
+  # SV-248680
   - name: system_inactivity_timeout
     description: Maximum system inactivity timeout (time in seconds)
     type: Numeric
-    value: 900
+    value: 600
 
   # SV-279934
   - name: required_tmout
@@ -846,11 +846,11 @@ inputs:
     value:
       - user_u
 
-  # SV-257258
+  # SV-257259
   - name: stop_idle_session_sec
     description: Number of seconds the system can be idle before session timeout
     type: Numeric
-    value: 900
+    value: 600
 
   # SV-230233
   - name: sha_crypt_min_rounds
