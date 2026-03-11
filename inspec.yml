@@ -418,6 +418,12 @@ inputs:
       - systemd-bus-proxy
       - systemd-network
 
+  # SV-248636
+  - name: approved_application_owners
+    description: Application account owners approved to own world-writable directories.
+    type: Array
+    value: []
+
   # SV-230273, SV-230275, SV-230351, SV-230372, SV-230376
   - name: smart_card_enabled
     description: Smart card status of the system

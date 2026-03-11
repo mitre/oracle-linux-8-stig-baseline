@@ -31,9 +31,15 @@ $ sudo chown [root or system account] [Public Directory]'
     end
   else
     cmd = 'find / -xdev -type d -perm -0002 -uid +999 -exec stat -c "%U, %u, %A, %n" {} \; 2>/dev/null'
-    failing_dirs = command(cmd).stdout.split("\n").reject(&:empty?).uniq
+    world_writable_dirs = command(cmd).stdout.split("\n").reject(&:empty?).uniq
+    allowed_application_owners = input('approved_application_owners').map(&:to_s)
 
-    describe 'World-writable directories owned by non-system accounts' do
+    failing_dirs = world_writable_dirs.reject do |entry|
+      owner = entry.split(',', 2).first
+      allowed_application_owners.include?(owner)
+    end
+
+    describe 'World-writable directories owned by unapproved non-system accounts' do
       it 'should not exist' do
         expect(failing_dirs).to be_empty, "Failing directories:\n\t- #{failing_dirs.join("\n\t- ")}"
       end
