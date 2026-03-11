@@ -66,7 +66,7 @@ Reboot the system for the changes to take effect.'
     end
 
     describe file('/proc/sys/crypto/fips_enabled') do
-      its('content.strip') { should cmp '1' }
+      its('content.to_s.strip') { should cmp '1' }
     end
   end
 end
