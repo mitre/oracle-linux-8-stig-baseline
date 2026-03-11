@@ -30,14 +30,11 @@ $ sudo chown [root or system account] [Public Directory]'
       skip 'This control consistently takes a long to run and has been disabled using the disable_slow_controls attribute. You must enable this control for a full accredidation for production.'
     end
   else
+    cmd = 'find / -xdev -type d -perm -0002 -uid +999 -exec stat -c "%U, %u, %A, %n" {} \; 2>/dev/null'
+    failing_dirs = command(cmd).stdout.split("\n").reject(&:empty?).uniq
 
-    partitions = etc_fstab.params.map { |partition| partition['mount_point'] }.uniq
-
-    cmd = "find #{partitions.join(' ')} -xdev -type d -perm -0002 -uid +999 -print"
-    failing_dirs = command(cmd).stdout.split("\n").uniq
-
-    describe 'Any world-writeable directories' do
-      it 'should be owned by system accounts' do
+    describe 'World-writable directories owned by non-system accounts' do
+      it 'should not exist' do
         expect(failing_dirs).to be_empty, "Failing directories:\n\t- #{failing_dirs.join("\n\t- ")}"
       end
     end
