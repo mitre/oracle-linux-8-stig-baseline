@@ -3,9 +3,9 @@ This InSpec Profile was created to facilitate testing and auditing of `Oracle Li
 infrastructure and applications when validating compliancy with [Department of Defense (DoD) STIG](https://public.cyber.mil/stigs/)
 requirements.
 
-- Profile Version: **2.6.0**
-- Benchmark Date: **01 Oct 2025**
-- Benchmark Version: **Version 2 Release 6 (V2R6)**
+- Profile Version: **2.7.0**
+- Benchmark Date: **05 Jan 2026**
+- Benchmark Version: **Version 2 Release 7 (V2R7)**
 
 
 This profile was developed to reduce the time it takes to perform a security checks based upon the
@@ -24,6 +24,7 @@ Table of Contents
 * [STIG Benchmark  Information](#benchmark-information)
 * [Getting Started](#getting-started)
     * [Intended Usage](#intended-usage)
+    * [Environment Aware Testing](#environment-aware-testing)
     * [Tailoring to Your Environment](#tailoring-to-your-environment)
     * [Testing the Profile Controls](#testing-the-profile-controls)
 * [Running the Profile](#running-the-profile)
@@ -91,6 +92,13 @@ Latest versions and other installation options are available at [CINC Auditor](h
     release of the profile, and _is not intended_ be used for formal and ongoing testing on systems.
 
 [top](#table-of-contents)
+
+### Environment Aware Testing
+
+The OL8.x STIG profile is `container aware` and is able to determine when the profile is being executed inside or outside a `docker container` and will only run the tests that are approporate for the enviroment it is testing in. The tests are all tagged as `host` or `host, container`.
+
+All the profile's tests (`controls`) apply to the `host` but many of the controls are `Not Applicable` when running inside a `docker container` (such as, for example, controls that test the system's GUI). When running inside a `docker container`, the tests that only applicable to the host will be marked as `Not Applicable` automatically.
+
 ### Tailoring to Your Environment
 This profile uses InSpec Inputs to provide flexibility during testing. Inputs allow for
 customizing the behavior of Chef InSpec profiles.
