@@ -120,7 +120,7 @@ For more information on developing overlays, reference the [MITRE SAF Training](
   disable_slow_controls: [true or false]
 
   # A unique list of administrative users
-  admins_list: [admin1, admin2, admin3]
+  administrator_users: [admin1, admin2, admin3]
 
   # List of configuration files for the specific system
   logging_conf_files: [
