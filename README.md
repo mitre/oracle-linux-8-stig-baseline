@@ -1,5 +1,5 @@
-# Oracle Linux 8 Security Technical Implementation Guide
-This InSpec Profile was created to facilitate testing and auditing of `Oracle Linux 8`
+# Oracle Linux 8.x Security Technical Implementation Guide
+This InSpec Profile was created to facilitate testing and auditing of `Oracle Linux 8.x`
 infrastructure and applications when validating compliancy with [Department of Defense (DoD) STIG](https://public.cyber.mil/stigs/)
 requirements.
 
@@ -14,7 +14,7 @@ STIG Guidance from the Defense Information Systems Agency (DISA) in partnership 
 The results of a profile run will provide information needed to support an Authority to Operate (ATO)
 decision for the applicable technology.
 
-The Oracle Linux 8 STIG Profile uses the [InSpec](https://github.com/inspec/inspec)
+The Oracle Linux 8.x STIG Profile uses the [InSpec](https://github.com/inspec/inspec)
 open-source compliance validation language to support automation of the required compliance, security
 and policy testing for Assessment and Authorization (A&A) and Authority to Operate (ATO) decisions
 and Continuous Authority to Operate (cATO) processes.
@@ -40,13 +40,13 @@ used by the DoD agencies. In addition to defining security guidelines, the STIGs
 how security training should proceed and when security checks should occur. Organizations must
 stay compliant with these guidelines or they risk having their access to the DoD terminated.
 
-Requirements associated with the Oracle Linux 8 STIG are derived from the
+Requirements associated with the Oracle Linux 8.x STIG are derived from the
 [Security Requirements Guides](https://csrc.nist.gov/glossary/term/security_requirements_guide)
 and align to the [National Institute of Standards and Technology](https://www.nist.gov/) (NIST)
 [Special Publication (SP) 800-53](https://csrc.nist.gov/Projects/risk-management/sp800-53-controls/release-search#!/800-53)
 Security Controls, [DoD Control Correlation Identifier](https://public.cyber.mil/stigs/cci/) and related standards.
 
-The Oracle Linux 8 STIG profile checks were developed to provide technical implementation
+The Oracle Linux 8.x STIG profile checks were developed to provide technical implementation
 validation to the defined DoD requirements, the guidance can provide insight for any organizations wishing
 to enhance their security posture and can be tailored easily for use in your organization.
 
@@ -122,7 +122,7 @@ For more information on developing overlays, reference the [MITRE SAF Training](
 
 ```yaml
   # This file specifies the attributes for the configurable controls
-  # used by the Oracle Linux 8 STIG profile.
+  # used by the Oracle Linux 8.x STIG profile.
 
   # Disable controls that are known to consistently have long run times
   disable_slow_controls: [true or false]
