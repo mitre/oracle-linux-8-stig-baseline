@@ -63,6 +63,9 @@ class SshConfig < Inspec.resource(1)
     return @content if defined?(@content)
 
     @content = read_file_content(@conf_path)
+  rescue Inspec::Exceptions::ResourceSkipped => e
+    Inspec::Log.warn("Unable to read SSH configuration at #{@conf_path}: #{e.message}")
+    @content = nil
   end
 
   def read_params

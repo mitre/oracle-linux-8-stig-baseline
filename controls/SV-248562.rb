@@ -1,34 +1,41 @@
 control 'SV-248562' do
-  title 'The OL 8 SSH server must be configured to use only ciphers employing FIPS 140-2 validated cryptographic algorithms.'
-  desc 'Unapproved mechanisms that are used for authentication to the cryptographic module are not verified and therefore cannot be relied on to provide confidentiality or integrity, and DoD data may be compromised.
+  title 'The OL 8 SSH server must be configured to use only DOD-approved encryption ciphers employing FIPS 140-3 validated cryptographic hash algorithms to protect the confidentiality of SSH server connections.'
+  desc 'Without cryptographic integrity protections, information can be altered by unauthorized users without detection.
 
-Operating systems using encryption are required to use FIPS-compliant mechanisms for authenticating to cryptographic modules.
+Remote access (e.g., RDP) is access to DOD nonpublic information systems by an authorized user (or an information system) communicating through an external, nonorganization-controlled network. Remote access methods include, for example, dial-up, broadband, and wireless.
 
-FIPS 140-2 is the current standard for validating that mechanisms used to access cryptographic modules use authentication that meets DoD requirements. This allows for Security Levels 1, 2, 3, or 4 for use on a general-purpose computing system.
+Cryptographic mechanisms used for protecting the integrity of information include, for example, signed hash functions using asymmetric cryptography enabling distribution of the public key to verify the hash information while maintaining the confidentiality of the secret key used to generate the hash.
 
-The system will attempt to use the first hash presented by the client that matches the server list. Listing the values "strongest to weakest" is a method to ensure the use of the strongest cipher available to secure the SSH connection.'
-  desc 'check', %q(Verify the OL 8 SSH server is configured to use only ciphers employing FIPS 140-2 approved algorithms with the following command:
+OL 8 incorporates systemwide crypto policies by default. The SSH configuration file has no effect on the ciphers, MACs, or algorithms unless specifically defined in the /etc/sysconfig/sshd file. The employed algorithms can be viewed in the /etc/crypto-policies/back-ends/opensshserver.config file.'
+  desc 'check', %q(Verify the OL 8 SSH server is configured to use only ciphers employing FIPS 140-3-approved algorithms.
 
-     $ sudo grep -i ciphers /etc/crypto-policies/back-ends/opensshserver.config
+To verify the ciphers in the systemwide SSH configuration file, use the following command:
 
-     CRYPTO_POLICY='-oCiphers=aes256-ctr,aes192-ctr,aes128-ctr,aes256-gcm@openssh.com,aes128-gcm@openssh.com'
+$ sudo grep -i Ciphers /etc/crypto-policies/back-ends/opensshserver.config 
+CRYPTO_POLICY='-oCiphers=aes256-gcm@openssh.com,aes256-ctr,aes128-gcm@openssh.com,aes128-ctr
 
-If the cipher entries in the "opensshserver.config" file have any ciphers other than shown here, the order differs from the example above, or they are missing or commented out, this is a finding.)
-  desc 'fix', %q(Configure the OL 8 SSH server to use only ciphers employing FIPS 140-2 approved algorithms:
+If the cipher entries in the "opensshserver.config" file have any ciphers other than "aes256-gcm@openssh.com,aes256-ctr,aes128-gcm@openssh.com,aes128-ctr", or they are missing or commented out, this is a finding.)
+  desc 'fix', 'Configure the OL 8 SSH server to use only ciphers employing FIPS 140-3-approved algorithms.
 
-Update the "/etc/crypto-policies/back-ends/opensshserver.config" file to include these ciphers employing FIPS 140-2-approved algorithms:
+Reinstall crypto-policies with the following command:
 
-CRYPTO_POLICY='-oCiphers=aes256-ctr,aes192-ctr,aes128-ctr,aes256-gcm@openssh.com,aes128-gcm@openssh.com'
+$ sudo dnf -y reinstall crypto-policies
 
-A reboot is required for the changes to take effect.)
+Set the crypto-policy to FIPS with the following command:
+
+$ sudo update-crypto-policies --set FIPS
+
+Setting system policy to FIPS
+
+Note: Systemwide crypto policies are applied on application startup. It is recommended to restart the system for the change of policies to fully take place.'
   impact 0.5
-  tag check_id: 'C-51996r917903_chk'
+  tag check_id: 'C-51996r1156656_chk'
   tag severity: 'medium'
   tag gid: 'V-248562'
-  tag rid: 'SV-248562r958510_rule'
+  tag rid: 'SV-248562r1156658_rule'
   tag stig_id: 'OL08-00-010291'
   tag gtitle: 'SRG-OS-000125-GPOS-00065'
-  tag fix_id: 'F-51950r917904_fix'
+  tag fix_id: 'F-51950r1156657_fix'
   tag 'documentable'
   tag cci: ['CCI-000877']
   tag nist: ['MA-4 c']

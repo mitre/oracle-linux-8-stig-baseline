@@ -2,9 +2,7 @@ control 'SV-248582' do
   title 'OL 8 must require users to reauthenticate for privilege escalation and changing roles.'
   desc 'Without reauthentication, users may access resources or perform tasks for which they do not have authorization.
 
-When operating systems provide the capability to escalate a functional capability, it is critical the user reauthenticate.
-
-'
+When operating systems provide the capability to escalate a functional capability, it is critical the user reauthenticate.'
   desc 'check', %q(Verify that the "/etc/sudoers" file has no occurrences of "!authenticate" by running the following command:
 
      $ sudo egrep -iR '!authenticate' /etc/sudoers /etc/sudoers.d/

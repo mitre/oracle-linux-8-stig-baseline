@@ -36,7 +36,7 @@ sticky bit:
   tag severity: 'medium'
   tag gtitle: 'SRG-OS-000138-GPOS-00069'
   tag gid: 'V-248551'
-  tag rid: 'SV-248551r1117267_rule'
+  tag rid: 'SV-248551r1137695_rule'
   tag stig_id: 'OL08-00-010190'
   tag fix_id: 'F-51939r779218_fix'
   tag cci: ['CCI-001090']

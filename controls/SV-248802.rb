@@ -14,9 +14,7 @@ DoD has defined the list of events for which OL 8 will provide an audit record g
 
 3) All account creations, modifications, disabling, and terminations; and
 
-4) All kernel module load, unload, and restart actions.
-
-'
+4) All kernel module load, unload, and restart actions.'
   desc 'check', 'Verify OL 8 generates an audit record for any attempted modifications to the "lastlog" file by running the following command to check the file system rules in "/etc/audit/audit.rules":
 
 $ sudo grep -w lastlog /etc/audit/audit.rules

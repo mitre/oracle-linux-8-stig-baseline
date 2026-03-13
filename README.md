@@ -1,11 +1,11 @@
-# Oracle Linux 8 Security Technical Implementation Guide
-This InSpec Profile was created to facilitate testing and auditing of `Oracle Linux 8`
+# Oracle Linux 8.x Security Technical Implementation Guide
+This InSpec Profile was created to facilitate testing and auditing of `Oracle Linux 8.x`
 infrastructure and applications when validating compliancy with [Department of Defense (DoD) STIG](https://public.cyber.mil/stigs/)
 requirements.
 
-- Profile Version: **2.6.0**
-- Benchmark Date: **01 Oct 2025**
-- Benchmark Version: **Version 2 Release 6 (V2R6)**
+- Profile Version: **2.7.0**
+- Benchmark Date: **05 Jan 2026**
+- Benchmark Version: **Version 2 Release 7 (V2R7)**
 
 
 This profile was developed to reduce the time it takes to perform a security checks based upon the
@@ -14,7 +14,7 @@ STIG Guidance from the Defense Information Systems Agency (DISA) in partnership 
 The results of a profile run will provide information needed to support an Authority to Operate (ATO)
 decision for the applicable technology.
 
-The Oracle Linux 8 STIG Profile uses the [InSpec](https://github.com/inspec/inspec)
+The Oracle Linux 8.x STIG Profile uses the [InSpec](https://github.com/inspec/inspec)
 open-source compliance validation language to support automation of the required compliance, security
 and policy testing for Assessment and Authorization (A&A) and Authority to Operate (ATO) decisions
 and Continuous Authority to Operate (cATO) processes.
@@ -24,6 +24,7 @@ Table of Contents
 * [STIG Benchmark  Information](#benchmark-information)
 * [Getting Started](#getting-started)
     * [Intended Usage](#intended-usage)
+    * [Environment Aware Testing](#environment-aware-testing)
     * [Tailoring to Your Environment](#tailoring-to-your-environment)
     * [Testing the Profile Controls](#testing-the-profile-controls)
 * [Running the Profile](#running-the-profile)
@@ -39,13 +40,13 @@ used by the DoD agencies. In addition to defining security guidelines, the STIGs
 how security training should proceed and when security checks should occur. Organizations must
 stay compliant with these guidelines or they risk having their access to the DoD terminated.
 
-Requirements associated with the Oracle Linux 8 STIG are derived from the
+Requirements associated with the Oracle Linux 8.x STIG are derived from the
 [Security Requirements Guides](https://csrc.nist.gov/glossary/term/security_requirements_guide)
 and align to the [National Institute of Standards and Technology](https://www.nist.gov/) (NIST)
 [Special Publication (SP) 800-53](https://csrc.nist.gov/Projects/risk-management/sp800-53-controls/release-search#!/800-53)
 Security Controls, [DoD Control Correlation Identifier](https://public.cyber.mil/stigs/cci/) and related standards.
 
-The Oracle Linux 8 STIG profile checks were developed to provide technical implementation
+The Oracle Linux 8.x STIG profile checks were developed to provide technical implementation
 validation to the defined DoD requirements, the guidance can provide insight for any organizations wishing
 to enhance their security posture and can be tailored easily for use in your organization.
 
@@ -91,6 +92,13 @@ Latest versions and other installation options are available at [CINC Auditor](h
     release of the profile, and _is not intended_ be used for formal and ongoing testing on systems.
 
 [top](#table-of-contents)
+
+### Environment Aware Testing
+
+The OL8.x STIG profile is `container aware` and is able to determine when the profile is being executed inside or outside a `docker container` and will only run the tests that are approporate for the enviroment it is testing in. The tests are all tagged as `host` or `host, container`.
+
+All the profile's tests (`controls`) apply to the `host` but many of the controls are `Not Applicable` when running inside a `docker container` (such as, for example, controls that test the system's GUI). When running inside a `docker container`, the tests that only applicable to the host will be marked as `Not Applicable` automatically.
+
 ### Tailoring to Your Environment
 This profile uses InSpec Inputs to provide flexibility during testing. Inputs allow for
 customizing the behavior of Chef InSpec profiles.
@@ -114,13 +122,13 @@ For more information on developing overlays, reference the [MITRE SAF Training](
 
 ```yaml
   # This file specifies the attributes for the configurable controls
-  # used by the Oracle Linux 8 STIG profile.
+  # used by the Oracle Linux 8.x STIG profile.
 
   # Disable controls that are known to consistently have long run times
   disable_slow_controls: [true or false]
 
   # A unique list of administrative users
-  admins_list: [admin1, admin2, admin3]
+  administrator_users: [admin1, admin2, admin3]
 
   # List of configuration files for the specific system
   logging_conf_files: [

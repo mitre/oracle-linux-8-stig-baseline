@@ -6,45 +6,26 @@ When DAC policies are implemented, subjects are not constrained as to what actio
 
 By enabling the "fs.protected_hardlinks" kernel parameter, users can no longer create soft or hard links to files they do not own. Disallowing such hardlinks mitigate vulnerabilities based on insecure file system accessed by privileged programs, avoiding an exploitation vector exploiting unsafe use of open() or creat().
 
-The sysctl --system command will load settings from all system configuration files. All configuration files are sorted by their filename in lexicographic order, regardless of which of the directories they reside in. If multiple files specify the same option, the entry in the file with the lexicographically latest name will take precedence. Files are read from directories in the following list from top to bottom. Once a file of a given filename is loaded, any file of the same name in subsequent directories is ignored.
+The sysctl --system command will load settings from all system configuration files. All configuration files are sorted by their filename in lexicographical order, regardless of the directories in which they reside. If multiple files specify the same option, the entry in the file with the lexicographically latest name will take precedence. Files are read from directories in the following list from top to bottom. Once a file of a given filename is loaded, any file of the same name in subsequent directories is ignored.
 /etc/sysctl.d/*.conf
 /run/sysctl.d/*.conf
 /usr/local/lib/sysctl.d/*.conf
 /usr/lib/sysctl.d/*.conf
 /lib/sysctl.d/*.conf
 /etc/sysctl.conf'
-  desc 'check', 'Verify the operating system is configured to enable DAC on hardlinks with the following commands.
+  desc 'check', 'Verify OL 8 is configured to enable DAC on hardlinks.
 
-Check the status of the "fs.protected_hardlinks" kernel parameter:
+Check the status of the fs.protected_hardlinks kernel parameter with the following command:
 
 $ sudo sysctl fs.protected_hardlinks
-
 fs.protected_hardlinks = 1
 
-If "fs.protected_hardlinks" is not set to "1" or is missing, this is a finding.
-
-Check that the configuration files are present to enable this kernel parameter:
-
-$ sudo grep -r fs.protected_hardlinks /run/sysctl.d/*.conf /usr/local/lib/sysctl.d/*.conf /usr/lib/sysctl.d/*.conf /lib/sysctl.d/*.conf /etc/sysctl.conf /etc/sysctl.d/*.conf
-
-/etc/sysctl.d/99-sysctl.conf:fs.protected_hardlinks = 1
-
-If "fs.protected_hardlinks" is not set to "1" or is missing or commented out, this is a finding.
-
-If conflicting results are returned, this is a finding.'
-  desc 'fix', 'Configure OL 8 to enable DAC on hardlinks.
+If "fs.protected_hardlinks" is not set to "1" or is missing, this is a finding.'
+  desc 'fix', 'Configure OL 8 to enable DAC on hardlinks with the following:
 
 Add or edit the following line in a system configuration file in the "/etc/sysctl.d/" directory:
 
 fs.protected_hardlinks = 1
-
-Remove any configurations that conflict with the above from the following locations:
-/run/sysctl.d/*.conf
-/usr/local/lib/sysctl.d/*.conf
-/usr/lib/sysctl.d/*.conf
-/lib/sysctl.d/*.conf
-/etc/sysctl.conf
-/etc/sysctl.d/*.conf
 
 Load settings from all system configuration files with the following command:
 
@@ -54,9 +35,9 @@ $ sudo sysctl --system'
   tag gtitle: 'SRG-OS-000312-GPOS-00122'
   tag satisfies: ['SRG-OS-000312-GPOS-00122', 'SRG-OS-000312-GPOS-00123', 'SRG-OS-000312-GPOS-00124', 'SRG-OS-000324-GPOS-00125']
   tag gid: 'V-248578'
-  tag rid: 'SV-248578r958702_rule'
+  tag rid: 'SV-248578r1156621_rule'
   tag stig_id: 'OL08-00-010374'
-  tag fix_id: 'F-51966r858614_fix'
+  tag fix_id: 'F-51966r1155443_fix'
   tag cci: ['CCI-002165']
   tag nist: ['AC-3 (4)']
   tag 'host'

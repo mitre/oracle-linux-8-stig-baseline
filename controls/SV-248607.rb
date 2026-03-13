@@ -38,6 +38,11 @@ the SSH daemon, run the following command:
   setting = 'GSSAPIAuthentication'
   gssapi_authentication = input('sshd_config_values')
   value = gssapi_authentication[setting]
+  openssh_present = package('openssh-server').installed?
+
+  only_if('SSH is not installed on the system; this requirement is Not Applicable', impact: 0.0) {
+    openssh_present
+  }
 
   if virtualization.system.eql?('docker')
     describe 'In a container Environment' do

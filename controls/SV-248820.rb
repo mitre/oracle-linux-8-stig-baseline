@@ -43,12 +43,12 @@ server [ntp.server.name] iburst maxpoll 16'
   authoritative_timeservers = input('authoritative_timeservers')
   match_all_authoritative_timeservers_enabled = input('match_all_authoritative_timeservers_enabled')
 
-  # Get the system server values
-  # Converts to array if only one value present
-  time_sources = [chrony_conf.server].flatten
+  # Get the system server values and drop empty entries so malformed or
+  # missing server directives do not raise during control compilation.
+  time_sources = [chrony_conf.server].flatten.compact
 
   # Get and map maxpoll values to an array
-  unless time_sources.nil?
+  unless time_sources.empty?
     # Map max poll values only
     max_poll_values = time_sources.map { |val|
       val.match?(/.*maxpoll.*/) ? val.gsub(/.*maxpoll\s+(\d+)(\s+.*|$)/, '\1').to_i : 10
@@ -65,7 +65,7 @@ server [ntp.server.name] iburst maxpoll 16'
     its('server') { should_not be_nil }
   end
 
-  unless time_sources.nil?
+  unless time_sources.empty?
     # Verify the chrony.conf file is configured to at least one authoritative DoD time source
     # Check for valid maxpoll value <17
     describe 'chrony.conf' do

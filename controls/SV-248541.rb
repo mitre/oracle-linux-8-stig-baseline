@@ -17,7 +17,7 @@ ExecStart=-/usr/lib/systemd/systemd-sulogin-shell rescue'
   tag severity: 'medium'
   tag gtitle: 'SRG-OS-000080-GPOS-00048'
   tag gid: 'V-248541'
-  tag rid: 'SV-248541r1117265_rule'
+  tag rid: 'SV-248541r1137691_rule'
   tag stig_id: 'OL08-00-010151'
   tag fix_id: 'F-51929r779188_fix'
   tag cci: ['CCI-000213']
