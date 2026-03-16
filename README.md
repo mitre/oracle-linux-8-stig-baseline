@@ -34,6 +34,7 @@ Requirements associated with the Oracle Linux 8.x STIG are derived from the [Sec
 The Oracle Linux 8.x STIG profile checks were developed to provide technical implementation validation to the defined DoD requirements. The guidance can provide insight for any organizations wishing to enhance their security posture and can be tailored easily for use in your organization.
 
 [top](#table-of-contents)
+
 ## Getting Started
 ### InSpec (CINC-auditor) setup
 For maximum flexibility/accessibility `cinc-auditor`, the open-source packaged binary version of Chef InSpec should be used. CINC Auditor is compiled by the CINC (CINC Is Not Chef) project in coordination with Chef, using Chef's always-open-source InSpec source code. For more information see [CINC Home](https://cinc.sh/).
@@ -61,6 +62,7 @@ cinc-auditor -v
 Latest versions and other installation options are available at [CINC Auditor](https://cinc.sh/start/auditor/) site.
 
 [top](#table-of-contents)
+
 ### Intended Usage
 1. The latest `released` version of the profile is intended for use in A&A testing, as well as providing formal results to Authorizing Officials and Identity and Access Management (IAM)s. Please use the `released` versions of the profile in these types of workflows.
 
@@ -86,6 +88,8 @@ The following inputs are permitted to be configured in an inputs `.yml` file (of
 For changes beyond the inputs cited in this section, users can create an *organizationally-named overlay repository*. For more information on developing overlays, reference the [MITRE SAF Training](https://mitre-saf-training.netlify.app/courses/beginner/10.html)
 
 #### Example of tailoring Inputs *While Still Complying* with the security guidance document for the profile:
+
+  - For the complete list of inputs, see the [inspec.yml](https://github.com/mitre/oracle-linux-8-stig-baseline/blob/main/inspec.yml) file
 
 ```yaml
   # This file specifies the attributes for the configurable controls
@@ -131,6 +135,7 @@ Chef InSpec Resources:
 
 
 [top](#table-of-contents)
+
 ### Testing the Profile Controls
 The Gemfile provided contains all the necessary ruby dependencies for checking the profile controls.
 #### Requirements
@@ -160,6 +165,7 @@ Ensure the controls are ready to be committed into the repo:
 
 
 [top](#table-of-contents)
+
 ## Running the Profile
 ### Directly from Github
 This option is best used when network connectivity is available and policies permit access to the hosting repository.
@@ -173,6 +179,7 @@ bundle exec [inspec or cinc-auditor] exec https://github.com/mitre/oracle-linux-
 ```
 
 [top](#table-of-contents)
+
 ### Using a local Archive copy
 If your runner is not always expected to have direct access to the profile's hosted location, use the following steps to create an archive bundle of this overlay and all of its dependent tests:
 
@@ -209,11 +216,13 @@ bundle exec [inspec or cinc-auditor] exec <name of generated archive> --target w
 ```
 
 [top](#table-of-contents)
+
 ## Different Run Options
 
 [Full exec options](https://docs.chef.io/inspec/cli/#options-3)
 
 [top](#table-of-contents)
+
 ## Using Heimdall for Viewing Test Results
 The JSON results output file can be loaded into **[Heimdall-Lite](https://heimdall-lite.mitre.org/)** or **[Heimdall-Server](https://github.com/mitre/heimdall2)** for a user-interactive, graphical view of the profile scan results.
 
@@ -226,6 +235,7 @@ Depending on your environment restrictions, the [SAF CLI](https://saf-cli.mitre.
 Additionally both Heimdall applications can be deployed via docker, kubernetes, or the installation packages.
 
 [top](#table-of-contents)
+
 ## Authors
 [Defense Information Systems Agency (DISA)](https://www.disa.mil/)
 
