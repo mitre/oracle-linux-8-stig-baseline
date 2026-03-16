@@ -89,7 +89,7 @@ For changes beyond the inputs cited in this section, users can create an *organi
 
 #### Example of tailoring Inputs *While Still Complying* with the security guidance document for the profile:
 
-  - For the complete list of inputs, see the [inspec.yml](https://github.com/mitre/oracle-linux-8-stig-baseline/blob/main/inspec.yml) file
+  - For the complete list of inputs, see the [inspec.yml](https://github.com/mitre/oracle-linux-8-stig-baseline/blob/main/inspec.yml)
 
 ```yaml
   # This file specifies the attributes for the configurable controls
