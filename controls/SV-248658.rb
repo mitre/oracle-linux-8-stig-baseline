@@ -4,9 +4,7 @@ control 'SV-248658' do
 
 OL 8 can use the "pam_faillock.so" for this purpose. Note that manual changes to the listed files may be overwritten by the "authselect" program.
 
-From "Pam_Faillock" man pages: Note that the default directory that "pam_faillock" uses is usually cleared on system boot so the access will be reenabled after system reboot. If that is undesirable, a different tally directory must be set with the "dir" option.
-
-'
+From "Pam_Faillock" man pages: Note that the default directory that "pam_faillock" uses is usually cleared on system boot so the access will be reenabled after system reboot. If that is undesirable, a different tally directory must be set with the "dir" option.'
   desc 'check', 'Verify the faillock directory contents persist after a reboot with the following commands:
 
 Note: If the System Administrator demonstrates the use of an approved centralized account management method that locks an account after three unsuccessful logon attempts within a period of 15 minutes, this requirement is not applicable.
@@ -53,4 +51,25 @@ $ sudo systemctl restart sssd.service'
   tag 'documentable'
   tag cci: ['CCI-000044', 'CCI-002238']
   tag nist: ['AC-7 a', 'AC-7 b']
+
+  message = <<~MESSAGE
+    \n\nThis check only applies to OL versions 8.0 or 8.1.\n
+    The system is running OL version: #{os.version}, this requirement is Not Applicable.
+  MESSAGE
+  only_if(message, impact: 0.0) do
+    os.version.minor.between?(0, 1)
+  end
+
+  pam_auth_files = input('pam_auth_files')
+
+  describe pam(pam_auth_files['password-auth']) do
+    its('lines') {
+      should match_pam_rule('auth [default=die]|required pam_faillock.so').all_with_args("dir=#{input('log_directory')}")
+    }
+  end
+  describe pam(pam_auth_files['system-auth']) do
+    its('lines') {
+      should match_pam_rule('auth [default=die]|required pam_faillock.so').all_with_args("dir=#{input('log_directory')}")
+    }
+  end
 end

@@ -4,9 +4,7 @@ control 'SV-248767' do
 
 At a minimum, the organization must audit the full-text recording of privileged commands. The organization must maintain audit trails in sufficient detail to reconstruct events to determine the cause and impact of compromise. The "setsebool" command sets the current state of a particular SELinux boolean or a list of booleans to a given value.
 
-When a user logs on, the AUID is set to the UID of the account that is being authenticated. Daemons are not user sessions and have the loginuid set to "-1". The AUID representation is an unsigned 32-bit integer, which equals "4294967295". The audit system interprets "-1", "4294967295", and "unset" in the same way.
-
-'
+When a user logs on, the AUID is set to the UID of the account that is being authenticated. Daemons are not user sessions and have the loginuid set to "-1". The AUID representation is an unsigned 32-bit integer, which equals "4294967295". The audit system interprets "-1", "4294967295", and "unset" in the same way.'
   desc 'check', 'Verify OL 8 is configured to audit the execution of the "setsebool" command by running the following command:
 
 $ sudo grep -w setsebool /etc/audit/audit.rules
@@ -35,4 +33,21 @@ $ sudo service auditd restart'
   tag 'documentable'
   tag cci: ['CCI-000130', 'CCI-000135', 'CCI-000169', 'CCI-000172', 'CCI-002884']
   tag nist: ['AU-3 a', 'AU-3 (1)', 'AU-12 a', 'AU-12 c', 'MA-4 (1) (a)']
+
+  audit_command = '/usr/sbin/setsebool'
+
+  only_if('This control is Not Applicable to containers', impact: 0.0) {
+    !virtualization.system.eql?('docker')
+  }
+
+  describe 'Command' do
+    it "#{audit_command} is audited properly" do
+      audit_rule = auditd.file(audit_command)
+      expect(audit_rule).to exist
+      expect(audit_rule.action.uniq).to cmp 'always'
+      expect(audit_rule.list.uniq).to cmp 'exit'
+      expect(audit_rule.fields.flatten).to include('perm=x', 'auid>=1000', 'auid!=-1')
+      expect(audit_rule.key.uniq).to include(input('audit_rule_keynames').merge(input('audit_rule_keynames_overrides'))[audit_command])
+    end
+  end
 end

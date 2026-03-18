@@ -21,7 +21,7 @@ Confirm password:'
   tag severity: 'high'
   tag gtitle: 'SRG-OS-000080-GPOS-00048'
   tag gid: 'V-248540'
-  tag rid: 'SV-248540r1117265_rule'
+  tag rid: 'SV-248540r1137691_rule'
   tag stig_id: 'OL08-00-010150'
   tag fix_id: 'F-51928r779185_fix'
   tag cci: ['CCI-000213']

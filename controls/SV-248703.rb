@@ -33,4 +33,31 @@ Note: The DOD recommendation is 35 days, but a lower value is acceptable.'
   tag 'documentable'
   tag cci: ['CCI-003627', 'CCI-003628', 'CCI-000795']
   tag nist: ['AC-2 (3) (a)', 'AC-2 (3) (b)', 'IA-4 e']
+
+  only_if('This control is Not Applicable to containers', impact: 0.0) {
+    !virtualization.system.eql?('docker')
+  }
+
+  max_inactive_days = input('days_of_inactivity')
+  pam_auth_files = input('pam_auth_files')
+  pam_file = pam_auth_files['system-auth']
+  pam_config = pam(pam_file)
+  auth_rules = Array(pam_config.type('auth'))
+
+  lastlog_index = auth_rules.find_index { |rule| rule.match?('auth required pam_lastlog.so') }
+  unix_index = auth_rules.find_index { |rule| rule.match?('auth .* pam_unix.so') }
+
+  describe pam_config do
+    its('lines') { should match_pam_rule('auth required pam_lastlog.so') }
+    its('lines') { should match_pam_rule('auth required pam_lastlog.so').all_with_integer_arg('inactive', '>', 0) }
+    its('lines') { should match_pam_rule('auth required pam_lastlog.so').all_with_integer_arg('inactive', '<=', max_inactive_days) }
+  end
+
+  describe 'system-auth rule ordering' do
+    it 'must place pam_lastlog.so above pam_unix.so' do
+      expect(lastlog_index).not_to be_nil
+      expect(unix_index).not_to be_nil
+      expect(lastlog_index).to be < unix_index unless lastlog_index.nil? || unix_index.nil?
+    end
+  end
 end

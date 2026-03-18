@@ -49,8 +49,8 @@ $ sudo systemctl restart sssd.service'
   tag nist: ['AC-7 a', 'AC-7 b']
 
   message = <<~MESSAGE
-    \nThis check only applies to RHEL versions 8.0 or 8.1.\n
-    The system is running RHEL version: #{os.version}, this check is Not Applicable.
+    \nThis check only applies to OL versions 8.0 or 8.1.\n
+    The system is running OL version: #{os.version}, this check is Not Applicable.
   MESSAGE
   only_if(message, impact: 0.0) do
     ['8.0', '8.1'].include?(os.version)

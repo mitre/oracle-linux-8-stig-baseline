@@ -26,11 +26,26 @@ $ sudo grub2-mkconfig -o /boot/efi/EFI/redhat/grub.cfg'
   tag check_id: 'C-51972r818602_chk'
   tag severity: 'medium'
   tag gid: 'V-248538'
-  tag rid: 'SV-248538r1117265_rule'
+  tag rid: 'SV-248538r1137691_rule'
   tag stig_id: 'OL08-00-010141'
   tag gtitle: 'SRG-OS-000080-GPOS-00048'
   tag fix_id: 'F-51926r779179_fix'
   tag 'documentable'
   tag cci: ['CCI-000213']
   tag nist: ['AC-3']
+
+  only_if('This requirement is Not Applicable in the container', impact: 0.0) {
+    !virtualization.system.eql?('docker')
+  }
+
+  if file('/sys/firmware/efi').exist?
+    describe parse_config_file(input('grub_uefi_main_cfg')) do
+      its('set superusers') { should cmp '"root"' }
+    end
+  else
+    impact 0.0
+    describe 'System running BIOS' do
+      skip 'The System is running BIOS, this control is Not Applicable.'
+    end
+  end
 end

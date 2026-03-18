@@ -30,4 +30,13 @@ $ sudo systemctl enable rsyslog.service'
   tag 'documentable'
   tag cci: ['CCI-000366']
   tag nist: ['CM-6 b']
+
+  only_if('This control is Not Applicable to containers', impact: 0.0) {
+    !virtualization.system.eql?('docker')
+  }
+
+  describe service('rsyslog') do
+    it { should be_enabled }
+    it { should be_running }
+  end
 end

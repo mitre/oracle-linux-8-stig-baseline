@@ -26,11 +26,26 @@ $ sudo grub2-mkconfig -o /boot/grub2/grub.cfg'
   tag check_id: 'C-51973r818604_chk'
   tag severity: 'medium'
   tag gid: 'V-248539'
-  tag rid: 'SV-248539r1117265_rule'
+  tag rid: 'SV-248539r1137691_rule'
   tag stig_id: 'OL08-00-010149'
   tag gtitle: 'SRG-OS-000080-GPOS-00048'
   tag fix_id: 'F-51927r779182_fix'
   tag 'documentable'
   tag cci: ['CCI-000213']
   tag nist: ['AC-3']
+
+  only_if('This requirement is Not Applicable in the container', impact: 0.0) {
+    !virtualization.system.eql?('docker')
+  }
+
+  if file('/sys/firmware/efi').exist?
+    impact 0.0
+    describe 'System running UEFI' do
+      skip 'The System is running UEFI, this control is Not Applicable.'
+    end
+  else
+    describe parse_config_file(input('grub_main_cfg')) do
+      its('set superusers') { should_not be_empty }
+    end
+  end
 end

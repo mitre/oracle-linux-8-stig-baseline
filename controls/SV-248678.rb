@@ -4,9 +4,7 @@ control 'SV-248678' do
 
 The session lock is implemented at the point where session activity can be determined. Rather than be forced to wait for a period of time to expire before the user session can be locked, OL 8 needs to provide users with the ability to manually invoke a session lock so users may secure their session should the need arise for them to temporarily vacate the immediate physical vicinity.
 
-Systemd, a core component of OL 8, has a variety of dependencies needed to function. One of those packages is the Keytable files and keyboard utilities (kbd.x86_64). This package provides the "vlock" binary, a utility used to lock one or several user virtual console sessions.
-
-'
+Systemd, a core component of OL 8, has a variety of dependencies needed to function. One of those packages is the Keytable files and keyboard utilities (kbd.x86_64). This package provides the "vlock" binary, a utility used to lock one or several user virtual console sessions.'
   desc 'check', 'Verify OL 8 has the "vlock" package installed by running the following command:
 
 $ sudo grep vlock /usr/bin/*
@@ -28,5 +26,14 @@ $ sudo yum install kbd.x86_64'
   tag satisfies: ['SRG-OS-000028-GPOS-00009', 'SRG-OS-000030-GPOS-00011']
   tag 'documentable'
   tag cci: ['CCI-000056', 'CCI-000057', 'CCI-000058']
-  tag nist: ['AC-11 b', 'AC-11 a', 'AC-11 a']
+  tag nist: ['AC-11 b', 'AC-11 a']
+
+  only_if('This control is Not Applicable to containers', impact: 0.0) {
+    !virtualization.system.eql?('docker')
+  }
+
+  describe file('/usr/bin/vlock') do
+    it { should exist }
+    it { should be_executable }
+  end
 end

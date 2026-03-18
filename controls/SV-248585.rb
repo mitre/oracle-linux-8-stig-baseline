@@ -39,7 +39,7 @@ Remove any duplicate or conflicting lines from /etc/sudoers and /etc/sudoers.d/ 
   }
 
   setting = 'timestamp_timeout'
-  setting_value = sudoers(input('sudoers_config_files')).settings.Defaults[setting]
+  setting_value = sudoers(input('sudoers_config_files')).settings.Defaults&.[](setting)
 
   describe 'Sudoers configuration' do
     it "should should set #{setting} to a non-negative number, exactly once" do

@@ -1,0 +1,149 @@
+name: Oracle Linux 8 STIG Baseline
+
+on:
+  push:
+    branches:
+      - actions
+      - main
+  pull_request:
+
+jobs:
+  validate:
+    name: Validate profile on OCI
+    runs-on: ubuntu-latest
+    env:
+      CHEF_LICENSE: accept-silent
+      CHEF_LICENSE_KEY: ${{ secrets.SAF_CHEF_LICENSE_KEY }}
+      KITCHEN_YAML: kitchen.yml
+      PLATFORM: "ol8"
+      SUITE: "baseline"
+      KITCHEN_INSTANCE: "baseline-ol8"
+      LC_ALL: "C.UTF-8"
+      HEIMDALL_URL: ${{ vars.SAF_HEIMDALL_URL }}
+      OCI_CLI_FINGERPRINT: ${{ secrets.OCI_CLI_FINGERPRINT }}
+      OCI_CLI_USER: ${{ secrets.OCI_CLI_USER }}
+      OCI_CLI_TENANCY: ${{ secrets.OCI_CLI_TENANCY }}
+      OCI_CLI_REGION: ${{ vars.OCI_CLI_REGION }}
+      OCI_CLI_KEY_CONTENT: ${{ secrets.OCI_CLI_KEY_CONTENT }}
+      OCI_COMPARTMENT_OCID: ${{ secrets.OCI_COMPARTMENT_OCID }}
+      OCI_SUBNET_OCID: ${{ secrets.OCI_SUBNET_OCID }}
+      OCI_INSTANCE_SHAPE: ${{ vars.OCI_INSTANCE_SHAPE }}
+      OCI_AVAILABILITY_DOMAIN: ${{ vars.OCI_AVAILABILITY_DOMAIN }}
+
+    steps:
+      - name: Install needed packages
+        run: sudo apt-get update && sudo apt-get install -y jq curl openssh-client
+
+      - name: Install OCI
+        run: |
+          curl -L -o install.sh https://raw.githubusercontent.com/oracle/oci-cli/master/scripts/install/install.sh
+          bash install.sh --accept-all-defaults
+          echo "$HOME/bin" >> $GITHUB_PATH
+
+      - name: Configure OCI CLI
+        run: |
+          mkdir -p ~/.oci
+          printf "%s" "$OCI_CLI_KEY_CONTENT" > ~/.oci/oci_api_key.pem
+          chmod 600 ~/.oci/oci_api_key.pem
+          cat > ~/.oci/config <<EOF
+          [DEFAULT]
+          user=$OCI_CLI_USER
+          fingerprint=$OCI_CLI_FINGERPRINT
+          tenancy=$OCI_CLI_TENANCY
+          region=$OCI_CLI_REGION
+          key_file=~/.oci/oci_api_key.pem
+          EOF
+          chmod 600 ~/.oci/config
+
+      - name: Verify OCI CLI auth and version
+        run: |
+          set -euo pipefail
+          test -s ~/.oci/config
+          test -s ~/.oci/oci_api_key.pem
+          oci --version
+          oci iam user get --user-id "$OCI_CLI_USER" --raw-output >/dev/null
+
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Clone full repository so we can push
+        run: git fetch --prune --unshallow
+
+      - name: Set short git commit SHA
+        id: vars
+        run: |
+          calculatedSha=$(git rev-parse --short ${{ github.sha }})
+          echo "COMMIT_SHORT_SHA=$calculatedSha" >> $GITHUB_ENV
+
+      - name: Confirm git commit SHA output
+        run: echo ${{ env.COMMIT_SHORT_SHA }}
+
+      - name: Get commit message
+        id: commit
+        run: |
+          echo "message<<EOF" >> "$GITHUB_OUTPUT"
+          git log --format=%B -n 1 ${{ github.sha }} >> "$GITHUB_OUTPUT"
+          echo "EOF" >> "$GITHUB_OUTPUT"
+
+      - name: Setup Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: "3.3.0"
+
+      - name: Disable ri and rdoc
+        run: 'echo "gem: --no-document" >> ~/.gemrc'
+
+      - name: Bundle Install
+        run: bundle install
+
+      - name: Run kitchen test
+        if: ${{ !contains(steps.commit.outputs.message, 'only-validate-profile') }}
+        continue-on-error: true
+        run: bundle exec kitchen test --destroy=always "${KITCHEN_INSTANCE}"
+
+      - name: Save our baseline results summary
+        continue-on-error: true
+        if: ${{ !contains(steps.commit.outputs.message, 'only-validate-profile') }}
+        uses: mitre/saf_action@v1
+        with:
+          command_string: "view summary -i spec/results/${{ env.PLATFORM }}_${{ env.SUITE }}.json -o spec/results/${{ env.PLATFORM }}_${{ env.SUITE }}-data.json"
+
+      - name: Save Test Result JSON
+        if: ${{ !contains(steps.commit.outputs.message, 'only-validate-profile') }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ github.workflow }}-${{ env.COMMIT_SHORT_SHA }}-${{ env.SUITE }}-results
+          path: spec/results/
+
+      - name: Upload baseline to Heimdall
+        if: ${{ !contains(steps.commit.outputs.message, 'only-validate-profile') }}
+        continue-on-error: true
+        run: |
+          curl -# -s -F data=@spec/results/${{ env.PLATFORM }}_${{ env.SUITE }}.json -F "filename=${{ env.COMMIT_SHORT_SHA }}-${{ env.PLATFORM }}_${{ env.SUITE }}" -F "public=true" -F "evaluationTags=${{ env.COMMIT_SHORT_SHA }},${{ github.repository }},${{ github.workflow }}" -H "Authorization: Api-Key ${{ secrets.SAF_HEIMDALL_UPLOAD_KEY }}" "${{ env.HEIMDALL_URL }}/evaluations"
+
+      - name: Display our baseline results summary
+        if: ${{ !contains(steps.commit.outputs.message, 'only-validate-profile') }}
+        uses: mitre/saf_action@v1
+        with:
+          command_string: "view summary -i spec/results/${{ env.PLATFORM }}_${{ env.SUITE }}.json"
+
+      # - name: Generate Markdown Summary
+      #   continue-on-error: true
+      #   id: generate-summary
+      #   run: |
+      #     cat spec/results/${{ env.PLATFORM }}_${{ env.SUITE }}-data.json | python markdown-summary.py > spec/results/${{ env.PLATFORM }}_${{ env.SUITE }}-markdown-summary.md
+      #     cat spec/results/${{ env.PLATFORM }}_${{ env.SUITE }}-markdown-summary.md >> $GITHUB_STEP_SUMMARY
+
+      - name: Ensure the scan meets our baseline results threshold
+        if: ${{ !contains(steps.commit.outputs.message, 'only-validate-profile') }}
+        uses: mitre/saf_action@v1
+        with:
+          command_string: "validate threshold -i spec/results/${{ env.PLATFORM }}_${{ env.SUITE }}.json -F ${{ env.SUITE }}.threshold.yml"
+
+      - name: Save Kitchen logs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ github.workflow }}-${{ env.COMMIT_SHORT_SHA }}-kitchen-logs
+          if-no-files-found: warn
+          path: .kitchen/logs/

@@ -9,27 +9,33 @@ additional attack vectors.
     A core dump includes a memory image taken at the time the operating system
 terminates an application. The memory image could contain sensitive data and is
 generally useful only for developers trying to debug problems.'
-  desc 'check', %q(Verify the operating system disables core dumps for all users with the following command:
+  desc 'check', 'Note: If kernel dumps are disabled in accordance with OL08-00-010671, this requirement is not applicable.
 
-$ sudo grep -r -s '^[^#].*core' /etc/security/limits.conf /etc/security/limits.d/*.conf
+Verify OL 8 disables core dumps for all users by issuing the following command:
 
-* hard core 0
+$ grep -r -s core /etc/security/limits.conf /etc/security/limits.d/*.conf
+
+/etc/security/limits.conf:* hard core 0
 
 This can be set as a global domain (with the * wildcard) but may be set differently for multiple domains.
 
-If the "core" item is missing or commented out or the value is anything other than "0", and the need for core dumps is not documented with the Information System Security Officer (ISSO) as an operational requirement for all domains that have the "core" item assigned, this is a finding.)
-  desc 'fix', 'Configure OL 8 to disable core dumps for all users.
+If the "core" item is missing or commented out, or the value is anything other than "0", and the need for core dumps is not documented with the information system security officer (ISSO) as an operational requirement for all domains that have the "core" item assigned, this is a finding.
 
-Add the following line to the top of "/etc/security/limits.conf" or in a ".conf" file defined in "/etc/security/limits.d/":
+If entries exist for users or groups with a value set to anything other than "0", this is a finding.'
+  desc 'fix', 'Configure OL 8 to disable core dumps for all users. 
 
-* hard core 0'
+Add the following line to the top of the /etc/security/limits.conf or in a single ".conf" file defined in /etc/security/limits.d/:
+
+* hard core 0
+
+Remove or comment out any entries for users or groups with a value set to anything other than "0".'
   impact 0.5
   tag severity: 'medium'
   tag gtitle: 'SRG-OS-000480-GPOS-00227'
   tag gid: 'V-248631'
-  tag rid: 'SV-248631r991589_rule'
+  tag rid: 'SV-248631r1156685_rule'
   tag stig_id: 'OL08-00-010673'
-  tag fix_id: 'F-52019r779458_fix'
+  tag fix_id: 'F-52019r1156684_fix'
   tag cci: ['CCI-000366']
   tag legacy: []
   tag nist: ['CM-6 b']

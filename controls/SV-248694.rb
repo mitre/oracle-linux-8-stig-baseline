@@ -20,4 +20,16 @@ $ sudo chage -m 1 [user]'
   tag 'documentable'
   tag cci: ['CCI-004066', 'CCI-000198']
   tag nist: ['IA-5 (1) (h)', 'IA-5 (1) (d)']
+
+  # TODO: add inputs for a frequecny
+
+  bad_users = users.where { uid >= 1000 }.where { mindays.nil? || mindays.to_i < 1 }.usernames
+  in_scope_users = bad_users - input('exempt_home_users')
+
+  describe 'Users should not' do
+    it 'be able to change their password more then once a 24 hour period' do
+      failure_message = "The following users can update their password more then once a day: #{in_scope_users.join(', ')}"
+      expect(in_scope_users).to be_empty, failure_message
+    end
+  end
 end

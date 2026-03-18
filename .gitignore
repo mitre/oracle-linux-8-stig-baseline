@@ -21,6 +21,7 @@ saf-cli.log
 *.log
 delta/
 *results*.json
+.serena
 
 # Used by dotenv library to load environment variables.
 # .env

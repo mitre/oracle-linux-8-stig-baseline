@@ -38,7 +38,7 @@ Replace "[audit_log_directory]" with the correct audit log directory path. By de
   only_if('This control is Not Applicable to containers', impact: 0.0) {
     !virtualization.system.eql?('docker')
   }
-  log_dir = auditd_conf('/etc/audit/auditd.conf').log_file.split('/')[0..-2].join('/')
+  log_dir = auditd_conf('/etc/audit/auditd.conf').log_file.to_s.split('/')[0..-2].join('/')
   describe directory(log_dir) do
     its('owner') { should eq 'root' }
   end

@@ -6,9 +6,7 @@ The session lock is implemented at the point where session activity can be deter
 
 Implementing session settings will have little value if a user is able to manipulate these settings from the defaults prescribed in the other requirements of this implementation guide.
 
-Locking these settings from non-privileged users is crucial to maintaining a protected baseline.
-
-"
+Locking these settings from non-privileged users is crucial to maintaining a protected baseline."
   desc 'check', 'Note: This requirement assumes the use of the OL 8 default graphical user interface, Gnome Shell. If the system does not have any graphical user interface installed, this requirement is Not Applicable.
 
 Verify the operating system prevents a user from overriding settings for graphical user interfaces.
@@ -51,4 +49,19 @@ Add the following setting to prevent non-privileged users from modifying it:
   tag 'documentable'
   tag cci: ['CCI-000057', 'CCI-000060']
   tag nist: ['AC-11 a', 'AC-11 (1)']
+
+  only_if('This requirement is Not Applicable in the container', impact: 0.0) {
+    !virtualization.system.eql?('docker')
+  }
+
+  if !package('gnome-desktop3').installed?
+    impact 0.0
+    describe 'The GNOME desktop is not installed, this control is Not Applicable.' do
+      skip 'The GNOME desktop is not installed, this control is Not Applicable.'
+    end
+  else
+    describe command('grep -i lock-enabled /etc/dconf/db/local.d/locks/*') do
+      its('stdout.split') { should include '/org/gnome/desktop/screensaver/lock-enabled' }
+    end
+  end
 end

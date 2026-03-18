@@ -4,9 +4,7 @@ control 'SV-248663' do
 
 In OL 8.2, the "/etc/security/faillock.conf" file was incorporated to centralize the configuration of the "pam_faillock.so" module. Also introduced is a "local_users_only" option that will only track failed user authentication attempts for local users in "/etc/passwd" and ignore centralized (AD, IdM, LDAP, etc.) users to allow the centralized platform to solely manage user lockout.
 
-From "faillock.conf" man pages: Note that the default directory that "pam_faillock" uses is usually cleared on system boot so the access will be reenabled after system reboot. If that is undesirable, a different tally directory must be set with the "dir" option.
-
-'
+From "faillock.conf" man pages: Note that the default directory that "pam_faillock" uses is usually cleared on system boot so the access will be reenabled after system reboot. If that is undesirable, a different tally directory must be set with the "dir" option.'
   desc 'check', 'Note: This check applies to OL versions 8.2 or newer. If the system is OL version 8.0 or 8.1, this check is not applicable.
 
 Verify the "/etc/security/faillock.conf" file is configured to log user name information when unsuccessful logon attempts occur:
@@ -33,4 +31,16 @@ audit'
   tag 'documentable'
   tag cci: ['CCI-000044', 'CCI-002238']
   tag nist: ['AC-7 a', 'AC-7 b']
+
+  message = <<~MESSAGE
+    \n\nThis check only applies to OL versions 8.0 or 8.1.\n
+    The system is running OL version: #{os.version}, this requirement is Not Applicable.
+  MESSAGE
+  only_if(message, impact: 0.0) do
+    os.version.minor.between?(0, 1)
+  end
+
+  describe parse_config_file('/etc/security/faillock.conf') do
+    its('audit') { should_not be_nil }
+  end
 end

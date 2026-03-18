@@ -35,4 +35,19 @@ Reboot the system for the settings to take effect.'
   tag 'documentable'
   tag cci: ['CCI-000778', 'CCI-003959']
   tag nist: ['IA-3', 'CM-7 (9) (b)']
+
+  only_if('This control is Not Applicable to containers', impact: 0.0) {
+    !virtualization.system.eql?('docker')
+  }
+  if input('usb_storage_required') == true
+    describe kernel_module('usb_storage') do
+      it { should_not be_disabled }
+      it { should_not be_blacklisted }
+    end
+  else
+    describe kernel_module('usb_storage') do
+      it { should be_disabled }
+      it { should be_blacklisted }
+    end
+  end
 end

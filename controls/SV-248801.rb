@@ -16,9 +16,7 @@ DoD has defined the list of events for which OL 8 will provide an audit record g
 
 4) All kernel module load, unload, and restart actions.
 
-From "Pam_Faillock man" pages: Note the default directory that "pam_faillock" uses is usually cleared on system boot so the access will be reenabled after system reboot. If that is undesirable, a different tally directory must be set with the "dir" option.
-
-'
+From "Pam_Faillock man" pages: Note the default directory that "pam_faillock" uses is usually cleared on system boot so the access will be reenabled after system reboot. If that is undesirable, a different tally directory must be set with the "dir" option.'
   desc 'check', 'Verify OL 8 generates an audit record for any attempted modifications to the "faillock" file.
 
 Determine where the faillock tallies are stored with the following commands:
@@ -61,4 +59,26 @@ $ sudo service auditd restart'
   tag 'documentable'
   tag cci: ['CCI-000130', 'CCI-000135', 'CCI-000169', 'CCI-000172', 'CCI-002884']
   tag nist: ['AU-3 a', 'AU-3 (1)', 'AU-12 a', 'AU-12 c', 'MA-4 (1) (a)']
+
+  if os.version.minor < 2
+    m = /dir=(?<dir>\S*)/
+    s = command('grep -i pam_faillock.so /etc/pam.d/system-auth').stdout
+    dir_match = m.match(s)
+    audit_command = (dir_match[:dir] if dir_match)
+  else
+    audit_command = parse_config_file('/etc/security/faillock.conf').params('dir')
+  end
+
+  only_if('This control is Not Applicable to containers', impact: 0.0) {
+    !virtualization.system.eql?('docker')
+  }
+
+  describe 'Command' do
+    it "#{audit_command} is audited properly" do
+      audit_rule = auditd.file(audit_command)
+      expect(audit_rule).to exist
+      expect(audit_rule.permissions.flatten).to include('w', 'a')
+      expect(audit_rule.key.uniq).to include(input('audit_rule_keynames').merge(input('audit_rule_keynames_overrides'))[audit_command])
+    end
+  end
 end

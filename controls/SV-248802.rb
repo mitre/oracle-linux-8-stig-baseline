@@ -14,9 +14,7 @@ DoD has defined the list of events for which OL 8 will provide an audit record g
 
 3) All account creations, modifications, disabling, and terminations; and
 
-4) All kernel module load, unload, and restart actions.
-
-'
+4) All kernel module load, unload, and restart actions.'
   desc 'check', 'Verify OL 8 generates an audit record for any attempted modifications to the "lastlog" file by running the following command to check the file system rules in "/etc/audit/audit.rules":
 
 $ sudo grep -w lastlog /etc/audit/audit.rules
@@ -45,4 +43,19 @@ $ sudo service auditd restart'
   tag 'documentable'
   tag cci: ['CCI-000130', 'CCI-000135', 'CCI-000169', 'CCI-000172', 'CCI-002884']
   tag nist: ['AU-3 a', 'AU-3 (1)', 'AU-12 a', 'AU-12 c', 'MA-4 (1) (a)']
+
+  audit_command = '/var/log/lastlog'
+
+  only_if('This control is Not Applicable to containers', impact: 0.0) {
+    !virtualization.system.eql?('docker')
+  }
+
+  describe 'Command' do
+    it "#{audit_command} is audited properly" do
+      audit_rule = auditd.file(audit_command)
+      expect(audit_rule).to exist
+      expect(audit_rule.permissions.flatten).to include('w', 'a')
+      expect(audit_rule.key.uniq).to include(input('audit_rule_keynames').merge(input('audit_rule_keynames_overrides'))[audit_command])
+    end
+  end
 end

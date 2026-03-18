@@ -35,8 +35,8 @@ If "flags" does not contain the "nx" flag, this is a finding.'
     assignment_regex: /^\s*([^:]*?)\s*:\s*(.*?)\s*$/
   }
 
-  dmesg_nx_conf = command('dmesg | grep NX').stdout.match(/:\s+(\S+)$/).captures.first
-  cpuinfo_flags = parse_config_file('/proc/cpuinfo', options).flags.split
+  dmesg_nx_conf = command('dmesg | grep NX').stdout[/:\s+(\S+)$/, 1]
+  cpuinfo_flags = parse_config_file('/proc/cpuinfo', options).flags.to_s.split
 
   describe.one do
     describe 'The no-execution bit flag' do

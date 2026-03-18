@@ -4,9 +4,7 @@ control 'SV-248652' do
 
 OL 8 can use the "pam_faillock.so" for this purpose. Note that manual changes to the listed files may be overwritten by the "authselect" program.
 
-From "Pam_Faillock" man pages: Note that the default directory that "pam_faillock" uses is usually cleared on system boot so the access will be reenabled after system reboot. If that is undesirable, a different tally directory must be set with the "dir" option.
-
-'
+From "Pam_Faillock" man pages: Note that the default directory that "pam_faillock" uses is usually cleared on system boot so the access will be reenabled after system reboot. If that is undesirable, a different tally directory must be set with the "dir" option.'
   desc 'check', 'Verify the system locks an account after three unsuccessful logon attempts with the following commands.
 
 Note: If the System Administrator demonstrates the use of an approved centralized account management method that locks an account after three unsuccessful logon attempts within a period of 15 minutes, this requirement is not applicable.
@@ -53,4 +51,38 @@ $ sudo systemctl restart sssd.service'
   tag 'documentable'
   tag cci: ['CCI-000044', 'CCI-002238']
   tag nist: ['AC-7 a', 'AC-7 b']
+
+  unsuccessful_attempts = input('unsuccessful_attempts')
+  pam_auth_files = input('pam_auth_files')
+
+  only_if('This system uses Centralized Account Management to manage this requirement', impact: 0.0) {
+    !input('central_account_management')
+  }
+
+  message = <<~MESSAGE
+    \n\nThis check only applies to OL versions 8.0 or 8.1.\n
+    The system is running OL version: #{os.version}, this requirement is Not Applicable.
+  MESSAGE
+  if os.version.minor >= 2
+    impact 0.0
+    describe 'This requirement only applies to OL 8 version(s) 8.0 and 8.1' do
+      skip message
+    end
+  else
+    [
+      pam_auth_files['password-auth'],
+      pam_auth_files['system-auth']
+    ].each do |path|
+      describe pam(path) do
+        its('lines') {
+          should match_pam_rule('auth [default=die]|required pam_faillock.so preauth').all_with_integer_arg('deny',
+                                                                                                            '<=', unsuccessful_attempts)
+        }
+        its('lines') {
+          should match_pam_rule('auth [default=die]|required pam_faillock.so preauth').all_with_integer_arg('deny',
+                                                                                                            '>=', 0)
+        }
+      end
+    end
+  end
 end

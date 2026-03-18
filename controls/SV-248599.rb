@@ -37,12 +37,12 @@ If the service is not "enabled" and "active", this is a finding.'
   }
 
   message = <<~MESSAGE
-    \n\nFor RHEL versions 8.4 and above running with kernel FIPS mode enabled as specified by RHEL-08-010020\n
-    The system is running RHEL version: #{os.version}, this requirement is Not Applicable.
+    \n\nFor OL versions 8.4 and above running with kernel FIPS mode enabled as specified by OL-08-010020\n
+    The system is running OL version: #{os.version}, this requirement is Not Applicable.
   MESSAGE
   if os.version.minor >= 4 && input('use_fips') == true
     impact 0.0
-    describe 'For RHEL versions 8.4 and above running with kernel FIPS mode enabled as specified by RHEL-08-010020, this requirement is Not Applicable.' do
+    describe 'For OL versions 8.4 and above running with kernel FIPS mode enabled as specified by OL-08-010020, this requirement is Not Applicable.' do
       skip message
     end
   else

@@ -30,4 +30,16 @@ Reboot the system for the change to take effect.'
   tag 'documentable'
   tag cci: ['CCI-000366']
   tag nist: ['CM-6 b']
+
+  only_if('This control is Not Applicable to containers', impact: 0.0) {
+    !virtualization.system.eql?('docker')
+  }
+
+  parsed_grub = parse_config(command('grubby --info=/boot/vmlinuz-$(uname -r)').stdout.strip)
+
+  describe 'GRUB mitigations configuration' do
+    it 'should not have mitigations disabled in current config' do
+      expect(parsed_grub['args']).not_to match(/\bmitigations=off\b/)
+    end
+  end
 end

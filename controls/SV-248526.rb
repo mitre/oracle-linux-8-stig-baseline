@@ -88,8 +88,10 @@ The SSH service must be restarted for changes to take effect.'
   tag 'host'
   tag 'container-conditional'
 
-  only_if('Control not applicable - SSH is not installed within containerized RHEL', impact: 0.0) {
-    !virtualization.system.eql?('docker') || file('/etc/ssh/sshd_config').exist?
+  openssh_present = package('openssh-server').installed?
+
+  only_if('SSH is not installed on the system or the system is running in a container; this requirement is Not Applicable', impact: 0.0) {
+    openssh_present && !virtualization.system.eql?('docker')
   }
 
   # When Banner is commented, not found, disabled, or the specified file does not exist, this is a finding.

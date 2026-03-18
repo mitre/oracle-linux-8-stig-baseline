@@ -42,4 +42,13 @@ Add or update the line:
   tag 'documentable'
   tag cci: ['CCI-000366']
   tag nist: ['CM-6 b']
+
+  only_if('This control is Not Applicable to containers', impact: 0.0) {
+    !virtualization.system.eql?('docker')
+  }
+
+  describe kernel_module('can') do
+    it { should be_disabled }
+    it { should be_blacklisted }
+  end
 end

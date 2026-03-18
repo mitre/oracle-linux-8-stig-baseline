@@ -33,4 +33,32 @@ Note: The DOD recommendation is 35 days, but a lower value is acceptable.'
   tag 'documentable'
   tag cci: ['CCI-003627', 'CCI-003628', 'CCI-000795']
   tag nist: ['AC-2 (3) (a)', 'AC-2 (3) (b)', 'IA-4 e']
+
+  days_of_inactivity = input('days_of_inactivity')
+
+  describe 'Useradd configuration' do
+    useradd_config = parse_config_file('/etc/default/useradd')
+
+    context 'when INACTIVE is set' do
+      it 'should exist' do
+        expect(useradd_config.params).to include('INACTIVE')
+      end
+
+      it 'should not be nil' do
+        expect(useradd_config.params['INACTIVE']).not_to be_nil
+      end
+
+      it 'should have INACTIVE greater than or equal to 0' do
+        expect(useradd_config.params['INACTIVE'].to_i).to be >= 0
+      end
+
+      it 'should have INACTIVE less than or equal to days_of_inactivity' do
+        expect(useradd_config.params['INACTIVE'].to_i).to be <= days_of_inactivity
+      end
+
+      it 'should not have INACTIVE equal to -1' do
+        expect(useradd_config.params['INACTIVE']).not_to eq '-1'
+      end
+    end
+  end
 end
