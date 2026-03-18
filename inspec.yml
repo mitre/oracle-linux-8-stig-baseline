@@ -90,7 +90,6 @@ inputs:
     type: String
     value: '0644'
 
-
   # SV-248602
   - name: ssh_private_key_mode
     description: All private ssh keyfiles on the filesystem should be equal or less permissive than this octet
