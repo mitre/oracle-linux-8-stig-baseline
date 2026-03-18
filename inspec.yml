@@ -1,6 +1,6 @@
 name: oracle-linux-8-stig-baseline
 title: "Oracle Linux 8 Security Technical Implementation Guide :: Version 2,
-  Release 6 :: Benchmark Date:  01 Oct 2025"
+  Release 7 :: Benchmark Date: 06 Jan 2026"
 maintainer: MITRE SAF Team
 copyright: MITRE
 copyright_email: saf@groups.mitre.org
@@ -8,7 +8,7 @@ license: Apache-2.0
 summary: InSpec profile aligned to STIG Guidance for Oracle Linux 8 Security
   Technical Implementation Guide
 description: null
-version: 2.6.0
+version: 2.7.0
 inspec_version: ">= 5.0"
 
 ### INPUTS ###
