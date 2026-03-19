@@ -157,31 +157,6 @@ All action are conducted using `ruby` (gemstone/programming language). Currently
 
 Install ruby based on the OS being used, see [Installing Ruby](https://www.ruby-lang.org/en/documentation/installation/)
 
-After installing `ruby` install the necessary dependencies by invoking the bundler command (must be in the same directory where the Gemfile is located):
-
-```bash
-bundle install
-```
-
-#### Testing Commands
-
-Linting and validating controls:
-
-```bash
-  bundle exec rake [inspec or cinc-auditor]:check # Validate the InSpec Profile
-  bundle exec rake lint                           # Run RuboCop Linter
-  bundle exec rake lint:auto_correct              # Autocorrect RuboCop offenses (only when it's safe)
-  bundle exec rake pre_commit_checks              # Pre-commit checks
-```
-
-Ensure the controls are ready to be committed into the repo:
-
-```bash
-  bundle exec rake pre_commit_checks
-```
-
-[top](#table-of-contents)
-
 ## Running the Profile
 
 ### Directly from Github
@@ -190,10 +165,10 @@ This option is best used when network connectivity is available and policies per
 
 ```bash
 # Using `ssh` transport
-bundle exec [inspec or cinc-auditor] exec https://github.com/mitre/oracle-linux-8-stig-baseline/archive/main.tar.gz --input-file=<your_inputs_file.yml> -t ssh://<hostname>:<port> --sudo --reporter=cli json:<your_results_file.json>
+inspec exec https://github.com/mitre/oracle-linux-8-stig-baseline/archive/main.tar.gz --input-file=<your_inputs_file.yml> -t ssh://<hostname>:<port> --sudo --reporter=cli json:<your_results_file.json>
 
 # Using `winrm` transport
-bundle exec [inspec or cinc-auditor] exec https://github.com/mitre/oracle-linux-8-stig-baseline/archive/master.tar.gz --target winrm://<hostip> --user '<admin-account>' --password=<password> --input-file=<path_to_your_inputs_file/name_of_your_inputs_file.yml> --reporter=cli json:<path_to_your_output_file/name_of_your_output_file.json>
+inspec exec https://github.com/mitre/oracle-linux-8-stig-baseline/archive/master.tar.gz --target winrm://<hostip> --user '<admin-account>' --password=<password> --input-file=<path_to_your_inputs_file/name_of_your_inputs_file.yml> --reporter=cli json:<path_to_your_output_file/name_of_your_output_file.json>
 ```
 
 [top](#table-of-contents)
@@ -210,13 +185,13 @@ When the **"runner"** host uses this profile overlay for the first time, follow 
 mkdir profiles
 cd profiles
 git clone https://github.com/mitre/oracle-linux-8-stig-baseline.git
-bundle exec [inspec or cinc-auditor] archive oracle-linux-8-stig-baseline
+inspec archive oracle-linux-8-stig-baseline
 
 # Using `ssh` transport
-bundle exec [inspec or cinc-auditor] exec <name of generated archive> --input-file=<your_inputs_file.yml> -t ssh://<hostname>:<port> --sudo --reporter=cli json:<your_results_file.json>
+inspec exec <name of generated archive> --input-file=<your_inputs_file.yml> -t ssh://<hostname>:<port> --sudo --reporter=cli json:<your_results_file.json>
 
 # Using `winrm` transport
-bundle exec [inspec or cinc-auditor] exec <name of generated archive> --target winrm://<hostip> --user '<admin-account>' --password=<password> --input-file=<path_to_your_inputs_file/name_of_your_inputs_file.yml> --reporter=cli json:<path_to_your_output_file/name_of_your_output_file.json>
+inspec exec <name of generated archive> --target winrm://<hostip> --user '<admin-account>' --password=<password> --input-file=<path_to_your_inputs_file/name_of_your_inputs_file.yml> --reporter=cli json:<path_to_your_output_file/name_of_your_output_file.json>
 ```
 
 For every successive run, follow these steps to always have the latest version of this profile baseline:
@@ -225,13 +200,13 @@ For every successive run, follow these steps to always have the latest version o
 cd oracle-linux-8-stig-baseline
 git pull
 cd ..
-bundle exec [inspec or cinc-auditor] archive oracle-linux-8-stig-baseline --overwrite
+inspec archive oracle-linux-8-stig-baseline --overwrite
 
 # Using `ssh` transport
-bundle exec [inspec or cinc-auditor] exec <name of generated archive> --input-file=<your_inputs_file.yml> -t ssh://<hostname>:<port> --sudo --reporter=cli json:<your_results_file.json>
+inspec exec <name of generated archive> --input-file=<your_inputs_file.yml> -t ssh://<hostname>:<port> --sudo --reporter=cli json:<your_results_file.json>
 
 # Using `winrm` transport
-bundle exec [inspec or cinc-auditor] exec <name of generated archive> --target winrm://<hostip> --user '<admin-account>' --password=<password> --input-file=<path_to_your_inputs_file/name_of_your_inputs_file.yml> --reporter=cli json:<path_to_your_output_file/name_of_your_output_file.json>
+inspec exec <name of generated archive> --target winrm://<hostip> --user '<admin-account>' --password=<password> --input-file=<path_to_your_inputs_file/name_of_your_inputs_file.yml> --reporter=cli json:<path_to_your_output_file/name_of_your_output_file.json>
 ```
 
 [top](#table-of-contents)
