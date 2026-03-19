@@ -49,7 +49,7 @@ If audit records are not stored on a partition made specifically for audit recor
   grub_config = command('grub2-editenv - list').stdout
   kernelopts = parse_config(grub_config)['kernelopts'].to_s.strip.gsub(' ', "\n")
   grub_cmdline_linux = parse_config_file('/etc/default/grub')['GRUB_CMDLINE_LINUX'].to_s.strip.gsub(' ', "\n").gsub('"',
-                                                                                                                       '')
+                                                                                                                    '')
 
   expected_backlog_limit = input('expected_backlog_limit')
 

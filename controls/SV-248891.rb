@@ -11,7 +11,7 @@ The sysctl --system command will load settings from all system configuration fil
 /etc/sysctl.conf'
   desc 'check', 'Verify OL 8 restricts access to exposed kernel pointers with the following command:
 
-$ sysctl kernel.kptr_restrict 
+$ sysctl kernel.kptr_restrict
 kernel.kptr_restrict = 1'
   desc 'fix', 'Configure OL 8 to prevent the leak of kernel pointers to nonprivileged users.
 

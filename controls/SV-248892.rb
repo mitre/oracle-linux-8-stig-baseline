@@ -1,6 +1,6 @@
 control 'SV-248892' do
   title 'OL 8 must disable the use of user namespaces.'
-  desc 'It is detrimental for operating systems to provide, or install by default, functionality exceeding requirements or mission objectives. These unnecessary capabilities or services are often overlooked and therefore may remain unsecured. They increase the risk to the platform by providing additional attack vectors. 
+  desc 'It is detrimental for operating systems to provide, or install by default, functionality exceeding requirements or mission objectives. These unnecessary capabilities or services are often overlooked and therefore may remain unsecured. They increase the risk to the platform by providing additional attack vectors.
 
 User namespaces are used primarily for Linux containers. "Rootful" containers run with root privileges on the host system and may pose a security risk if compromised. "Rootless" containers run without root privileges and allow for better isolation from the host system. The value "0" disallows the use of user namespaces. When containers are not in use, namespaces should be disallowed. When privileged user namespaces or "rootful" containers are in use, user namespaces should be disallowed. When nonprivileged user namespaces or "rootless" containers are deployed on a system, the value should be set to a large nonzero value. The default value depends on the amount of memory in the system, approximately the total memory in kilobytes divided by 256.
 
@@ -21,7 +21,7 @@ user.max_user_namespaces = 0
 If the returned line does not have a value of "0", or a line is not returned, this is a finding.'
   desc 'fix', 'Configure OL 8 to disable the use of user namespaces by adding the following line to a file, in the "/etc/sysctl.d" directory:
 
-Note: User namespaces are used primarily for Linux containers. If containers are in use, this requirement is Not Applicable. 
+Note: User namespaces are used primarily for Linux containers. If containers are in use, this requirement is Not Applicable.
 
 user.max_user_namespaces = 0
 

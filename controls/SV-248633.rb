@@ -11,12 +11,12 @@ terminates an application. The memory image could contain sensitive data and is
 generally useful only for developers trying to debug problems.'
   desc 'check', 'Note: If kernel dumps are disabled in accordance with OL08-00-010671, this requirement is not applicable.
 
-Verify OL 8 disables core dump backtraces by issuing the following command: 
- 
-$ sudo grep -i ProcessSizeMax /etc/systemd/coredump.conf 
- 
-ProcessSizeMax=0 
- 
+Verify OL 8 disables core dump backtraces by issuing the following command:
+
+$ sudo grep -i ProcessSizeMax /etc/systemd/coredump.conf
+
+ProcessSizeMax=0
+
 If the "ProcessSizeMax" item is missing or commented out or the value is anything other than "0", and the need for core dumps is not documented with the information system security officer (ISSO) as an operational requirement for all domains that have the "core" item assigned, this is a finding.'
   desc 'fix', 'Configure OL 8 to disable core dump backtraces.
 

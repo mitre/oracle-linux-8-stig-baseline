@@ -6,31 +6,31 @@ have compromised information system accounts, is a serious and ongoing concern
 and can have significant adverse impacts on organizations. Auditing the use of
 privileged functions is one way to detect such misuse and identify the risk
 from insider threats and the advanced persistent threat.'
-  desc 'check', 'Verify OL 8 audits the execution of privileged functions. 
- 
-Check if OL 8 is configured to audit the execution of the "execve" system call, by running the following command: 
- 
-$ sudo grep execve /etc/audit/audit.rules 
- 
--a always,exit -F arch=b32 -S execve -C uid!=euid -F euid=0 key=execpriv 
--a always,exit -F arch=b64 -S execve -C uid!=euid -F euid=0 key=execpriv 
- 
--a always,exit -F arch=b32 -S execve -C gid!=egid -F euid=0 key=execpriv 
+  desc 'check', 'Verify OL 8 audits the execution of privileged functions.
+
+Check if OL 8 is configured to audit the execution of the "execve" system call, by running the following command:
+
+$ sudo grep execve /etc/audit/audit.rules
+
+-a always,exit -F arch=b32 -S execve -C uid!=euid -F euid=0 key=execpriv
+-a always,exit -F arch=b64 -S execve -C uid!=euid -F euid=0 key=execpriv
+
+-a always,exit -F arch=b32 -S execve -C gid!=egid -F euid=0 key=execpriv
 -a always,exit -F arch=b64 -S execve -C gid!=egid -F euid=0 key=execpriv
- 
+
 If the command does not return all lines or the lines are commented out, this is a finding.'
-  desc 'fix', 'Configure OL 8 to audit the execution of the "execve" system call. 
- 
-Add or update the following file system rules to "/etc/audit/rules.d/audit.rules": 
- 
--a always,exit -F arch=b32 -S execve -C uid!=euid -F euid=0 key=execpriv 
--a always,exit -F arch=b64 -S execve -C uid!=euid -F euid=0 key=execpriv 
- 
--a always,exit -F arch=b32 -S execve -C gid!=egid -F euid=0 key=execpriv 
+  desc 'fix', 'Configure OL 8 to audit the execution of the "execve" system call.
+
+Add or update the following file system rules to "/etc/audit/rules.d/audit.rules":
+
+-a always,exit -F arch=b32 -S execve -C uid!=euid -F euid=0 key=execpriv
+-a always,exit -F arch=b64 -S execve -C uid!=euid -F euid=0 key=execpriv
+
+-a always,exit -F arch=b32 -S execve -C gid!=egid -F euid=0 key=execpriv
 -a always,exit -F arch=b64 -S execve -C gid!=egid -F euid=0 key=execpriv
- 
-The audit daemon must be restarted for the changes to take effect. To restart the audit daemon, run the following command: 
- 
+
+The audit daemon must be restarted for the changes to take effect. To restart the audit daemon, run the following command:
+
 $ sudo service auditd restart'
   impact 0.5
   tag severity: 'medium'

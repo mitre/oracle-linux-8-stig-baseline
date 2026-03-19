@@ -21,7 +21,6 @@ Table of Contents
   - [Intended Usage](#intended-usage)
   - [Environment Aware Testing](#environment-aware-testing)
   - [Tailoring to Your Environment](#tailoring-to-your-environment)
-  - [Testing the Profile Controls](#testing-the-profile-controls)
 - [Running the Profile](#running-the-profile)
   - [Directly from Github](#directly-from-github)
   - [Using a local Archive copy](#using-a-local-archive-copy)
@@ -147,17 +146,13 @@ Chef InSpec Resources:
 
 [top](#table-of-contents)
 
-### Testing the Profile Controls
+## Running the Profile
 
-The Gemfile provided contains all the necessary ruby dependencies for checking the profile controls.
+### Requirements
 
-#### Requirements
-
-All action are conducted using `ruby` (gemstone/programming language). Currently `inspec` commands have been tested with ruby version 3.3.0. A higher version of ruby is not guaranteed to provide the expected results. Any modern distribution of Ruby comes with Bundler preinstalled by default.
+All actions are conducted using `ruby` (gemstone/programming language). Currently `inspec` commands have been tested with ruby version `3.3.0`. A higher version of ruby is not guaranteed to provide the expected results.
 
 Install ruby based on the OS being used, see [Installing Ruby](https://www.ruby-lang.org/en/documentation/installation/)
-
-## Running the Profile
 
 ### Directly from Github
 
