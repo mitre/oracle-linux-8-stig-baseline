@@ -3,12 +3,12 @@ control 'SV-248626' do
   desc 'The "nosuid" mount option causes the system not to execute "setuid" and "setgid" files with owner privileges. This option must be used for mounting any file system not containing approved "setuid" and "setguid" files. Executing files from untrusted file systems increases the opportunity for nonprivileged users to attain unauthorized administrative access.'
   desc 'check', 'Note: If no NFS mounts are configured, this requirement is Not Applicable.
 
-Verify file systems being imported via NFS are mounted with the "nosuid" option with the following command: 
- 
-$ sudo grep nfs /etc/fstab | grep nosuid 
- 
-UUID=e06097bb-cfcd-437b-9e4d-a691f5662a7d /store nfs rw,nosuid,nodev,noexec 0 0 
- 
+Verify file systems being imported via NFS are mounted with the "nosuid" option with the following command:
+
+$ sudo grep nfs /etc/fstab | grep nosuid
+
+UUID=e06097bb-cfcd-437b-9e4d-a691f5662a7d /store nfs rw,nosuid,nodev,noexec 0 0
+
 If a file system found in "/etc/fstab" refers to NFS and it does not have the "nosuid" option set, this is a finding.'
   desc 'fix', 'Configure the "/etc/fstab" to use the "nosuid" option on
 file systems that are being imported via NFS.'

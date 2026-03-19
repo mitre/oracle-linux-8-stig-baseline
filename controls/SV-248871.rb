@@ -1,11 +1,11 @@
 control 'SV-248871' do
   title 'OL 8 must disable the systemd Ctrl-Alt-Delete burst key sequence.'
   desc 'A locally logged-on user who presses Ctrl-Alt-Delete when at the console can reboot the system. If accidentally pressed, as could happen in the case of a mixed OS environment, this can create the risk of short-term loss of availability of systems due to unintentional reboot. In a graphical user environment, risk of unintentional reboot from the Ctrl-Alt-Delete sequence is reduced because the user will be prompted before any action is taken.'
-  desc 'check', 'Verify OL 8 is not configured to reboot the system when Ctrl-Alt-Delete is pressed seven times within two seconds with the following command: 
- 
+  desc 'check', 'Verify OL 8 is not configured to reboot the system when Ctrl-Alt-Delete is pressed seven times within two seconds with the following command:
+
 $ sudo grep -iR CtrlAltDelBurstAction /etc/systemd/system*
 /etc/systemd/system.conf.d/55-CtrlAltDel-BurstAction:CtrlAltDelBurstAction=none
- 
+
 If the "CtrlAltDelBurstAction" is not set to "none" or is commented out or missing, this is a finding.'
   desc 'fix', 'Configure OL 8 to disable the CtrlAltDelBurstAction by adding it to a drop file in a "/etc/systemd/system.conf.d/" configuration file:
 

@@ -1,6 +1,6 @@
 # License
 
-Copyright © 2025 The MITRE Corporation.
+Copyright © 2026 The MITRE Corporation.
 
 Approved for Public Release; Distribution Unlimited. Case Number 18-3678.
 

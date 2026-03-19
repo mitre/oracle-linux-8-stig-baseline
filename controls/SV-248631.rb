@@ -22,7 +22,7 @@ This can be set as a global domain (with the * wildcard) but may be set differen
 If the "core" item is missing or commented out, or the value is anything other than "0", and the need for core dumps is not documented with the information system security officer (ISSO) as an operational requirement for all domains that have the "core" item assigned, this is a finding.
 
 If entries exist for users or groups with a value set to anything other than "0", this is a finding.'
-  desc 'fix', 'Configure OL 8 to disable core dumps for all users. 
+  desc 'fix', 'Configure OL 8 to disable core dumps for all users.
 
 Add the following line to the top of the /etc/security/limits.conf or in a single ".conf" file defined in /etc/security/limits.d/:
 
