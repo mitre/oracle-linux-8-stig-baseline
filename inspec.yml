@@ -782,17 +782,16 @@ inputs:
 
   # SV-256978
   - name: rpm_gpg_file
-    description: Red Hat uses GPG keys labels defined in file
+    description: Oracle package-signing key file used to validate installed OL 8 packages
     type: String
-    value: /etc/pki/rpm-gpg/RPM-GPG-KEY-redhat-release
+    value: /etc/pki/rpm-gpg/RPM-GPG-KEY-oracle
 
   # SV-256978
   - name: rpm_gpg_keys
-    description: Red Hat uses GPG keys labels with matching fingerprints
+    description: Oracle package-signing key summary with the expected OL 8 fingerprint
     type: Hash
     value:
-      "release key 2": "567E 347A D004 4ADE 55BA  8A5F 199E 2F91 FD43 1D51"
-      "auxiliary key": "6A6A A7C9 7C88 90AE C6AE  BFE2 F76F 66C3 D408 2792"
+      "Oracle OSS group (Open Source Software group) <build@oss.oracle.com>": "76FD 3DB1 3AB6 7410 B89D  B10E 8256 2EA9 AD98 6DA3"
 
   # SV-248907
   - name: administrator_users
