@@ -30,7 +30,6 @@ $ sudo dnf config-manager --set-disabled epel'
   tag nist: ['CM-7 a']
 
   repo_ids = command('dnf repolist all 2>/dev/null').stdout.lines.map { |line| line.split.first.to_s.strip }
-  puts repo_ids
   epel_repo_ids = repo_ids.grep(/^epel/i)
 
   describe 'Configured package repositories' do
