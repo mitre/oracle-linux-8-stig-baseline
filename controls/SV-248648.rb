@@ -41,6 +41,7 @@ If a separate entry for the file system that contains the nonprivileged interact
 
   ignore_shells = input('non_interactive_shells').join('|')
   homes = users.where { uid >= 1000 && !shell.match(ignore_shells) }.homes
+  home_mount_points = homes.map { |home| Pathname.new(home).parent.to_s }.uniq
   root_device = etc_fstab.where { mount_point == '/' }.device_name
 
   if input('seperate_filesystem_exempt')
@@ -48,12 +49,16 @@ If a separate entry for the file system that contains the nonprivileged interact
     describe 'This system is not required to have sperate filesystems for each mount point' do
       skip 'The system is managing filesystems and space via other mechanisms; this requirement is Not Applicable'
     end
+  elsif home_mount_points.empty?
+    impact 0.0
+    describe 'The system has no non-privileged local interactive users with home directories' do
+      skip 'This requirement is Not Applicable because no non-privileged local interactive users were found.'
+    end
   else
-    homes.each do |home|
-      pn_parent = Pathname.new(home).parent.to_s
-      home_device = etc_fstab.where { mount_point == pn_parent }.device_name
+    home_mount_points.each do |home_mount_point|
+      home_device = etc_fstab.where { mount_point == home_mount_point }.device_name
 
-      describe "The '#{pn_parent}' mount point" do
+      describe "The '#{home_mount_point}' mount point" do
         subject { home_device }
 
         it 'is not on the same partition as the root partition' do
