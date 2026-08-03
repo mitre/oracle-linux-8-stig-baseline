@@ -1,4 +1,4 @@
-control 'SV-248562' do
+control 'SV-283458' do
   title 'The OL 8 SSH server must be configured to use only DOD-approved encryption ciphers employing FIPS 140-3 validated cryptographic hash algorithms to protect the confidentiality of SSH server connections.'
   desc 'Without cryptographic integrity protections, information can be altered by unauthorized users without detection.
 
@@ -11,7 +11,7 @@ OL 8 incorporates systemwide crypto policies by default. The SSH configuration f
 
 To verify the ciphers in the systemwide SSH configuration file, use the following command:
 
-$ sudo grep -i Ciphers /etc/crypto-policies/back-ends/opensshserver.config
+$ sudo grep -i Ciphers /etc/crypto-policies/back-ends/opensshserver.config 
 CRYPTO_POLICY='-oCiphers=aes256-gcm@openssh.com,aes256-ctr,aes128-gcm@openssh.com,aes128-ctr
 
 If the cipher entries in the "opensshserver.config" file have any ciphers other than "aes256-gcm@openssh.com,aes256-ctr,aes128-gcm@openssh.com,aes128-ctr", or they are missing or commented out, this is a finding.)
@@ -28,34 +28,15 @@ $ sudo update-crypto-policies --set FIPS
 Setting system policy to FIPS
 
 Note: Systemwide crypto policies are applied on application startup. It is recommended to restart the system for the change of policies to fully take place.'
-  impact 0.5
-  tag check_id: 'C-51996r1156656_chk'
-  tag severity: 'medium'
-  tag gid: 'V-248562'
-  tag rid: 'SV-248562r1156658_rule'
+  impact 0.7
+  tag check_id: 'C-88023r1188516_chk'
+  tag severity: 'high'
+  tag gid: 'V-283458'
+  tag rid: 'SV-283458r1188518_rule'
   tag stig_id: 'OL08-00-010291'
-  tag gtitle: 'SRG-OS-000125-GPOS-00065'
-  tag fix_id: 'F-51950r1156657_fix'
+  tag gtitle: 'SRG-OS-000250-GPOS-00093'
+  tag fix_id: 'F-87928r1188517_fix'
   tag 'documentable'
-  tag cci: ['CCI-000877']
-  tag nist: ['MA-4 c']
-
-  only_if('Control not applicable - SSH is not installed within containerized OL', impact: 0.0) {
-    !(virtualization.system.eql?('docker') && !file('/etc/sysconfig/sshd').exist?)
-  }
-
-  required_ciphers = input('openssh_client_required_ciphers')
-
-  describe parse_config_file('/etc/crypto-policies/back-ends/opensshserver.config') do
-    its('CRYPTO_POLICY') { should_not be_nil }
-  end
-
-  crypto_policy = parse_config_file('/etc/crypto-policies/back-ends/opensshserver.config')['CRYPTO_POLICY']
-
-  unless crypto_policy.nil?
-    describe parse_config(crypto_policy.gsub(/\s|'/, "\n")) do
-      # -oCiphers is a single line of comma-delineated cipher values
-      its('-oCiphers') { should cmp required_ciphers.join(',') }
-    end
-  end
+  tag cci: ['CCI-000877', 'CCI-001453']
+  tag nist: ['MA-4 c', 'AC-17 (2)']
 end

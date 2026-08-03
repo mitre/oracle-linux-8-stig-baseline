@@ -1,8 +1,6 @@
 control 'SV-279934' do
   title 'OL 8 must automatically exit interactive command shell user sessions after 10 minutes of inactivity.'
-  desc 'Terminating an idle interactive command shell user session within a short time period reduces the window of opportunity for unauthorized personnel to take control of it when left unattended in a virtual terminal or physical console.
-
-'
+  desc 'Terminating an idle interactive command shell user session within a short time period reduces the window of opportunity for unauthorized personnel to take control of it when left unattended in a virtual terminal or physical console.'
   desc 'check', %q(Verify OL 8 is configured to exit interactive command shell user sessions after 10 minutes of inactivity or less with the following command:
 
 $ sudo grep -i tmout /etc/profile /etc/profile.d/*.sh
