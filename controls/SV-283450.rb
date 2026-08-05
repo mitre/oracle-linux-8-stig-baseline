@@ -25,4 +25,16 @@ include /etc/crypto-policies/back-ends/libreswan.config'
   tag 'documentable'
   tag cci: ['CCI-000068']
   tag nist: ['AC-17 (2)']
+
+  only_if('This control is Not Applicable since the IPsec service is not installed', impact: 0.0) {
+    package('libreswan').installed?
+  }
+
+  ipsec_includes = command('grep -h include /etc/ipsec.conf /etc/ipsec.d/*.conf 2>/dev/null').stdout.lines.map { |line| line.strip.split.join(' ') }
+
+  describe 'IPsec configuration' do
+    it 'includes the Libreswan system crypto policy' do
+      expect(ipsec_includes).to include('include /etc/crypto-policies/back-ends/libreswan.config')
+    end
+  end
 end

@@ -40,4 +40,23 @@ Note: Systemwide crypto policies are applied on application startup. It is recom
   tag 'documentable'
   tag cci: ['CCI-000877', 'CCI-001453']
   tag nist: ['MA-4 c', 'AC-17 (2)']
+
+  only_if('Control not applicable - SSH is not installed within containerized OL', impact: 0.0) {
+    !(virtualization.system.eql?('docker') && !file('/etc/sysconfig/sshd').exist?)
+  }
+
+  required_macs = input('openssh_server_required_algorithms')
+  crypto_policy_file = '/etc/crypto-policies/back-ends/opensshserver.config'
+
+  describe parse_config_file(crypto_policy_file) do
+    its('CRYPTO_POLICY') { should_not be_nil }
+  end
+
+  crypto_policy = parse_config_file(crypto_policy_file)['CRYPTO_POLICY']
+
+  unless crypto_policy.nil?
+    describe parse_config(crypto_policy.gsub(/\s|'/, "\n")) do
+      its('-oMACs') { should cmp required_macs.join(',') }
+    end
+  end
 end

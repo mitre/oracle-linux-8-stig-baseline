@@ -33,4 +33,13 @@ include "/etc/crypto-policies/back-ends/bind.config";'
   tag 'documentable'
   tag cci: ['CCI-002418', 'CCI-002422']
   tag nist: ['SC-8', 'SC-8 (2)']
+
+  only_if('This control is Not Applicable since BIND is not installed', impact: 0.0) {
+    package('bind').installed?
+  }
+
+  describe file('/etc/named.conf') do
+    it { should exist }
+    its('content') { should match(%r{^[ \t]*include[ \t]+"/etc/crypto-policies/back-ends/bind\.config";[ \t]*$}) }
+  end
 end

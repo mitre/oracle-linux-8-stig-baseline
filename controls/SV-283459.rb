@@ -22,4 +22,9 @@ $ sudo chmod 0750 /usr/bin/lastlog'
   tag 'documentable'
   tag cci: ['CCI-000213']
   tag nist: ['AC-3']
+
+  describe file('/usr/bin/lastlog') do
+    it { should exist }
+    it { should_not be_more_permissive_than('0750') }
+  end
 end

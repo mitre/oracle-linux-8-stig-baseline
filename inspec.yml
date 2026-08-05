@@ -198,7 +198,7 @@ inputs:
     type: Boolean
     value: false
 
-  # SV-248524, SV-248561, SV-248599, SV-255898
+  # SV-248524, SV-248599
   - name: use_fips
     description: "'(boolean)' Set to true if the system is required to use FIPS Encryption"
     type: Boolean
@@ -447,7 +447,7 @@ inputs:
     type: Array
     value: []
 
-  # SV-248561
+  # SV-283457
   - name: openssh_server_required_algorithms
     description: List of MACs employing FIPS 140-3-approved algorithms (order matters)
     type: Array
@@ -457,14 +457,14 @@ inputs:
       - "hmac-sha2-512"
       - "hmac-sha2-256"
 
-  # SV-248562
+  # SV-283458
   - name: openssh_client_required_ciphers
     description: List of ciphers employing FIPS 140-3-approved algorithms (order matters)
     type: Array
     value:
       - "aes256-gcm@openssh.com"
-      - "aes128-gcm@openssh.com"
       - "aes256-ctr"
+      - "aes128-gcm@openssh.com"
       - "aes128-ctr"
 
   # SV-248531
