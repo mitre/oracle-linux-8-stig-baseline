@@ -38,4 +38,8 @@ Note: Systemwide crypto policies are applied on application startup. Restart the
   tag 'documentable'
   tag cci: ['CCI-001453']
   tag nist: ['AC-17 (2)']
+
+  describe command('grep -i MACs /etc/crypto-policies/back-ends/openssh.config').stdout.strip do
+    it { should cmp 'MACs hmac-sha2-256-etm@openssh.com,hmac-sha2-512-etm@openssh.com,hmac-sha2-256,hmac-sha2-512' }
+  end
 end

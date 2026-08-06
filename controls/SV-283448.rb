@@ -40,4 +40,8 @@ Note: Systemwide crypto policies are applied on application startup. Restart the
   tag 'documentable'
   tag cci: ['CCI-001453']
   tag nist: ['AC-17 (2)']
+
+  describe command('grep -i Ciphers /etc/crypto-policies/back-ends/openssh.config').stdout.strip do
+    it { should cmp 'Ciphers aes256-gcm@openssh.com,aes256-ctr,aes128-gcm@openssh.com,aes128-ctr' }
+  end
 end

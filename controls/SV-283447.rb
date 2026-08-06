@@ -37,4 +37,8 @@ Note: Systemwide crypto policies are applied on application startup. Restart the
   tag 'documentable'
   tag cci: ['CCI-002450', 'CCI-002890', 'CCI-003123']
   tag nist: ['SC-13 b', 'MA-4 (6)', 'MA-4 (6)']
+
+  describe command('update-crypto-policies --is-applied').stdout.strip do
+    it { should cmp 'The configured policy is applied' }
+  end
 end

@@ -25,4 +25,8 @@ $ sudo dnf -y install crypto-policies'
   tag 'documentable'
   tag cci: ['CCI-002450']
   tag nist: ['SC-13 b']
+
+  describe package('crypto-policies') do
+    it { should be_installed }
+  end
 end
