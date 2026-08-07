@@ -54,7 +54,6 @@ Note: Systemwide crypto policies are applied on application startup. It is recom
 
   unless crypto_policy.nil?
     describe parse_config(crypto_policy.gsub(/\s|'/, "\n")) do
-      # -oCiphers is a single line of comma-delineated cipher values
       its('-oCiphers') { should cmp required_ciphers.join(',') }
     end
   end
