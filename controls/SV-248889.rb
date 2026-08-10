@@ -17,7 +17,7 @@ kernel.unprivileged_bpf_disabled = 1
 If the returned line does not have a value of "1" or a line is not returned, this is a finding.'
   desc 'fix', 'Configure OL 8 to prevent privilege escalation thru the kernel by disabling access to the bpf syscall by adding the following line to a file, in the "/etc/sysctl.d" directory:
 
-kernel.nonprivileged_bpf_disabled = 1
+kernel.unprivileged_bpf_disabled = 1
 
 The system configuration files must be reloaded for the changes to take effect. To reload the contents of the files, run the following command:
 
