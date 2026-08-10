@@ -45,10 +45,13 @@ Note: Systemwide crypto policies are applied on application startup. It is recom
     !(virtualization.system.eql?('docker') && !file('/etc/sysconfig/sshd').exist?)
   }
 
-  required_macs = input('openssh_server_required_algorithms').join(',')
+  approved_macs = input('openssh_server_required_algorithms').join(',')
   crypto_policy = parse_config_file('/etc/crypto-policies/back-ends/opensshserver.config')['CRYPTO_POLICY'].to_s
+  actual_macs = parse_config(crypto_policy.gsub(/\s|'/, "\n")).params['-oMACs'].to_s
 
-  describe parse_config(crypto_policy.gsub(/\s|'/, "\n")) do
-    its('-oMACs') { should cmp required_macs }
+  describe 'OpenSSH server configuration' do
+    it 'implement approved MACs' do
+      expect(actual_macs).to eq(approved_macs), "OpenSSH server MAC configuration actual value:\n\t#{actual_macs}\ndoes not match the expected value:\n\t#{approved_macs}"
+    end
   end
 end
