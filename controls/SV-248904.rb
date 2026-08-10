@@ -7,10 +7,10 @@ When an application uses Generic Security Services API (GSSAPI), typically it wi
 
 Note: If NFS mounts are authorized and in use on the system, this control is not applicable.
 
-Determine if the "gssproxy" package is installed with the following command: 
- 
-$ sudo yum list installed gssproxy 
- 
+Determine if the "gssproxy" package is installed with the following command:
+
+$ sudo yum list installed gssproxy
+
 If the "gssproxy" package is installed, this is a finding.'
   desc 'fix', 'Configure OL 8 to disable nonessential capabilities by removing the "gssproxy" package from the system with the following command:
 
