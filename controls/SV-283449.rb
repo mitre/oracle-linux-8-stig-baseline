@@ -39,7 +39,15 @@ Note: Systemwide crypto policies are applied on application startup. Restart the
   tag cci: ['CCI-001453']
   tag nist: ['AC-17 (2)']
 
-  describe command('grep -i MACs /etc/crypto-policies/back-ends/openssh.config').stdout.strip do
-    it { should cmp 'MACs hmac-sha2-256-etm@openssh.com,hmac-sha2-512-etm@openssh.com,hmac-sha2-256,hmac-sha2-512' }
+  approved_macs = input('openssh_server_required_algorithms')
+
+  openssh_conf = ssh_config('/etc/crypto-policies/back-ends/openssh.config')
+
+  describe 'SSH client MACs in /etc/crypto-policies/back-ends/openssh.config' do
+    it 'should only contain FIPS 140-3-approved MACs' do
+      configured_macs = openssh_conf.macs
+      expect(configured_macs).not_to be_nil, 'MACs entry is missing or commented out'
+      expect(configured_macs.split(',').sort).to eq(approved_macs.sort)
+    end
   end
 end

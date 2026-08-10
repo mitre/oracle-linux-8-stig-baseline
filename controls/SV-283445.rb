@@ -58,4 +58,52 @@ $ sudo reboot'
   tag 'documentable'
   tag cci: ['CCI-002450']
   tag nist: ['SC-13 b']
+
+  weak_hashes = %w(SHA1 MD5)
+  required_hashes = %w(SHA2-256 SHA2-384 SHA2-512 SHA2-224 SHA3-256 SHA3-384 SHA3-512 SHAKE-256)
+  min_rsa_size = 2048
+
+  if virtualization.system.eql?('docker')
+    impact 0.0
+    describe 'Control not applicable in a container' do
+      skip 'The host OS controls the FIPS mode settings. The host OS should also be scanned with the applicable OS validation profile.'
+    end
+  elsif input('use_fips') == false
+    impact 0.0
+    describe 'This control is Not Applicable as FIPS is not required for this system' do
+      skip 'This control is Not Applicable as FIPS is not required for this system'
+    end
+  else
+    # Policy must be FIPS, optionally with a colon-separated subpolicy (e.g. FIPS:OSPP)
+    describe command('update-crypto-policies --show').stdout.strip do
+      it { should match(/^FIPS(:\S+)?$/) }
+    end
+
+    current_pol = command('grep -E "rsa_size|hash" /etc/crypto-policies/state/CURRENT.pol').stdout
+
+    describe 'FIPS crypto policy hash algorithms' do
+      # compare configured hashes against the required/weak lists
+      it 'should include all required FIPS 140-3-compliant hash algorithms' do
+        hash_line = current_pol[/^hash\s*=\s*(.*)$/, 1].to_s
+        configured_hashes = hash_line.split
+        missing = required_hashes - configured_hashes
+        expect(missing).to be_empty, "Missing required hash algorithms: #{missing.join(', ')}"
+      end
+
+      it 'should not include weak hash algorithms' do
+        hash_line = current_pol[/^hash\s*=\s*(.*)$/, 1].to_s
+        configured_hashes = hash_line.split
+        present_weak = configured_hashes & weak_hashes
+        expect(present_weak).to be_empty, "Weak hash algorithms present: #{present_weak.join(', ')}"
+      end
+    end
+
+    describe 'FIPS crypto policy min_rsa_size' do
+      it "should be at least #{min_rsa_size}" do
+        # nil-safe: to_i on a failed match (nil) evaluates to 0, correctly failing the check
+        rsa_line = current_pol[/^min_rsa_size\s*=\s*(\d+)/, 1]
+        expect(rsa_line.to_i).to be >= min_rsa_size
+      end
+    end
+  end
 end

@@ -42,4 +42,44 @@ Reboot the system for the changes to take effect.'
   tag 'documentable'
   tag cci: ['CCI-000068', 'CCI-000877', 'CCI-002418', 'CCI-002450']
   tag nist: ['AC-17 (2)', 'MA-4 c', 'SC-8', 'SC-13 b']
+
+  allowed_subpolicies = %w(AD-SUPPORT NO-ENFORCE-EMS)
+  # profile consumer must explicitly list any subpolicy they've cleared with the ISSO
+  authorized_subpolicies = input('fips_authorized_subpolicies')
+
+  if virtualization.system.eql?('docker')
+    impact 0.0
+    describe 'Control not applicable in a container' do
+      skip 'The host OS controls the FIPS mode settings. The host OS should also be scanned with the applicable OS validation profile.'
+    end
+  elsif input('use_fips') == false
+    impact 0.0
+    describe 'This control is Not Applicable as FIPS is not required for this system' do
+      skip 'This control is Not Applicable as FIPS is not required for this system'
+    end
+  else
+    policy = command('update-crypto-policies --show').stdout.strip
+    # "FIPS:SUBPOLICY" splits into main policy and optional subpolicy name
+    main_policy, subpolicy = policy.split(':', 2)
+
+    describe 'Systemwide crypto policy name' do
+      it 'should be FIPS' do
+        expect(main_policy).to cmp 'FIPS'
+      end
+    end
+
+    if subpolicy
+      describe "FIPS subpolicy module #{subpolicy}" do
+        # any subpolicy other than these two is a finding regardless of authorization
+        it 'must be one of the recognized modules (AD-SUPPORT, NO-ENFORCE-EMS)' do
+          expect(allowed_subpolicies).to include(subpolicy), "Unrecognized subpolicy module: #{subpolicy}"
+        end
+
+        # even a recognized subpolicy is a finding unless the ISSO has signed off via the input
+        it 'must be documented as an operational requirement with the ISSO' do
+          expect(authorized_subpolicies).to include(subpolicy), "Subpolicy #{subpolicy} is not listed in the 'fips_authorized_subpolicies' input as ISSO-authorized"
+        end
+      end
+    end
+  end
 end
