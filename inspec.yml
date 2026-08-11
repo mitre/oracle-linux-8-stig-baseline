@@ -913,6 +913,12 @@ inputs:
     type: Boolean
     value: false
 
+  # SV-248904
+  - name: nfs_mounts_authorized
+    description: Set to true if NFS mounts are authorized and in use on the target system
+    type: Boolean
+    value: false
+
   # SV-248905
   - name: iprutils_required
     description: Set to true if there is a documented requirement for the target system to use iprutils
