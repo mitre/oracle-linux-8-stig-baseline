@@ -447,25 +447,13 @@ inputs:
     type: Array
     value: []
 
-  # SV-283457
-  - name: openssh_server_required_algorithms
-    description: List of MACs employing FIPS 140-3-approved algorithms (order matters)
-    type: Array
+  # SV-283457, SV-283458
+  - name: approved_openssh_server_conf
+    description: Approved OpenSSH server cryptographic configuration (order matters)
+    type: Hash
     value:
-      - "hmac-sha2-512-etm@openssh.com"
-      - "hmac-sha2-256-etm@openssh.com"
-      - "hmac-sha2-512"
-      - "hmac-sha2-256"
-
-  # SV-283458
-  - name: openssh_client_required_ciphers
-    description: List of ciphers employing FIPS 140-3-approved algorithms (order matters)
-    type: Array
-    value:
-      - "aes256-gcm@openssh.com"
-      - "aes256-ctr"
-      - "aes128-gcm@openssh.com"
-      - "aes128-ctr"
+      ciphers: "aes256-gcm@openssh.com,aes256-ctr,aes128-gcm@openssh.com,aes128-ctr"
+      macs: "hmac-sha2-512-etm@openssh.com,hmac-sha2-256-etm@openssh.com,hmac-sha2-512,hmac-sha2-256"
 
   # SV-248531
   - name: root_ca_file
