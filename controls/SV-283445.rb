@@ -59,8 +59,8 @@ $ sudo reboot'
   tag cci: ['CCI-002450']
   tag nist: ['SC-13 b']
 
-  weak_hashes = %w(SHA1 MD5)
-  required_hashes = %w(SHA2-256 SHA2-384 SHA2-512 SHA2-224 SHA3-256 SHA3-384 SHA3-512 SHAKE-256)
+  weak_hashes = %w[SHA1 MD5]
+  required_hashes = %w[SHA2-256 SHA2-384 SHA2-512 SHA2-224 SHA3-256 SHA3-384 SHA3-512 SHAKE-256]
   min_rsa_size = 2048
 
   if virtualization.system.eql?('docker')

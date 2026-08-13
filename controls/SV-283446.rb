@@ -2,7 +2,7 @@ control 'SV-283446' do
   title 'OL 8 must implement NIST FIPS-validated cryptography for the following: To provision digital signatures, to generate cryptographic hashes, and to protect data requiring data-at-rest protections in accordance with applicable federal laws, Executive Orders, directives, policies, regulations, and standards.'
   desc 'Using weak or untested encryption algorithms undermines the purposes of using encryption to protect data. The operating system must implement cryptographic modules adhering to the higher standards approved by the federal government since this provides assurance they have been tested and validated.
 
-OL 8 utilizes GRUB 2 as the default bootloader. Note that GRUB 2 command-line parameters are defined in the "kernelopts" variable of the /boot/grub2/grubenv file for all kernel boot entries. The command "fips-mode-setup" modifies the "kernelopts" variable, which in turn updates all kernel boot entries. 
+OL 8 utilizes GRUB 2 as the default bootloader. Note that GRUB 2 command-line parameters are defined in the "kernelopts" variable of the /boot/grub2/grubenv file for all kernel boot entries. The command "fips-mode-setup" modifies the "kernelopts" variable, which in turn updates all kernel boot entries.
 
 The fips=1 kernel option must be added to the kernel command line during system installation so that key generation is done with FIPS-approved algorithms and continuous monitoring tests in place. Users must also ensure the system has plenty of entropy during the installation process by moving the mouse around, or if no mouse is available, ensuring that many keystrokes are typed. The recommended amount of keystrokes is 256 and more. Less than 256 keystrokes may generate a nonunique key.
 
@@ -43,7 +43,7 @@ Reboot the system for the changes to take effect.'
   tag cci: ['CCI-000068', 'CCI-000877', 'CCI-002418', 'CCI-002450']
   tag nist: ['AC-17 (2)', 'MA-4 c', 'SC-8', 'SC-13 b']
 
-  allowed_subpolicies = %w(AD-SUPPORT NO-ENFORCE-EMS)
+  allowed_subpolicies = %w[AD-SUPPORT NO-ENFORCE-EMS]
   # profile consumer must explicitly list any subpolicy they've cleared with the ISSO
   authorized_subpolicies = input('fips_authorized_subpolicies')
 

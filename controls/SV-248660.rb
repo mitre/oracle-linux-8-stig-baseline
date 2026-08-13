@@ -5,24 +5,24 @@ control 'SV-248660' do
 OL 8 can use the "pam_faillock.so" for this purpose. Note that manual changes to the listed files may be overwritten by the "authselect" program.
 
 From "Pam_Faillock" man pages: Note that the default directory that "pam_faillock" uses is usually cleared on system boot so the access will be reenabled after system reboot. If that is undesirable, a different tally directory must be set with the "dir" option.'
-  desc 'check', 'Verify the system prevents informative messages from being presented to the user pertaining to logon information with the following commands. 
- 
-Note: This check applies to OL versions 8.0 and 8.1. If the system is OL version 8.2 or newer, this check is not applicable. 
- 
-$ sudo grep pam_faillock.so /etc/pam.d/password-auth 
- 
-auth required pam_faillock.so preauth dir=/var/log/faillock silent audit deny=3 even_deny_root fail_interval=900 unlock_time=0 
-auth required pam_faillock.so authfail dir=/var/log/faillock unlock_time=0 
-account required pam_faillock.so 
- 
-If the "silent" option is missing from the "preauth" line with the "pam_faillock.so" module, this is a finding. 
- 
-$ sudo grep pam_faillock.so /etc/pam.d/system-auth 
- 
-auth required pam_faillock.so preauth dir=/var/log/faillock silent audit deny=3 even_deny_root fail_interval=900 unlock_time=0 
-auth required pam_faillock.so authfail dir=/var/log/faillock unlock_time=0 
-account required pam_faillock.so 
- 
+  desc 'check', 'Verify the system prevents informative messages from being presented to the user pertaining to logon information with the following commands.
+
+Note: This check applies to OL versions 8.0 and 8.1. If the system is OL version 8.2 or newer, this check is not applicable.
+
+$ sudo grep pam_faillock.so /etc/pam.d/password-auth
+
+auth required pam_faillock.so preauth dir=/var/log/faillock silent audit deny=3 even_deny_root fail_interval=900 unlock_time=0
+auth required pam_faillock.so authfail dir=/var/log/faillock unlock_time=0
+account required pam_faillock.so
+
+If the "silent" option is missing from the "preauth" line with the "pam_faillock.so" module, this is a finding.
+
+$ sudo grep pam_faillock.so /etc/pam.d/system-auth
+
+auth required pam_faillock.so preauth dir=/var/log/faillock silent audit deny=3 even_deny_root fail_interval=900 unlock_time=0
+auth required pam_faillock.so authfail dir=/var/log/faillock unlock_time=0
+account required pam_faillock.so
+
 If the "silent" option is missing from the "preauth" line with the "pam_faillock.so" module, this is a finding.'
   desc 'fix', 'Configure the operating system to prevent informative messages from being presented at logon attempts.
 
