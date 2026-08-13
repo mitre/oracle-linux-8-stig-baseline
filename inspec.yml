@@ -361,12 +361,6 @@ inputs:
     type: Numeric
     value: 3
 
-  # SV-248652, SV-248653
-  - name: central_account_management
-    description: The system is using a central account management system to manage user acoutns and security
-    type: Boolean
-    value: false
-
   # SV-248876, SV-248880, SV-248882, SV-248883, SV-248884, SV-248885, SV-248888
   - name: ipv6_enabled
     description: Set to 'true' if IPv6 is enabled on the system.

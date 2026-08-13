@@ -53,10 +53,6 @@ $ sudo systemctl restart sssd.service'
   unsuccessful_attempts = input('unsuccessful_attempts')
   pam_auth_files = input('pam_auth_files')
 
-  only_if('This system uses Centralized Account Management to manage this requirement', impact: 0.0) {
-    !input('central_account_management')
-  }
-
   message = <<~MESSAGE
     \n\nThis check only applies to OL versions 8.0 or 8.1.\n
     The system is running OL version: #{os.version}, this requirement is Not Applicable.
