@@ -204,6 +204,12 @@ inputs:
     type: Boolean
     value: true
 
+  # SV-283446
+  - name: fips_authorized_subpolicies
+    description: FIPS subpolicies (e.g. AD-SUPPORT, NO-ENFORCE-EMS) documented as an operational requirement with the ISSO
+    type: Array
+    value: []
+
   # SV-248525
   - name: data_at_rest_exempt
     description: "'(boolean) Set to true if the system is exempt from using Data at Rest"
@@ -892,6 +898,12 @@ inputs:
   # SV-248904
   - name: gssproxy_required
     description: Set to true if there is a documented requirement for the target system to use gss_proxy
+    type: Boolean
+    value: false
+
+  # SV-248904
+  - name: nfs_mounts_authorized
+    description: Set to true if NFS mounts are authorized and in use on the target system
     type: Boolean
     value: false
 

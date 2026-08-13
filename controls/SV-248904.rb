@@ -27,6 +27,10 @@ $ sudo yum remove gssproxy'
   tag cci: ['CCI-000366']
   tag nist: ['CM-6 b']
 
+  only_if('NFS mounts are authorized and in use on the system, this control is Not Applicable', impact: 0.0) {
+    !input('nfs_mounts_authorized')
+  }
+
   if input('gssproxy_required')
     describe package('gssproxy') do
       it { should be_installed }

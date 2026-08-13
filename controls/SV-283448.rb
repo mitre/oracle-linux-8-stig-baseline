@@ -40,4 +40,17 @@ Note: Systemwide crypto policies are applied on application startup. Restart the
   tag 'documentable'
   tag cci: ['CCI-001453']
   tag nist: ['AC-17 (2)']
+
+  approved_ciphers = input('openssh_client_required_ciphers')
+
+  # the crypto-policies backend file uses "Ciphers" (no -o prefix), unlike opensshserver.config
+  openssh_conf = ssh_config('/etc/crypto-policies/back-ends/openssh.config')
+
+  describe 'SSH client ciphers in /etc/crypto-policies/back-ends/openssh.config' do
+    it 'should only contain FIPS 140-3-approved ciphers' do
+      configured_ciphers = openssh_conf.ciphers
+      expect(configured_ciphers).not_to be_nil, 'Ciphers entry is missing or commented out'
+      expect(configured_ciphers.split(',').sort).to eq(approved_ciphers.sort)
+    end
+  end
 end

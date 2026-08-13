@@ -58,4 +58,42 @@ $ sudo reboot'
   tag 'documentable'
   tag cci: ['CCI-002450']
   tag nist: ['SC-13 b']
+
+  weak_hashes = %w(SHA1 MD5)
+  required_hashes = %w(SHA2-256 SHA2-384 SHA2-512 SHA2-224 SHA3-256 SHA3-384 SHA3-512 SHAKE-256)
+  min_rsa_size = 2048
+
+  if virtualization.system.eql?('docker')
+    impact 0.0
+    describe 'Control not applicable in a container' do
+      skip 'The host OS controls the FIPS mode settings. The host OS should also be scanned with the applicable OS validation profile.'
+    end
+  elsif input('use_fips') == false
+    impact 0.0
+    describe 'This control is Not Applicable as FIPS is not required for this system' do
+      skip 'This control is Not Applicable as FIPS is not required for this system'
+    end
+  else
+    # Policy must be FIPS, optionally with a colon-separated subpolicy (e.g. FIPS:OSPP)
+    describe command('update-crypto-policies --show').stdout.strip do
+      it { should match(/^FIPS(:\S+)?$/) }
+    end
+
+    current_pol = parse_config_file('/etc/crypto-policies/state/CURRENT.pol')
+
+    describe current_pol do
+      its(['hash']) {
+        should include(*required_hashes)
+      }
+      # weak_hashes are matched by name; regex also covers any size-suffixed digest below 256 bits (excluding 224)
+      its(['hash']) { should_not match(/#{weak_hashes.join('|')}/i) }
+      its(['hash']) {
+        is_expected.to satisfy('no hash digest size below 256 bits (excluding 224)') { |s|
+          sizes = s.to_s.scan(/-(\d+)/).flatten.map(&:to_i)
+          (sizes - [224]).all? { |n| n >= 256 }
+        }
+      }
+      its(['min_rsa_size']) { should cmp >= min_rsa_size }
+    end
+  end
 end

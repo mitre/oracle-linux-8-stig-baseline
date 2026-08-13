@@ -25,4 +25,12 @@ $ sudo dnf -y install crypto-policies'
   tag 'documentable'
   tag cci: ['CCI-002450']
   tag nist: ['SC-13 b']
+
+  only_if('This control is Not Applicable to containers', impact: 0.0) {
+    !%w[docker podman kubepods lxc].include?(virtualization.system)
+  }
+
+  describe package('crypto-policies') do
+    it { should be_installed }
+  end
 end
