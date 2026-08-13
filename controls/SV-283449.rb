@@ -39,7 +39,7 @@ Note: Systemwide crypto policies are applied on application startup. Restart the
   tag cci: ['CCI-001453']
   tag nist: ['AC-17 (2)']
 
-  approved_macs = input('openssh_required_macs')
+  approved_macs = input('approved_openssh_client_conf')['macs']
 
   openssh_conf = ssh_config('/etc/crypto-policies/back-ends/openssh.config')
 
@@ -47,7 +47,7 @@ Note: Systemwide crypto policies are applied on application startup. Restart the
     it 'should only contain FIPS 140-3-approved MACs' do
       configured_macs = openssh_conf.macs
       expect(configured_macs).not_to be_nil, 'MACs entry is missing or commented out'
-      expect(configured_macs.split(',').sort).to eq(approved_macs.sort)
+      expect(configured_macs).to eq(approved_macs)
     end
   end
 end

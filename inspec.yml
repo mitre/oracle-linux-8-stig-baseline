@@ -461,6 +461,14 @@ inputs:
       ciphers: "aes256-gcm@openssh.com,aes256-ctr,aes128-gcm@openssh.com,aes128-ctr"
       macs: "hmac-sha2-512-etm@openssh.com,hmac-sha2-256-etm@openssh.com,hmac-sha2-512,hmac-sha2-256"
 
+  # SV-283448, SV-283449
+  - name: approved_openssh_client_conf
+    description: Approved OpenSSH client cryptographic configuration (order matters)
+    type: Hash
+    value:
+      ciphers: "aes256-gcm@openssh.com,aes256-ctr,aes128-gcm@openssh.com,aes128-ctr"
+      macs: "hmac-sha2-256-etm@openssh.com,hmac-sha2-512-etm@openssh.com,hmac-sha2-256,hmac-sha2-512"
+
   # SV-248531
   - name: root_ca_file
     description: Path to an accepted trust anchor certificate file (DoD)
