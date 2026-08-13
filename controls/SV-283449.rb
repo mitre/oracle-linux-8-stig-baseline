@@ -39,7 +39,7 @@ Note: Systemwide crypto policies are applied on application startup. Restart the
   tag cci: ['CCI-001453']
   tag nist: ['AC-17 (2)']
 
-  approved_macs = input('openssh_server_required_algorithms')
+  approved_macs = input('openssh_client_required_macs')
 
   openssh_conf = ssh_config('/etc/crypto-policies/back-ends/openssh.config')
 

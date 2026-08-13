@@ -453,8 +453,8 @@ inputs:
     type: Array
     value: []
 
-  # SV-248561
-  - name: openssh_server_required_algorithms
+  # SV-283449
+  - name: openssh_client_required_macs
     description: List of MACs employing FIPS 140-3-approved algorithms (order matters)
     type: Array
     value:
