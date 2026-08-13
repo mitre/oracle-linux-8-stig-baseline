@@ -11,7 +11,7 @@ OL 8 incorporates systemwide crypto policies by default. The SSH configuration f
 
 To verify the ciphers in the systemwide SSH configuration file, use the following command:
 
-$ sudo grep -i Ciphers /etc/crypto-policies/back-ends/opensshserver.config 
+$ sudo grep -i Ciphers /etc/crypto-policies/back-ends/opensshserver.config
 CRYPTO_POLICY='-oCiphers=aes256-gcm@openssh.com,aes256-ctr,aes128-gcm@openssh.com,aes128-ctr
 
 If the cipher entries in the "opensshserver.config" file have any ciphers other than "aes256-gcm@openssh.com,aes256-ctr,aes128-gcm@openssh.com,aes128-ctr", or they are missing or commented out, this is a finding.)
@@ -39,4 +39,18 @@ Note: Systemwide crypto policies are applied on application startup. It is recom
   tag 'documentable'
   tag cci: ['CCI-000877', 'CCI-001453']
   tag nist: ['MA-4 c', 'AC-17 (2)']
+
+  only_if('Control not applicable - SSH is not installed within containerized OL', impact: 0.0) {
+    !%w[docker podman kubepods lxc].include?(virtualization.system) || file('/etc/sysconfig/sshd').exist?
+  }
+
+  approved_ciphers = input('approved_openssh_server_conf')['ciphers']
+  crypto_policy = parse_config_file('/etc/crypto-policies/back-ends/opensshserver.config')['CRYPTO_POLICY'].to_s
+  actual_ciphers = parse_config(crypto_policy.gsub(/\s|'/, "\n")).params['-oCiphers'].to_s
+
+  describe 'OpenSSH server configuration' do
+    it 'implement approved encryption ciphers' do
+      expect(actual_ciphers).to eq(approved_ciphers), "OpenSSH server cipher configuration actual value:\n\t#{actual_ciphers}\ndoes not match the expected value:\n\t#{approved_ciphers}"
+    end
+  end
 end
