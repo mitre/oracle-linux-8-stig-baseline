@@ -2,9 +2,9 @@
 
 This InSpec Profile was created to facilitate testing and auditing of `Oracle Linux 8.x` infrastructure and applications when validating compliancy with [Department of Defense (DoD) STIG](https://public.cyber.mil/stigs/) requirements.
 
-- Profile Version: **2.7.1**
-- Benchmark Date: **05 Jan 2026**
-- Benchmark Version: **Version 2 Release 7 (V2R7)**
+- Profile Version: **2.8.0**
+- Benchmark Date: **01 April 2026**
+- Benchmark Version: **Version 2 Release 8 (V2R8)**
 
 This profile was developed to reduce the time it takes to perform a security checks based upon the STIG Guidance from the Defense Information Systems Agency (DISA) in partnership between the DISA Services Directorate (SD) and the DISA Risk Management Executive (RME) office.
 
