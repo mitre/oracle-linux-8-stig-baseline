@@ -1,4 +1,4 @@
-control 'SV-248562' do
+control 'SV-283458' do
   title 'The OL 8 SSH server must be configured to use only DOD-approved encryption ciphers employing FIPS 140-3 validated cryptographic hash algorithms to protect the confidentiality of SSH server connections.'
   desc 'Without cryptographic integrity protections, information can be altered by unauthorized users without detection.
 
@@ -28,34 +28,29 @@ $ sudo update-crypto-policies --set FIPS
 Setting system policy to FIPS
 
 Note: Systemwide crypto policies are applied on application startup. It is recommended to restart the system for the change of policies to fully take place.'
-  impact 0.5
-  tag check_id: 'C-51996r1156656_chk'
-  tag severity: 'medium'
-  tag gid: 'V-248562'
-  tag rid: 'SV-248562r1156658_rule'
+  impact 0.7
+  tag check_id: 'C-88023r1188516_chk'
+  tag severity: 'high'
+  tag gid: 'V-283458'
+  tag rid: 'SV-283458r1188518_rule'
   tag stig_id: 'OL08-00-010291'
-  tag gtitle: 'SRG-OS-000125-GPOS-00065'
-  tag fix_id: 'F-51950r1156657_fix'
+  tag gtitle: 'SRG-OS-000250-GPOS-00093'
+  tag fix_id: 'F-87928r1188517_fix'
   tag 'documentable'
-  tag cci: ['CCI-000877']
-  tag nist: ['MA-4 c']
+  tag cci: ['CCI-000877', 'CCI-001453']
+  tag nist: ['MA-4 c', 'AC-17 (2)']
 
   only_if('Control not applicable - SSH is not installed within containerized OL', impact: 0.0) {
-    !(virtualization.system.eql?('docker') && !file('/etc/sysconfig/sshd').exist?)
+    !%w[docker podman kubepods lxc].include?(virtualization.system) || file('/etc/sysconfig/sshd').exist?
   }
 
-  required_ciphers = input('openssh_client_required_ciphers')
+  approved_ciphers = input('approved_openssh_server_conf')['ciphers']
+  crypto_policy = parse_config_file('/etc/crypto-policies/back-ends/opensshserver.config')['CRYPTO_POLICY'].to_s
+  actual_ciphers = parse_config(crypto_policy.gsub(/\s|'/, "\n")).params['-oCiphers'].to_s
 
-  describe parse_config_file('/etc/crypto-policies/back-ends/opensshserver.config') do
-    its('CRYPTO_POLICY') { should_not be_nil }
-  end
-
-  crypto_policy = parse_config_file('/etc/crypto-policies/back-ends/opensshserver.config')['CRYPTO_POLICY']
-
-  unless crypto_policy.nil?
-    describe parse_config(crypto_policy.gsub(/\s|'/, "\n")) do
-      # -oCiphers is a single line of comma-delineated cipher values
-      its('-oCiphers') { should cmp required_ciphers.join(',') }
+  describe 'OpenSSH server configuration' do
+    it 'implement approved encryption ciphers' do
+      expect(actual_ciphers).to eq(approved_ciphers), "OpenSSH server cipher configuration actual value:\n\t#{actual_ciphers}\ndoes not match the expected value:\n\t#{approved_ciphers}"
     end
   end
 end

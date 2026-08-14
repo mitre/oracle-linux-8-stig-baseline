@@ -7,8 +7,6 @@ OL 8 can use the "pam_faillock.so" for this purpose. Note that manual changes to
 From "Pam_Faillock" man pages: Note that the default directory that "pam_faillock" uses is usually cleared on system boot so the access will be reenabled after system reboot. If that is undesirable, a different tally directory must be set with the "dir" option.'
   desc 'check', 'Verify the system includes the root account when locking an account after three unsuccessful logon attempts within a period of 15 minutes with the following commands.
 
-Note: If the System Administrator demonstrates the use of an approved centralized account management method that locks an account after three unsuccessful logon attempts within a period of 15 minutes, this requirement is not applicable.
-
 Note: This check applies to OL versions 8.0 and 8.1. If the system is OL version 8.2 or newer, this check is not applicable.
 
 $ sudo grep pam_faillock.so /etc/pam.d/password-auth
@@ -42,7 +40,7 @@ $ sudo systemctl restart sssd.service'
   tag gtitle: 'SRG-OS-000021-GPOS-00005'
   tag satisfies: ['SRG-OS-000021-GPOS-00005', 'SRG-OS-000329-GPOS-00128']
   tag gid: 'V-248664'
-  tag rid: 'SV-248664r958388_rule'
+  tag rid: 'SV-248664r1184133_rule'
   tag stig_id: 'OL08-00-020022'
   tag fix_id: 'F-52052r779557_fix'
   tag cci: ['CCI-000044', 'CCI-002238']

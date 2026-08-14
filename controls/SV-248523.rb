@@ -10,7 +10,9 @@ control 'SV-248523' do
     problems. If the most recent security patches and updates are not installed,
     unauthorized users may take advantage of weaknesses in the unpatched software.
     The lack of prompt attention to patching could result in a system compromise.'
-  desc 'check', 'Verify the operating system security patches and updates are installed and up to date. Updates are required to be applied with a frequency determined by the site or Program Management Office (PMO).
+  desc 'check', 'Note: If the system is not an internet connected system, this requirement is not applicable.
+
+Verify the operating system security patches and updates are installed and up to date. Updates are required to be applied with a frequency determined by the site or Program Management Office (PMO).
 
 Obtain the list of available package security updates from Oracle. The URL for updates is https://linux.oracle.com/errata/. It is important to note that updates provided by Oracle may not be present on the system if the underlying packages are not installed.
 
@@ -36,7 +38,7 @@ If the operating system is not in compliance with the Information Assurance Vuln
   tag severity: 'medium'
   tag gtitle: 'SRG-OS-000480-GPOS-00227'
   tag gid: 'V-248523'
-  tag rid: 'SV-248523r991589_rule'
+  tag rid: 'SV-248523r1184109_rule'
   tag stig_id: 'OL08-00-010010'
   tag fix_id: 'F-51911r779134_fix'
   tag cci: ['CCI-000366']

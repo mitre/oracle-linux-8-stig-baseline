@@ -198,11 +198,17 @@ inputs:
     type: Boolean
     value: false
 
-  # SV-248524, SV-248561, SV-248599, SV-255898
+  # SV-248524, SV-248599
   - name: use_fips
     description: "'(boolean)' Set to true if the system is required to use FIPS Encryption"
     type: Boolean
     value: true
+
+  # SV-283446
+  - name: fips_authorized_subpolicies
+    description: FIPS subpolicies (e.g. AD-SUPPORT, NO-ENFORCE-EMS) documented as an operational requirement with the ISSO
+    type: Array
+    value: []
 
   # SV-248525
   - name: data_at_rest_exempt
@@ -355,12 +361,6 @@ inputs:
     type: Numeric
     value: 3
 
-  # SV-248652, SV-248653
-  - name: central_account_management
-    description: The system is using a central account management system to manage user acoutns and security
-    type: Boolean
-    value: false
-
   # SV-248876, SV-248880, SV-248882, SV-248883, SV-248884, SV-248885, SV-248888
   - name: ipv6_enabled
     description: Set to 'true' if IPv6 is enabled on the system.
@@ -447,25 +447,21 @@ inputs:
     type: Array
     value: []
 
-  # SV-248561
-  - name: openssh_server_required_algorithms
-    description: List of MACs employing FIPS 140-3-approved algorithms (order matters)
-    type: Array
+  # SV-283457, SV-283458
+  - name: approved_openssh_server_conf
+    description: Approved OpenSSH server cryptographic configuration (order matters)
+    type: Hash
     value:
-      - "hmac-sha2-512-etm@openssh.com"
-      - "hmac-sha2-256-etm@openssh.com"
-      - "hmac-sha2-512"
-      - "hmac-sha2-256"
+      ciphers: "aes256-gcm@openssh.com,aes256-ctr,aes128-gcm@openssh.com,aes128-ctr"
+      macs: "hmac-sha2-512-etm@openssh.com,hmac-sha2-256-etm@openssh.com,hmac-sha2-512,hmac-sha2-256"
 
-  # SV-248562
-  - name: openssh_client_required_ciphers
-    description: List of ciphers employing FIPS 140-3-approved algorithms (order matters)
-    type: Array
+  # SV-283448, SV-283449
+  - name: approved_openssh_client_conf
+    description: Approved OpenSSH client cryptographic configuration (order matters)
+    type: Hash
     value:
-      - "aes256-gcm@openssh.com"
-      - "aes128-gcm@openssh.com"
-      - "aes256-ctr"
-      - "aes128-ctr"
+      ciphers: "aes256-gcm@openssh.com,aes256-ctr,aes128-gcm@openssh.com,aes128-ctr"
+      macs: "hmac-sha2-256-etm@openssh.com,hmac-sha2-512-etm@openssh.com,hmac-sha2-256,hmac-sha2-512"
 
   # SV-248531
   - name: root_ca_file
@@ -904,6 +900,12 @@ inputs:
   # SV-248904
   - name: gssproxy_required
     description: Set to true if there is a documented requirement for the target system to use gss_proxy
+    type: Boolean
+    value: false
+
+  # SV-248904
+  - name: nfs_mounts_authorized
+    description: Set to true if NFS mounts are authorized and in use on the target system
     type: Boolean
     value: false
 

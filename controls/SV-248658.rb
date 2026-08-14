@@ -7,8 +7,6 @@ OL 8 can use the "pam_faillock.so" for this purpose. Note that manual changes to
 From "Pam_Faillock" man pages: Note that the default directory that "pam_faillock" uses is usually cleared on system boot so the access will be reenabled after system reboot. If that is undesirable, a different tally directory must be set with the "dir" option.'
   desc 'check', 'Verify the faillock directory contents persist after a reboot with the following commands:
 
-Note: If the System Administrator demonstrates the use of an approved centralized account management method that locks an account after three unsuccessful logon attempts within a period of 15 minutes, this requirement is not applicable.
-
 Note: This check applies to OL versions 8.0 and 8.1. If the system is OL version 8.2 or newer, this check is not applicable.
 
 $ sudo grep pam_faillock.so /etc/pam.d/password-auth
@@ -40,10 +38,10 @@ The "sssd" service must be restarted for the changes to take effect. To restart 
 
 $ sudo systemctl restart sssd.service'
   impact 0.5
-  tag check_id: 'C-52092r779538_chk'
+  tag check_id: 'C-52092r1184126_chk'
   tag severity: 'medium'
   tag gid: 'V-248658'
-  tag rid: 'SV-248658r958388_rule'
+  tag rid: 'SV-248658r1184127_rule'
   tag stig_id: 'OL08-00-020016'
   tag gtitle: 'SRG-OS-000021-GPOS-00005'
   tag fix_id: 'F-52046r779539_fix'

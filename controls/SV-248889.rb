@@ -11,13 +11,13 @@ The sysctl --system command will load settings from all system configuration fil
 /etc/sysctl.conf'
   desc 'check', 'Verify OL 8 prevents privilege escalation thru the kernel by disabling access to the bpf system call with the following commands:
 
-$ sysctl kernel.nonprivileged_bpf_disabled
-kernel.nonprivileged_bpf_disabled = 1
+$ sysctl kernel.unprivileged_bpf_disabled
+kernel.unprivileged_bpf_disabled = 1
 
-If the returned line does not have a value of "1", or a line is not returned, this is a finding.'
+If the returned line does not have a value of "1" or a line is not returned, this is a finding.'
   desc 'fix', 'Configure OL 8 to prevent privilege escalation thru the kernel by disabling access to the bpf syscall by adding the following line to a file, in the "/etc/sysctl.d" directory:
 
-kernel.nonprivileged_bpf_disabled = 1
+kernel.unprivileged_bpf_disabled = 1
 
 The system configuration files must be reloaded for the changes to take effect. To reload the contents of the files, run the following command:
 
@@ -26,7 +26,7 @@ $ sudo sysctl --system'
   tag severity: 'medium'
   tag gtitle: 'SRG-OS-000480-GPOS-00227'
   tag gid: 'V-248889'
-  tag rid: 'SV-248889r1156644_rule'
+  tag rid: 'SV-248889r1184137_rule'
   tag stig_id: 'OL08-00-040281'
   tag fix_id: 'F-52277r1156643_fix'
   tag cci: ['CCI-000366']

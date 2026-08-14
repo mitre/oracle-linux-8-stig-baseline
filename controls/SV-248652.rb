@@ -7,8 +7,6 @@ OL 8 can use the "pam_faillock.so" for this purpose. Note that manual changes to
 From "Pam_Faillock" man pages: Note that the default directory that "pam_faillock" uses is usually cleared on system boot so the access will be reenabled after system reboot. If that is undesirable, a different tally directory must be set with the "dir" option.'
   desc 'check', 'Verify the system locks an account after three unsuccessful logon attempts with the following commands.
 
-Note: If the System Administrator demonstrates the use of an approved centralized account management method that locks an account after three unsuccessful logon attempts within a period of 15 minutes, this requirement is not applicable.
-
 Note: This check applies to OL versions 8.0 and 8.1. If the system is OL version 8.2 or newer, this check is not applicable.
 
 $ sudo grep pam_faillock.so /etc/pam.d/password-auth
@@ -40,10 +38,10 @@ The "sssd" service must be restarted for the changes to take effect. To restart 
 
 $ sudo systemctl restart sssd.service'
   impact 0.5
-  tag check_id: 'C-52086r779520_chk'
+  tag check_id: 'C-52086r1184120_chk'
   tag severity: 'medium'
   tag gid: 'V-248652'
-  tag rid: 'SV-248652r958388_rule'
+  tag rid: 'SV-248652r1184121_rule'
   tag stig_id: 'OL08-00-020010'
   tag gtitle: 'SRG-OS-000021-GPOS-00005'
   tag fix_id: 'F-52040r779521_fix'
@@ -54,10 +52,6 @@ $ sudo systemctl restart sssd.service'
 
   unsuccessful_attempts = input('unsuccessful_attempts')
   pam_auth_files = input('pam_auth_files')
-
-  only_if('This system uses Centralized Account Management to manage this requirement', impact: 0.0) {
-    !input('central_account_management')
-  }
 
   message = <<~MESSAGE
     \n\nThis check only applies to OL versions 8.0 or 8.1.\n

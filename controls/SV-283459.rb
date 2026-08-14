@@ -1,4 +1,4 @@
-control 'SV-248705' do
+control 'SV-283459' do
   title 'The OL 8 lastlog command must have a mode of "0750" or less permissive.'
   desc 'Unauthorized disclosure of the contents of the /var/log/lastlog file can reveal system data to attackers, thus compromising its confidentiality.'
   desc 'check', 'Verify the "lastlog" command has a mode of "0750" or less permissive with the following command:
@@ -12,16 +12,16 @@ If the "lastlog" command has a mode more permissive than "0750", this is a findi
 
 $ sudo chmod 0750 /usr/bin/lastlog'
   impact 0.5
-  tag check_id: 'C-52139r779679_chk'
+  tag check_id: 'C-88024r1188519_chk'
   tag severity: 'medium'
-  tag gid: 'V-248705'
-  tag rid: 'SV-248705r958566_rule'
+  tag gid: 'V-283459'
+  tag rid: 'SV-283459r1188521_rule'
   tag stig_id: 'OL08-00-020262'
-  tag gtitle: 'SRG-OS-000206-GPOS-00084'
-  tag fix_id: 'F-52093r779680_fix'
+  tag gtitle: 'SRG-OS-000080-GPOS-00048'
+  tag fix_id: 'F-87929r1188520_fix'
   tag 'documentable'
-  tag cci: ['CCI-001314']
-  tag nist: ['SI-11 b']
+  tag cci: ['CCI-000213']
+  tag nist: ['AC-3']
 
   describe file('/usr/bin/lastlog') do
     it { should exist }

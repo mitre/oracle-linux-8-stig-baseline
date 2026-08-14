@@ -1,9 +1,7 @@
 control 'SV-248619' do
   title 'OL 8 must prevent special devices on nonroot local partitions.'
   desc 'The "nodev" mount option causes the system to not interpret character or block special devices. Executing character or block special devices from untrusted file systems increases the opportunity for nonprivileged users to attain unauthorized administrative access. The only legitimate location for device files is the /dev directory located on the root partition.'
-  desc 'check', %q(Note: This control is not applicable to vfat file systems.
-
-Verify all nonroot local partitions are mounted with the "nodev" option with the following command:
+  desc 'check', %q(Verify all nonroot local partitions are mounted with the "nodev" option with the following command:
 
 $ sudo mount | grep '^/dev\S* on /\S' | grep --invert-match 'nodev'
 
@@ -13,7 +11,7 @@ If any output is produced, this is a finding.)
   tag severity: 'medium'
   tag gtitle: 'SRG-OS-000480-GPOS-00227'
   tag gid: 'V-248619'
-  tag rid: 'SV-248619r1156678_rule'
+  tag rid: 'SV-248619r1184119_rule'
   tag stig_id: 'OL08-00-010580'
   tag fix_id: 'F-52007r1156677_fix'
   tag cci: ['CCI-000366']
