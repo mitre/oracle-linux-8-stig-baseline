@@ -1,40 +1,30 @@
 control 'SV-248836' do
   title 'The OL 8 file system automounter must be disabled.'
-  desc 'Verify the operating system disables the ability to automount devices.
+  desc 'Without identifying devices, unidentified or unknown devices may be introduced, thereby facilitating malicious activity.
 
-Determine if automounter service is active with the following command:
+Peripherals include, but are not limited to, such devices as flash drives, external storage, and printers.'
+  desc 'check', 'Note: If the "autofs" service is not installed, this requirement is not applicable.
 
-$ sudo systemctl status autofs
-
-autofs.service - Automounts filesystems on demand
-Loaded: loaded (/usr/lib/systemd/system/autofs.service; disabled)
-Active: inactive (dead)
-
-If the "autofs" status is set to "active" and is not documented with the information system security officer (ISSO) as an operational requirement, this is a finding.'
-  desc 'check', 'Verify OL 8 disables the ability to automount devices.
-
-Determine if the automounter service is active with the following command:
-
-$ sudo systemctl status autofs
-
-autofs.service - Automounts filesystems on demand
-Loaded: loaded (/usr/lib/systemd/system/autofs.service; disabled)
-Active: inactive (dead)
-
-If the "autofs" status is set to "active" this is a finding.'
+Verify OL 8 disables the ability to automount devices. 
+ 
+Determine if the automounter service is active with the following command: 
+ 
+$ systemctl is-enabled  autofs
+masked
+ 
+If the returned value is not "masked", "disabled", or "not-found", this is a finding.'
   desc 'fix', 'Configure OL 8 to disable the ability to automount devices.
 
-Turn off the automount service with the following commands:
+The "autofs" service can be disabled with the following command:
 
-$ sudo systemctl stop autofs
-$ sudo systemctl disable autofs'
+$ sudo systemctl mask --now autofs.service'
   impact 0.5
   tag severity: 'medium'
   tag gtitle: 'SRG-OS-000114-GPOS-00059'
   tag gid: 'V-248836'
-  tag rid: 'SV-248836r1156663_rule'
+  tag rid: 'SV-248836r1261648_rule'
   tag stig_id: 'OL08-00-040070'
-  tag fix_id: 'F-52224r1155534_fix'
+  tag fix_id: 'F-52224r1261647_fix'
   tag cci: ['CCI-000778']
   tag nist: ['IA-3']
   tag 'host'

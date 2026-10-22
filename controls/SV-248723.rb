@@ -3,22 +3,26 @@ control 'SV-248723' do
   desc 'Cron logging can be used to trace the successful or unsuccessful
 execution of cron jobs. It can also be used to spot intrusions into the use of
 the cron facility by unauthorized and malicious users.'
-  desc 'check', 'Verify that "rsyslog" is configured to log cron events with the following command:
+  desc 'check', 'Verify rsyslog is configured to log cron events with the following command:
 
 Note: If another logging package is used, substitute the utility configuration file for "/etc/rsyslog.conf" or "/etc/rsyslog.d/*.conf" files.
 
-$ sudo grep cron /etc/rsyslog.conf /etc/rsyslog.d/*.conf
+$ grep -s "cron.\\*" /etc/rsyslog.conf /etc/rsyslog.d/*.conf
+/etc/rsyslog.d/99-cron-stig.conf:cron.* action(type="omfile" file="/var/log/cron")
 
-cron.* /var/log/cron
+If the command does not return a line demonstrating logging to /var/log/cron, perform a functional cron test.
 
-If the command does not return a response, check for cron logging all facilities by inspecting the "/etc/rsyslog.conf" or "/etc/rsyslog.d/*.conf" files.
+Inject a message into the cron logging facility with the following command:
 
-Look for the following entry:
+$ logger -p cron.info "STIG-TEST-CRON-LOGGING"
 
-*.* /var/log/messages
+Check if it successfully wrote to the dedicated log file with the following command:
+
+$ sudo grep "STIG-TEST-CRON-LOGGING" /var/log/cron
+Jul 16 11:33:00 RHEL10Sim pdosadmin[33692]: STIG-TEST-CRON-LOGGING
 
 If "rsyslog" is not logging messages for the cron facility or all facilities, this is a finding.'
-  desc 'fix', 'Configure "rsyslog" to log all cron messages by adding or updating the following line to "/etc/rsyslog.conf" or a configuration file in the "/etc/rsyslog.d/" directory:
+  desc 'fix', 'Configure "rsyslog" to log all cron messages by adding or updating the following line to "/etc/rsyslog.conf" or a configuration file in the /etc/rsyslog.d/ directory:
 
 cron.* /var/log/cron
 
@@ -29,9 +33,9 @@ $ sudo systemctl restart rsyslog.service'
   tag severity: 'medium'
   tag gtitle: 'SRG-OS-000480-GPOS-00227'
   tag gid: 'V-248723'
-  tag rid: 'SV-248723r991589_rule'
+  tag rid: 'SV-248723r1261658_rule'
   tag stig_id: 'OL08-00-030010'
-  tag fix_id: 'F-52111r779734_fix'
+  tag fix_id: 'F-52111r1261657_fix'
   tag cci: ['CCI-000366']
   tag nist: ['CM-6 b']
   tag 'host'

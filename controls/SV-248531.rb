@@ -11,7 +11,7 @@ This requirement verifies that a certification path to an accepted trust anchor 
 
 Note: If the system administrator (SA) demonstrates the use of an approved alternate multifactor authentication method, this requirement is Not Applicable.
 
-Check that the system has a valid DOD root CA installed with the following command:
+Check that the system has a valid DoW root CA installed with the following command:
 
 $ sudo openssl x509 -text -in /etc/sssd/pki/sssd_auth_ca_db.pem
 
@@ -20,28 +20,28 @@ Data:
 Version: 3 (0x2)
 Serial Number: 1 (0x1)
 Signature Algorithm: sha256WithRSAEncryption
-Issuer: C = US, O = U.S. Government, OU = DoD, OU = PKI, CN = DoD Root CA 3
+Issuer: C = US, O = U.S. Government, OU = DoW, OU = PKI, CN = DoD Root CA 3
 Validity
 Not Before: Mar 20 18:46:41 2012 GMT
 Not After : Dec 30 18:46:41 2029 GMT
-Subject: C = US, O = U.S. Government, OU = DoD, OU = PKI, CN = DoD Root CA 3
+Subject: C = US, O = U.S. Government, OU = DoW, OU = PKI, CN = DoD Root CA 3
 Subject Public Key Info:
 Public Key Algorithm: rsaEncryption
 
-If the root ca file is not a DOD-issued certificate with a valid date installed in the "/etc/sssd/pki/sssd_auth_ca_db.pem" location, this is a finding.'
-  desc 'fix', 'Configure OL 8, for PKI-based authentication, to validate certificates by constructing a certification path (which includes status information) to an accepted trust anchor.
-
-Obtain a valid copy of the DOD root CA file from the PKI CA certificate bundle at cyber.mil and copy it into the following file:
-
+If the root ca file is not a DoW-issued certificate with a valid date installed in the "/etc/sssd/pki/sssd_auth_ca_db.pem" location, this is a finding.'
+  desc 'fix', 'Configure OL 8, for PKI-based authentication, to validate certificates by constructing a certification path (which includes status information) to an accepted trust anchor. 
+ 
+Obtain a valid copy of the DoW root CA file from the PKI CA certificate bundle at cyber.mil and copy it into the following file: 
+ 
 /etc/sssd/pki/sssd_auth_ca_db.pem'
   impact 0.5
   tag severity: 'medium'
   tag gtitle: 'SRG-OS-000066-GPOS-00034'
   tag satisfies: ['SRG-OS-000066-GPOS-00034', 'SRG-OS-000384-GPOS-00167']
   tag gid: 'V-248531'
-  tag rid: 'SV-248531r1015027_rule'
+  tag rid: 'SV-248531r1261675_rule'
   tag stig_id: 'OL08-00-010090'
-  tag fix_id: 'F-51919r986323_fix'
+  tag fix_id: 'F-51919r1261674_fix'
   tag cci: ['CCI-000185', 'CCI-004068', 'CCI-001991']
   tag nist: ['IA-5 (2) (a)', 'IA-5 (2) (b) (1)', 'IA-5 (2) (b) (2)', 'IA-5 (2) (d)']
   tag 'host'

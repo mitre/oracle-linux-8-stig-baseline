@@ -15,21 +15,21 @@ If the pam_lastlog.so module is listed below the pam_unix.so module in the "syst
 If the value of "inactive" is set to zero, a negative number, or is greater than 35, this is a finding.
 
 If the line is commented out or missing, ask the administrator to indicate how the system disables access for account identifiers. If there is no evidence that the system is disabling access for account identifiers after 35 days of inactivity, this is a finding.)
-  desc 'fix', 'Configure OL 8 to disable access to the system for account identifiers with 35 days of inactivity.
-
-Add/Modify the following line to "/etc/pam.d/system-auth" above the "pam_unix.so" statement:
+  desc 'fix', 'Configure OL 8 to disable access to the system for account identifiers with 35 days of inactivity.  
+ 
+Add/Modify the following line to "/etc/pam.d/system-auth" above the "pam_unix.so" statement: 
 
 auth      required      pam_lastlog.so inactive=35
 
-Note: The DOD recommendation is 35 days, but a lower value is acceptable.'
+Note: The DoW recommendation is 35 days, but a lower value is acceptable.'
   impact 0.5
   tag check_id: 'C-52137r779673_chk'
   tag severity: 'medium'
   tag gid: 'V-248703'
-  tag rid: 'SV-248703r1015061_rule'
+  tag rid: 'SV-248703r1261694_rule'
   tag stig_id: 'OL08-00-020260'
   tag gtitle: 'SRG-OS-000118-GPOS-00060'
-  tag fix_id: 'F-52091r986369_fix'
+  tag fix_id: 'F-52091r1261693_fix'
   tag 'documentable'
   tag cci: ['CCI-003627', 'CCI-003628', 'CCI-000795']
   tag nist: ['AC-2 (3) (a)', 'AC-2 (3) (b)', 'IA-4 e']

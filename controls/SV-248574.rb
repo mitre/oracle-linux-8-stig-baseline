@@ -4,7 +4,7 @@ control 'SV-248574' do
 
 Accordingly, patches, service packs, device drivers, or operating system components must be signed with a certificate recognized and approved by the organization.
 
-Verifying the authenticity of the software prior to installation validates the integrity of the patch or upgrade received from a vendor. This verifies the software has not been tampered with and that it has been provided by a trusted vendor. Self-signed certificates are disallowed by this requirement. The operating system should not have to verify the software again. This requirement does not mandate DOD certificates for this purpose; however, the certificate used to verify the software must be from an approved Certificate Authority (CA).'
+Verifying the authenticity of the software prior to installation validates the integrity of the patch or upgrade received from a vendor. This verifies the software has not been tampered with and that it has been provided by a trusted vendor. Self-signed certificates are disallowed by this requirement. The operating system should not have to verify the software again. This requirement does not mandate DoW certificates for this purpose; however, the certificate used to verify the software must be from an approved Certificate Authority (CA).'
   desc 'check', 'Check that YUM verifies the signature of packages from a repository prior to install with the following command:
 
 $ sudo grep gpgcheck /etc/yum.repos.d/*.repo
@@ -21,7 +21,7 @@ gpgcheck=1'
   tag severity: 'high'
   tag gtitle: 'SRG-OS-000366-GPOS-00153'
   tag gid: 'V-248574'
-  tag rid: 'SV-248574r1015031_rule'
+  tag rid: 'SV-248574r1261683_rule'
   tag stig_id: 'OL08-00-010370'
   tag fix_id: 'F-51962r779287_fix'
   tag cci: ['CCI-001749', 'CCI-003992']

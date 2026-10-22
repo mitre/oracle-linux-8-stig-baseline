@@ -1,12 +1,8 @@
 control 'SV-248588' do
   title 'OL 8 must accept Personal Identity Verification (PIV) credentials.'
-  desc 'The use of PIV credentials facilitates standardization and reduces the
-    risk of unauthorized access.
-
-    The DoD has mandated the use of the Common Access Card (CAC) to support
-    identity management and personal authentication for systems covered under
-    Homeland Security Presidential Directive (HSPD) 12, as well as making the CAC a
-    primary component of layered protection for national security systems.'
+  desc 'The use of PIV credentials facilitates standardization and reduces the risk of unauthorized access. 
+ 
+The DoW has mandated the use of the Common Access Card (CAC) to support identity management and personal authentication for systems covered under Homeland Security Presidential Directive (HSPD) 12, as well as making the CAC a primary component of layered protection for national security systems.'
   desc 'check', 'Verify OL 8 accepts PIV credentials.
 
 Check that the "opensc" package is installed on the system with the following command:
@@ -31,7 +27,7 @@ $ sudo yum install opensc'
   tag severity: 'medium'
   tag gtitle: 'SRG-OS-000376-GPOS-00161'
   tag gid: 'V-248588'
-  tag rid: 'SV-248588r958816_rule'
+  tag rid: 'SV-248588r1261689_rule'
   tag stig_id: 'OL08-00-010410'
   tag fix_id: 'F-51976r779329_fix'
   tag cci: ['CCI-001953']

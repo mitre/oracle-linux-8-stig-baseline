@@ -1,9 +1,9 @@
 control 'SV-248530' do
   title 'All OL 8 remote access methods must be monitored.'
-  desc 'Remote access services, such as those providing remote access to network devices and information systems, which lack automated monitoring capabilities increase risk and make remote user access management difficult at best.
-
-Remote access is access to DOD nonpublic information systems by an authorized user (or an information system) communicating through an external, nonorganization-controlled network. Remote access methods include, for example, dial-up, broadband, and wireless.
-
+  desc 'Remote access services, such as those providing remote access to network devices and information systems, which lack automated monitoring capabilities increase risk and make remote user access management difficult at best. 
+ 
+Remote access is access to DoW nonpublic information systems by an authorized user (or an information system) communicating through an external, nonorganization-controlled network. Remote access methods include, for example, dial-up, broadband, and wireless. 
+ 
 Automated monitoring of remote access sessions allows organizations to detect cyberattacks and ensure ongoing compliance with remote access policies by auditing connection activities of remote access capabilities, such as Remote Desktop Protocol (RDP), on a variety of information system components (e.g., servers, workstations, notebook computers, smartphones, and tablets).'
   desc 'check', %q(Verify that OL 8 monitors all remote access methods.
 
@@ -29,7 +29,7 @@ $ sudo systemctl restart rsyslog.service'
   tag severity: 'medium'
   tag gtitle: 'SRG-OS-000032-GPOS-00013'
   tag gid: 'V-248530'
-  tag rid: 'SV-248530r958406_rule'
+  tag rid: 'SV-248530r1261672_rule'
   tag stig_id: 'OL08-00-010070'
   tag fix_id: 'F-51918r779155_fix'
   tag cci: ['CCI-000067']

@@ -7,28 +7,26 @@ When operating systems provide the capability to escalate a functional capabilit
 If the value is set to an integer less than 0, the user's time stamp will not expire and the user will not have to reauthenticate for privileged actions until the user's session is terminated.)
   desc 'check', %q(Verify the operating system requires re-authentication when using the "sudo" command to elevate privileges.
 
-     $ sudo grep -Eir 'timestamp_timeout' /etc/sudoers /etc/sudoers.d*
-     /etc/sudoers:Defaults timestamp_timeout=0
+$ sudo grep -Eir 'timestamp_timeout' /etc/sudoers /etc/sudoers.d*
+/etc/sudoers:Defaults timestamp_timeout=0
 
-If conflicting results are returned, this is a finding.
+If results are returned from more than one file location, this is a finding.
 
-If "timestamp_timeout" is set to a negative number, is commented out, or no results are returned, this is a finding.)
-  desc 'fix', 'Configure the "sudo" command to require re-authentication.
-Edit the /etc/sudoers file:
-$ sudo visudo
+If "timestamp_timeout" is set to a value other than "0" (including negative numbers), is commented out, or is missing entirely, this is a finding.)
+  desc 'fix', 'Configure the OS to reauthenticate every invocation of the "sudo" command.
 
-Add or modify the following line:
-Defaults timestamp_timeout=[value]
-Note: The "[value]" must be a number that is greater than or equal to "0".
+Add the following line to "/etc/sudoers" or a file in "/etc/sudoers.d":
 
-Remove any duplicate or conflicting lines from /etc/sudoers and /etc/sudoers.d/ files.'
+Defaults timestamp_timeout=0
+
+Remove any duplicate definitions.'
   impact 0.5
   tag severity: 'medium'
   tag gtitle: 'SRG-OS-000373-GPOS-00156'
   tag gid: 'V-248585'
-  tag rid: 'SV-248585r1050789_rule'
+  tag rid: 'SV-248585r1263444_rule'
   tag stig_id: 'OL08-00-010384'
-  tag fix_id: 'F-51973r880556_fix'
+  tag fix_id: 'F-51973r1261650_fix'
   tag cci: ['CCI-002038', 'CCI-004895']
   tag nist: ['IA-11', 'SC-11 b']
   tag 'host'

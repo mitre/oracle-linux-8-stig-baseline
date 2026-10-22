@@ -1,12 +1,12 @@
 control 'SV-248546' do
   title 'The krb5-workstation package must not be installed on OL 8.'
-  desc 'Unapproved mechanisms that are used for authentication to the cryptographic module are not verified and therefore cannot be relied on to provide confidentiality or integrity, and DoD data may be compromised.
+  desc 'Unapproved mechanisms that are used for authentication to the cryptographic module are not verified and therefore cannot be relied on to provide confidentiality or integrity, and DoW data may be compromised.
 
 OL 8 systems using encryption are required to use FIPS-compliant mechanisms for authenticating to cryptographic modules.
 
 Currently, Kerberos does not use FIPS 140-2 cryptography.
 
-FIPS 140-2 is the current standard for validating that mechanisms used to access cryptographic modules use authentication that meets DoD requirements. This allows for Security Levels 1, 2, 3, or 4 for use on a general-purpose computing system.'
+FIPS 140-2 is the current standard for validating that mechanisms used to access cryptographic modules use authentication that meets DoW requirements. This allows for Security Levels 1, 2, 3, or 4 for use on a general-purpose computing system.'
   desc 'check', 'Verify the krb5-workstation package has not been installed on the system with the following commands:
 
 If the system is a server or is using krb5-workstation-1.17-18.el8.x86_64 or newer, this is Not Applicable.
@@ -24,7 +24,7 @@ requirement or remove it from the system with the following command:
   tag severity: 'medium'
   tag gtitle: 'SRG-OS-000120-GPOS-00061'
   tag gid: 'V-248546'
-  tag rid: 'SV-248546r971535_rule'
+  tag rid: 'SV-248546r1261680_rule'
   tag stig_id: 'OL08-00-010162'
   tag fix_id: 'F-51934r779203_fix'
   tag cci: ['CCI-000803']

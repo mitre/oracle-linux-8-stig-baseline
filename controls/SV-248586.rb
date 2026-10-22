@@ -1,13 +1,13 @@
 control 'SV-248586' do
   title 'OL 8 must have the package required for multifactor authentication installed.'
-  desc 'Using an authentication device, such as a DOD Common Access Card (CAC) or token that is separate from the information system, ensures that even if the information system is compromised, credentials stored on the authentication device will not be affected.
-
-Multifactor solutions that require devices separate from information systems gaining access include, for example, hardware tokens providing time-based or challenge-response authenticators and smart cards such as the U.S. Government Personal Identity Verification (PIV) card and the DOD CAC.
-
-A privileged account is defined as an information system account with authorizations of a privileged user.
-
-Remote access is access to DOD nonpublic information systems by an authorized user (or an information system) communicating through an external, nonorganization-controlled network. Remote access methods include, for example, dial-up, broadband, and wireless.
-
+  desc 'Using an authentication device, such as a DoW Common Access Card (CAC) or token that is separate from the information system, ensures that even if the information system is compromised, credentials stored on the authentication device will not be affected. 
+ 
+Multifactor solutions that require devices separate from information systems gaining access include, for example, hardware tokens providing time-based or challenge-response authenticators and smart cards such as the U.S. Government Personal Identity Verification (PIV) card and the DoW CAC. 
+ 
+A privileged account is defined as an information system account with authorizations of a privileged user. 
+ 
+Remote access is access to DoW nonpublic information systems by an authorized user (or an information system) communicating through an external, nonorganization-controlled network. Remote access methods include, for example, dial-up, broadband, and wireless. 
+ 
 This requirement only applies to components where this is specific to the function of the device or has the concept of an organizational user (e.g., VPN, proxy capability). This does not apply to authentication for the purpose of configuring the device itself (management).'
   desc 'check', 'Verify the operating system has the package required for multifactor authentication installed with the following command:
 
@@ -25,7 +25,7 @@ $ sudo yum install  openssl-pkcs11'
   tag severity: 'low'
   tag gtitle: 'SRG-OS-000375-GPOS-00160'
   tag gid: 'V-248586'
-  tag rid: 'SV-248586r1015037_rule'
+  tag rid: 'SV-248586r1261687_rule'
   tag stig_id: 'OL08-00-010390'
   tag fix_id: 'F-51974r779323_fix'
   tag cci: ['CCI-001948', 'CCI-004046', 'CCI-004047']
