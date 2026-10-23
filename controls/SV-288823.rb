@@ -39,7 +39,7 @@ $ sudo service auditd restart'
   audit_command = '/usr/sbin/useradd'
 
   only_if('This control is Not Applicable to containers', impact: 0.0) {
-    !virtualization.container_system?
+    !virtualization.system.eql?('docker')
   }
 
   describe 'Command' do

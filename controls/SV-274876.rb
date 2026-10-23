@@ -32,7 +32,7 @@ $ sudo augenrules --load'
   tag nist: ['AU-12 c']
 
   only_if('This control is Not Applicable to containers', impact: 0.0) {
-    !virtualization.container_system?
+    !virtualization.system.eql?('docker')
   }
 
   audit_paths = ['/etc/cron.d', '/var/spool/cron']
