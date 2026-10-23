@@ -1,24 +1,25 @@
 control 'SV-248696' do
-  title 'OL 8 user account passwords must have a 60-day maximum password lifetime restriction.'
+  title 'OL 8 user account passwords must have a 180-day maximum password lifetime restriction.'
   desc 'Any password, no matter how complex, can eventually be cracked. Therefore, passwords need to be changed periodically. If OL 8 does not limit the lifetime of passwords and force users to change their passwords, there is the risk that OL 8 passwords could be compromised.'
-  desc 'check', 'Verify that OL 8 enforces a 60-day maximum password lifetime for new user accounts by running the following command:
+  desc 'check', 'Verify OL 8 enforces a 180-day maximum password lifetime for new user accounts by running the following command:
 
-$ sudo grep -i pass_max_days /etc/login.defs
-PASS_MAX_DAYS 60
+$ grep PASS_MAX_DAYS /etc/login.defs
 
-If the "PASS_MAX_DAYS" parameter value is greater than "60", or commented out, this is a finding.'
-  desc 'fix', 'Configure OL 8 to enforce a 60-day maximum password lifetime.
+PASS_MAX_DAYS 180
 
-Add or modify the following line in the "/etc/login.defs" file:
+If the "PASS_MAX_DAYS" parameter value is greater than "180", is not set, or is commented out, this is a finding.'
+  desc 'fix', 'Configure OL 8 to enforce a 180-day maximum password lifetime.
 
-PASS_MAX_DAYS 60'
+Modify the "/etc/login.defs" file to set the "PASS_MAX_DAYS" parameter to 180 or greater:
+
+PASS_MAX_DAYS 180'
   impact 0.5
   tag severity: 'medium'
   tag gtitle: 'SRG-OS-000076-GPOS-00044'
   tag gid: 'V-248696'
-  tag rid: 'SV-248696r1038967_rule'
+  tag rid: 'SV-248696r1261631_rule'
   tag stig_id: 'OL08-00-020200'
-  tag fix_id: 'F-52084r779653_fix'
+  tag fix_id: 'F-52084r1261630_fix'
   tag cci: ['CCI-000199', 'CCI-004066']
   tag nist: ['IA-5 (1) (d)', 'IA-5 (1) (h)']
   tag 'host'

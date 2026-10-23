@@ -4,7 +4,7 @@ control 'SV-248651' do
 
 Temporary accounts are established as part of normal account activation procedures when there is a need for short-term accounts without the demand for immediacy in account activation.
 
-If temporary accounts are used, OL 8 must be configured to automatically terminate these types of accounts after a DoD-defined time period of 72 hours.
+If temporary accounts are used, OL 8 must be configured to automatically terminate these types of accounts after a DoW-defined time period of 72 hours.
 
 To address access requirements, many OL 8 operating systems may be integrated with enterprise-level authentication/access mechanisms that meet or exceed access control policy requirements.'
   desc 'check', 'Verify that temporary accounts have been provisioned with an expiration
@@ -28,7 +28,7 @@ $ sudo chage -E `date -d "+3 days" +%Y-%m-%d` system_account_name'
   tag severity: 'medium'
   tag gtitle: 'SRG-OS-000002-GPOS-00002'
   tag gid: 'V-248651'
-  tag rid: 'SV-248651r958364_rule'
+  tag rid: 'SV-248651r1261691_rule'
   tag stig_id: 'OL08-00-020000'
   tag fix_id: 'F-52039r779518_fix'
   tag cci: ['CCI-000016']

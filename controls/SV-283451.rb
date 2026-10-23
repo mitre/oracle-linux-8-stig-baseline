@@ -1,12 +1,10 @@
 control 'SV-283451' do
-  title 'OL 8 must implement DOD-approved encryption in the bind package.'
+  title 'OL 8 must implement DoW-approved encryption in the bind package.'
   desc 'Without cryptographic integrity protections, information can be altered by unauthorized users without detection.
 
 Cryptographic mechanisms used for protecting the integrity of information include, for example, signed hash functions using asymmetric cryptography enabling distribution of the public key to verify the hash information while maintaining the confidentiality of the secret key used to generate the hash.
 
-OL 8 incorporates systemwide crypto policies by default. The employed algorithms can be viewed in the /etc/crypto-policies/back-ends/ directory.
-
-'
+OL 8 incorporates systemwide crypto policies by default. The employed algorithms can be viewed in the /etc/crypto-policies/back-ends/ directory.'
   desc 'check', %q(Verify BIND uses the system crypto policy with the following command:
 
 Note: If the "bind" package is not installed, this is not applicable.
@@ -25,7 +23,7 @@ include "/etc/crypto-policies/back-ends/bind.config";'
   tag check_id: 'C-88016r1188542_chk'
   tag severity: 'high'
   tag gid: 'V-283451'
-  tag rid: 'SV-283451r1188543_rule'
+  tag rid: 'SV-283451r1261713_rule'
   tag stig_id: 'OL08-00-010187'
   tag gtitle: 'SRG-OS-000423-GPOS-00187'
   tag fix_id: 'F-87921r1188430_fix'

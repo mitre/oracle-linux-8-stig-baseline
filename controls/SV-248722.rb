@@ -8,15 +8,15 @@ privileged functions is one way to detect such misuse and identify the risk
 from insider threats and the advanced persistent threat.'
   desc 'check', 'Verify OL 8 audits the execution of privileged functions.
 
-Check if OL 8 is configured to audit the execution of the "execve" system call, by running the following command:
+Check if OL 8 is configured to audit the execution of the "execve" system call by running the following command:
 
 $ sudo grep execve /etc/audit/audit.rules
 
 -a always,exit -F arch=b32 -S execve -C uid!=euid -F euid=0 key=execpriv
 -a always,exit -F arch=b64 -S execve -C uid!=euid -F euid=0 key=execpriv
 
--a always,exit -F arch=b32 -S execve -C gid!=egid -F euid=0 key=execpriv
--a always,exit -F arch=b64 -S execve -C gid!=egid -F euid=0 key=execpriv
+-a always,exit -F arch=b32 -S execve -C gid!=egid -F egid=0 key=execpriv
+-a always,exit -F arch=b64 -S execve -C gid!=egid -F egid=0 key=execpriv
 
 If the command does not return all lines or the lines are commented out, this is a finding.'
   desc 'fix', 'Configure OL 8 to audit the execution of the "execve" system call.
@@ -26,8 +26,8 @@ Add or update the following file system rules to "/etc/audit/rules.d/audit.rules
 -a always,exit -F arch=b32 -S execve -C uid!=euid -F euid=0 key=execpriv
 -a always,exit -F arch=b64 -S execve -C uid!=euid -F euid=0 key=execpriv
 
--a always,exit -F arch=b32 -S execve -C gid!=egid -F euid=0 key=execpriv
--a always,exit -F arch=b64 -S execve -C gid!=egid -F euid=0 key=execpriv
+-a always,exit -F arch=b32 -S execve -C gid!=egid -F egid=0 key=execpriv
+-a always,exit -F arch=b64 -S execve -C gid!=egid -F egid=0 key=execpriv
 
 The audit daemon must be restarted for the changes to take effect. To restart the audit daemon, run the following command:
 
@@ -37,9 +37,9 @@ $ sudo service auditd restart'
   tag gtitle: 'SRG-OS-000326-GPOS-00126'
   tag satisfies: ['SRG-OS-000326-GPOS-00126', 'SRG-OS-000327-GPOS-00127']
   tag gid: 'V-248722'
-  tag rid: 'SV-248722r1156669_rule'
+  tag rid: 'SV-248722r1208714_rule'
   tag stig_id: 'OL08-00-030000'
-  tag fix_id: 'F-52110r1155549_fix'
+  tag fix_id: 'F-52110r1208332_fix'
   tag cci: ['CCI-002233', 'CCI-002234']
   tag nist: ['AC-6 (8)', 'AC-6 (9)']
   tag 'host'

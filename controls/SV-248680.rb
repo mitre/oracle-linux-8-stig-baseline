@@ -1,6 +1,6 @@
 control 'SV-248680' do
-  title 'OL 8 must automatically lock graphical user sessions after 15 minutes of inactivity.'
-  desc "A session time-out lock is a temporary action taken when a user stops work and moves away from the immediate physical vicinity of the information system but does not log out because of the temporary nature of the absence. Rather than relying on the user to manually lock their operating system session prior to vacating the vicinity, operating systems must be able to identify when a user's session has idled and take action to initiate the session lock.
+  title 'OL 8 must automatically lock graphical user sessions after 10 minutes of inactivity.'
+  desc "A session timeout lock is a temporary action taken when a user stops work and moves away from the immediate physical vicinity of the information system but does not log out because of the temporary nature of the absence. Rather than relying on the user to manually lock their operating system session prior to vacating the vicinity, operating systems must be able to identify when a user's session has idled and take action to initiate the session lock.
 
 The session lock is implemented at the point where session activity can be determined and/or controlled."
   desc 'check', 'Note: This requirement assumes the use of the OL 8 default graphical user interface, Gnome Shell. If the system does not have any graphical user interface installed, this requirement is Not Applicable.
@@ -32,7 +32,7 @@ $ sudo dconf update'
   tag gtitle: 'SRG-OS-000029-GPOS-00010'
   tag satisfies: ['SRG-OS-000029-GPOS-00010', 'SRG-OS-000031-GPOS-00012']
   tag gid: 'V-248680'
-  tag rid: 'SV-248680r1156673_rule'
+  tag rid: 'SV-248680r1208712_rule'
   tag stig_id: 'OL08-00-020060'
   tag fix_id: 'F-52068r1155558_fix'
   tag cci: ['CCI-000057', 'CCI-000060']

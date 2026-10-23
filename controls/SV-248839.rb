@@ -1,6 +1,6 @@
 control 'SV-248839' do
   title 'An OL 8 firewall must employ a deny-all, allow-by-exception policy for allowing connections to other systems.'
-  desc 'Failure to restrict network connectivity only to authorized systems permits inbound connections from malicious systems. It also permits outbound connections that may facilitate exfiltration of DoD data.
+  desc 'Failure to restrict network connectivity only to authorized systems permits inbound connections from malicious systems. It also permits outbound connections that may facilitate exfiltration of DoW data.
 
 OL 8 incorporates the "firewalld" daemon, which allows for many different configurations. One of these configurations is zones. Zones can be used in a deny-all, allow-by-exception approach. The default "drop" zone will drop all incoming network packets unless it is explicitly allowed by the configuration file or is related to an outgoing network connection.'
   desc 'check', 'Verify "firewalld" is configured to employ a deny-all, allow-by-exception policy for allowing connections to other systems with the following commands:
@@ -49,7 +49,7 @@ Reload the firewall rules for changes to take effect:
   tag severity: 'medium'
   tag gtitle: 'SRG-OS-000297-GPOS-00115'
   tag gid: 'V-248839'
-  tag rid: 'SV-248839r958672_rule'
+  tag rid: 'SV-248839r1261705_rule'
   tag stig_id: 'OL08-00-040090'
   tag fix_id: 'F-52227r943094_fix'
   tag cci: ['CCI-002314']

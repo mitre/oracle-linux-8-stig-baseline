@@ -21,15 +21,15 @@ Add/Modify the following line to "/etc/pam.d/password-auth" above the "pam_unix.
 
 auth      required      pam_lastlog.so inactive=35
 
-Note: The DOD recommendation is 35 days, but a lower value is acceptable.'
+Note: The DoW recommendation is 35 days, but a lower value is acceptable.'
   impact 0.5
   tag check_id: 'C-52138r779676_chk'
   tag severity: 'medium'
   tag gid: 'V-248704'
-  tag rid: 'SV-248704r1015062_rule'
+  tag rid: 'SV-248704r1261696_rule'
   tag stig_id: 'OL08-00-020261'
   tag gtitle: 'SRG-OS-000118-GPOS-00060'
-  tag fix_id: 'F-52092r986371_fix'
+  tag fix_id: 'F-52092r1261695_fix'
   tag 'documentable'
   tag cci: ['CCI-003627', 'CCI-003628', 'CCI-000795']
   tag nist: ['AC-2 (3) (a)', 'AC-2 (3) (b)', 'IA-4 e']

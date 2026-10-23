@@ -2,7 +2,7 @@ control 'SV-248702' do
   title 'OL 8 must implement multifactor authentication for access to interactive accounts.'
   desc 'Using an authentication device, such as a Common Access Card (CAC) or token that is separate from the information system, ensures that even if the information system is compromised, that compromise will not affect credentials stored on the authentication device.
 
-Multifactor solutions that require devices separate from information systems gaining access include, for example, hardware tokens providing time-based or challenge-response authenticators and smart cards such as the U.S. Government Personal Identity Verification card and the DOD CAC.
+Multifactor solutions that require devices separate from information systems gaining access include, for example, hardware tokens providing time-based or challenge-response authenticators and smart cards such as the U.S. Government Personal Identity Verification card and the DoW CAC.
 
 There are various methods of implementing multifactor authentication for OL 8. Some methods include a local system multifactor account mapping or joining the system to a domain and using an idM server or Microsoft Windows Active Directory server. Any of these methods will require that the client operating system handle the multifactor authentication correctly.'
   desc 'check', 'Verify OL 8 uses multifactor authentication for local access to accounts.
@@ -43,7 +43,7 @@ The "sssd" service must be restarted for the changes to take effect. To restart 
   tag gtitle: 'SRG-OS-000105-GPOS-00052'
   tag satisfies: ['SRG-OS-000105-GPOS-00052', 'SRG-OS-000106-GPOS-00053', 'SRG-OS-000107-GPOS-00054', 'SRG-OS-000108-GPOS-00055']
   tag gid: 'V-248702'
-  tag rid: 'SV-248702r1015060_rule'
+  tag rid: 'SV-248702r1261692_rule'
   tag stig_id: 'OL08-00-020250'
   tag fix_id: 'F-52090r943097_fix'
   tag cci: ['CCI-000765', 'CCI-000766', 'CCI-004047', 'CCI-000767', 'CCI-000768']

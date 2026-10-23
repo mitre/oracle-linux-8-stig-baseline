@@ -1,6 +1,6 @@
 name: oracle-linux-8-stig-baseline
 title: "Oracle Linux 8 Security Technical Implementation Guide :: Version 2,
-  Release 8 :: Benchmark Date: 01 April 2026"
+  Release 10 :: Benchmark Date: 30 September 2026"
 maintainer: MITRE SAF Team
 copyright: MITRE
 copyright_email: saf@groups.mitre.org
@@ -8,7 +8,7 @@ license: Apache-2.0
 summary: InSpec profile aligned to STIG Guidance for Oracle Linux 8 Security
   Technical Implementation Guide
 description: null
-version: 2.8.0
+version: 2.10.0
 inspec_version: ">= 5.0"
 
 ### INPUTS ###
@@ -34,13 +34,30 @@ inputs:
     type: Boolean
     value: false
 
-  # SV-248581, SV-248582, SV-248583, SV-248584, SV-248585
+  # SV-248581, SV-248582, SV-248583, SV-248584, SV-248585, SV-284945
   - name: sudoers_config_files
     description: 'The files and directories you keep your sudoers configs'
     type: Array
     value:
       - '/etc/sudoers'
       - '/etc/sudoers.d/*'
+
+  # SV-284945
+  - name: sudoers_admins
+    description: Literal sudoers user/group names for designated administrators. Include account-specific overrides as well as groups; aliases and group membership require manual review.
+    type: Array
+    value:
+      - '%wheel'
+
+  # SV-288824
+  - name: exempt_interactive_system_accounts
+    description: System accounts approved by the ISSO to have interactive shells
+    type: Array
+    value:
+      - root
+      - sync
+      - shutdown
+      - halt
 
   # SV-248581
   - name: passwordless_admins
@@ -246,7 +263,13 @@ inputs:
     type: Boolean
     value: false
 
-  # SV-248576, SV-248577, SV-248578, SV-248579, SV-248580, SV-248875, SV-248876, SV-248877, SV-248878, SV-248879, SV-248880, SV-248881, SV-248882, SV-248883, SV-248884, SV-248885, SV-248886, SV-248887, SV-248888, SV-248889, SV-248890, SV-248891, SV-248892, SV-248893, SV-248894, SV-252662
+  # SV-252662
+  - name: packet_forwarding_enabled
+    description: Set to true if packet forwarding is an ISSO-documented operational requirement.
+    type: Boolean
+    value: false
+
+  # SV-248576, SV-248577, SV-248578, SV-248579, SV-248580, SV-248875, SV-248876, SV-248877, SV-248878, SV-248879, SV-248880, SV-248881, SV-248882, SV-248883, SV-248884, SV-248885, SV-248886, SV-248887, SV-248888, SV-248889, SV-248890, SV-248891, SV-248892, SV-248893, SV-248894
   - name: sysctl_conf_files
     description: The system files that have sysctl configuration information
     type: Array
@@ -307,7 +330,7 @@ inputs:
     value:
       - root
 
-  # SV-248635, SV-248638, SV-248640, SV-248642, SV-248645, SV-248648
+  # SV-248635, SV-248638, SV-248640, SV-248642, SV-248645, SV-248648, SV-288824
   - name: non_interactive_shells
     description: These shells do not allow a user to login
     type: Array
@@ -472,7 +495,7 @@ inputs:
       issuer_dn: '/C=US/O=U.S. Government/OU=DoD/OU=PKI/CN=DoD Root CA 3'
       subject_dn: '/C=US/O=U.S. Government/OU=DoD/OU=PKI/CN=DoD Root CA 3'
 
-  # SV-248680
+  # SV-248680, SV-279934
   - name: system_inactivity_timeout
     description: Maximum system inactivity timeout (time in seconds)
     type: Numeric
@@ -812,6 +835,12 @@ inputs:
       - user_u
 
   # SV-257259
+  - name: cloud_hosted
+    description: The system is cloud hosted; idle session termination is not applicable when the SSH ClientAliveInterval is configured within the permitted timeout
+    type: Boolean
+    value: false
+
+  # SV-257259
   - name: stop_idle_session_sec
     description: Number of seconds the system can be idle before session timeout
     type: Numeric
@@ -950,11 +979,13 @@ inputs:
   # If you need to override these values, do so via adding the desired key/value to
   # the `audit_rule_keynames_overrides` input instead -- overriding `audit_rule_keynames`
   # directly will lose the values for any key you do not explictly define.
-  # SV-248722, SV-248740, SV-248741, SV-248742, SV-248743, SV-248744, SV-248745, SV-248746, SV-248747, SV-248748, SV-248753, SV-248754, SV-248756, SV-248757, SV-248758, SV-248759, SV-248760, SV-248761, SV-248762, SV-248763, SV-248764, SV-248765, SV-248766, SV-248767, SV-248768, SV-248769, SV-248770, SV-248771, SV-248772, SV-248773, SV-248774, SV-248779, SV-248781, SV-248782, SV-248783, SV-248784, SV-248790, SV-248791, SV-248797, SV-248798, SV-248799, SV-248800, SV-248801, SV-248802
+  # SV-248722, SV-248740, SV-248741, SV-248742, SV-248743, SV-248744, SV-248745, SV-248746, SV-248747, SV-248748, SV-248753, SV-248754, SV-248756, SV-248757, SV-248758, SV-248759, SV-248760, SV-248761, SV-248762, SV-248763, SV-248764, SV-248765, SV-248766, SV-248767, SV-248768, SV-248769, SV-248770, SV-248771, SV-248772, SV-248773, SV-248774, SV-248779, SV-248781, SV-248782, SV-248783, SV-248784, SV-248790, SV-248791, SV-248797, SV-248798, SV-248799, SV-248800, SV-248801, SV-248802, SV-274876, SV-288823
   - name: audit_rule_keynames
     description: The audit rules to be applied to the system
     type: Hash
     value: {
+      '/etc/cron.d'                   : 'cronjobs',
+      '/var/spool/cron'               : 'cronjobs',
       'execve'                        : 'execpriv',
       '/etc/shadow'                   : 'identity',
       '/etc/security/opasswd'         : 'identity',
@@ -1015,6 +1046,7 @@ inputs:
       'fchmodat'                      : 'perm_mod',
       '/usr/bin/sudo'                 : 'priv_cmd',
       '/usr/sbin/usermod'             : 'privileged-usermod',
+      '/usr/sbin/useradd'             : 'privileged-useradd',
       '/usr/bin/chacl'                : 'perm_mod',
       '/usr/bin/kmod'                 : 'modules',
       '/var/log/faillock'             : 'logins',
@@ -1029,7 +1061,7 @@ inputs:
   # {
   #   'execve': 'my_org_specific_keyname_for_auditing_execve'
   # }
-  # SV-248722, SV-248740, SV-248741, SV-248742, SV-248743, SV-248744, SV-248745, SV-248746, SV-248747, SV-248748, SV-248753, SV-248754, SV-248756, SV-248757, SV-248758, SV-248759, SV-248760, SV-248761, SV-248762, SV-248763, SV-248764, SV-248765, SV-248766, SV-248767, SV-248768, SV-248769, SV-248770, SV-248771, SV-248772, SV-248773, SV-248774, SV-248779, SV-248781, SV-248782, SV-248783, SV-248784, SV-248790, SV-248791, SV-248797, SV-248798, SV-248799, SV-248800, SV-248801, SV-248802
+  # SV-248722, SV-248740, SV-248741, SV-248742, SV-248743, SV-248744, SV-248745, SV-248746, SV-248747, SV-248748, SV-248753, SV-248754, SV-248756, SV-248757, SV-248758, SV-248759, SV-248760, SV-248761, SV-248762, SV-248763, SV-248764, SV-248765, SV-248766, SV-248767, SV-248768, SV-248769, SV-248770, SV-248771, SV-248772, SV-248773, SV-248774, SV-248779, SV-248781, SV-248782, SV-248783, SV-248784, SV-248790, SV-248791, SV-248797, SV-248798, SV-248799, SV-248800, SV-248801, SV-248802, SV-274876, SV-288823
   - name: audit_rule_keynames_overrides
     description: The audit rules to be applied to the system
     type: Hash

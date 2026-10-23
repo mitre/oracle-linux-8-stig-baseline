@@ -1,6 +1,6 @@
 control 'SV-248868' do
   title 'OL 8 must force a frequent session key renegotiation for SSH connections to the server.'
-  desc 'Unapproved mechanisms that are used for authentication to the cryptographic module are not verified and therefore cannot be relied on to provide confidentiality or integrity, and DOD data may be compromised.
+  desc 'Unapproved mechanisms that are used for authentication to the cryptographic module are not verified and therefore cannot be relied on to provide confidentiality or integrity, and DoW data may be compromised.
 
 Session key regeneration limits the chances of a session key becoming compromised.'
   desc 'check', %q(Verify the SSH server is configured to force frequent session key renegotiation with the following command:
@@ -24,7 +24,7 @@ $ sudo systemctl restart sshd.service'
   tag gtitle: 'SRG-OS-000033-GPOS-00014'
   tag satisfies: ['SRG-OS-000033-GPOS-00014', 'SRG-OS-000420-GPOS-00186', 'SRG-OS-000424-GPOS-00188']
   tag gid: 'V-248868'
-  tag rid: 'SV-248868r958408_rule'
+  tag rid: 'SV-248868r1261710_rule'
   tag stig_id: 'OL08-00-040161'
   tag fix_id: 'F-52256r780169_fix'
   tag cci: ['CCI-000068']

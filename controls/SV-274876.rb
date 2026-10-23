@@ -35,15 +35,15 @@ $ sudo augenrules --load'
     !virtualization.system.eql?('docker')
   }
 
-  cron_paths = ['/etc/cron.d', '/var/spool/cron']
+  audit_paths = ['/etc/cron.d', '/var/spool/cron']
 
-  describe 'Cron auditing configuration' do
-    cron_paths.each do |cron_path|
-      it "#{cron_path} is audited with proper permissions and key" do
-        audit_rule = auditd.file(cron_path)
+  describe 'Cron directories auditing' do
+    audit_paths.each do |audit_path|
+      it "#{audit_path} is audited properly" do
+        audit_rule = auditd.file(audit_path)
         expect(audit_rule).to exist
         expect(audit_rule.permissions.flatten).to include('w', 'a')
-        expect(Array(audit_rule.key).flatten).to include('cronjobs')
+        expect(audit_rule.key.uniq).to include(input('audit_rule_keynames').merge(input('audit_rule_keynames_overrides'))[audit_path])
       end
     end
   end

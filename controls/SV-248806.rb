@@ -1,33 +1,38 @@
 control 'SV-248806' do
-  title 'OL 8 must allow only the Information System Security Manager (ISSM) (or individuals or roles appointed by the ISSM) to select which auditable events are to be audited.'
+  title 'OL 8 must allow only the information system security manager (ISSM) (or individuals or roles appointed by the ISSM) to select which auditable events are to be audited.'
   desc "Without the capability to restrict the roles and individuals that can
 select which events are audited, unauthorized personnel may be able to prevent
 the auditing of critical events. Misconfigured audits may degrade the system's
 performance by overwhelming the audit log. Misconfigured audits may also make
 it more difficult to establish, correlate, and investigate the events relating
 to an incident or identify those responsible for one."
-  desc 'check', 'Verify  the "/etc/audit/rules.d/*.rules" and "/etc/audit/auditd.conf" file have a mode of "0640" or less permissive by using the following commands:
+  desc 'check', 'Verify that the files in the directory /etc/audit/rules.d/ have a mode of 0600 or less permissive with the following command:
 
-$ sudo ls -al /etc/audit/rules.d/*.rules
+$ sudo find /etc/audit/rules.d/ -type f -name "*.rules" -exec stat -c "%a %n" {} \\;
+600 /etc/audit/rules.d/audit.rules
 
--rw-r----- 1 root root 1280 Feb 16 17:09 audit.rules
 
-$ sudo ls -al /etc/audit/auditd.conf
+Verify that the files /etc/audit/audit.rules and /etc/audit/auditd.conf have a mode of 0600 or less permissive with the following command:
 
--rw-r----- 1 root root 621 Sep 22 2014 auditd.conf
+$ sudo stat -c "%a %n" /etc/audit/audit.rules /etc/audit/auditd.conf
+600 /etc/audit/audit.rules
+600 /etc/audit/auditd.conf
 
-If the "/etc/audit/rules.d/*.rules" or "/etc/audit/auditd.conf" files have a mode more permissive than "0640", this is a finding.'
-  desc 'fix', 'Configure the "/etc/audit/rules.d/*.rules" and "/etc/audit/auditd.conf" files to have a mode of "0640" with the following commands:
+If any of the audit configuration files have a mode more permissive than "0600", this is a finding.'
+  desc 'fix', 'Configure the rules files in the directory /etc/audit/rules.d/, the /etc/audit/audit.rules file, and the /etc/audit/auditd.conf file to have a mode of 0600 with the following commands:
 
-$ sudo chmod 0640 /etc/audit/rules.d/*.rules
-$ sudo chmod 0640 /etc/audit/auditd.conf'
+$ sudo find /etc/audit/rules.d/ -type f -name "*.rules" -exec chmod 0600 {} +
+
+$ sudo chmod 0600 /etc/audit/audit.rules
+
+$ sudo chmod 0600 /etc/audit/auditd.conf'
   impact 0.5
   tag severity: 'medium'
   tag gtitle: 'SRG-OS-000063-GPOS-00032'
   tag gid: 'V-248806'
-  tag rid: 'SV-248806r958444_rule'
+  tag rid: 'SV-248806r1261645_rule'
   tag stig_id: 'OL08-00-030610'
-  tag fix_id: 'F-52194r951580_fix'
+  tag fix_id: 'F-52194r1261644_fix'
   tag cci: ['CCI-000171']
   tag nist: ['AU-12 b']
   tag 'host'
