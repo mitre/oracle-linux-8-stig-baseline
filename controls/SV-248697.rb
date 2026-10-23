@@ -1,15 +1,15 @@
 control 'SV-248697' do
   title 'OL 8 user account passwords must be configured so that existing passwords are restricted to a 180-day maximum lifetime.'
   desc 'Any password, no matter how complex, can eventually be cracked. Therefore, passwords need to be changed periodically. If OL 8 does not limit the lifetime of passwords and force users to change their passwords, there is the risk that OL 8 passwords could be compromised.'
-  desc 'check', %q(Verify the maximum time period for existing passwords is restricted to 180 days with the following commands: 
- 
-$ sudo awk -F: '$5 > 180 {print $1 " " $5}' /etc/shadow 
- 
-$ sudo awk -F: '$5 <= 0 {print $1 " " $5}' /etc/shadow 
- 
+  desc 'check', %q(Verify the maximum time period for existing passwords is restricted to 180 days with the following commands:
+
+$ sudo awk -F: '$5 > 180 {print $1 " " $5}' /etc/shadow
+
+$ sudo awk -F: '$5 <= 0 {print $1 " " $5}' /etc/shadow
+
 If any results are returned that are not associated with a system account, this is a finding.)
-  desc 'fix', 'Configure noncompliant accounts to enforce a 180-day maximum password lifetime restriction. 
- 
+  desc 'fix', 'Configure noncompliant accounts to enforce a 180-day maximum password lifetime restriction.
+
 $ sudo chage -M 180 [user]'
   impact 0.5
   tag severity: 'medium'

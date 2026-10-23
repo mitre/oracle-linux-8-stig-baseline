@@ -15,9 +15,9 @@ If the pam_lastlog.so module is listed below the pam_unix.so module in the "pass
 If the value of "inactive" is set to zero, a negative number, or is greater than 35, this is a finding.
 
 If the line is commented out or missing, ask the administrator to indicate how the system disables access for account identifiers. If there is no evidence that the system is disabling access for account identifiers after 35 days of inactivity, this is a finding.)
-  desc 'fix', 'Configure OL 8 to disable access to the system for account identifiers with 35 days of inactivity.  
- 
-Add/Modify the following line to "/etc/pam.d/password-auth" above the "pam_unix.so" statement: 
+  desc 'fix', 'Configure OL 8 to disable access to the system for account identifiers with 35 days of inactivity.
+
+Add/Modify the following line to "/etc/pam.d/password-auth" above the "pam_unix.so" statement:
 
 auth      required      pam_lastlog.so inactive=35
 

@@ -1,11 +1,11 @@
 control 'SV-248651' do
   title 'OL 8 temporary user accounts must be provisioned with an expiration time of 72 hours or less.'
-  desc 'If temporary user accounts remain active when no longer needed or for an excessive period, these accounts may be used to gain unauthorized access. To mitigate this risk, automated termination of all temporary accounts must be set upon account creation. 
- 
-Temporary accounts are established as part of normal account activation procedures when there is a need for short-term accounts without the demand for immediacy in account activation. 
- 
-If temporary accounts are used, OL 8 must be configured to automatically terminate these types of accounts after a DoW-defined time period of 72 hours. 
- 
+  desc 'If temporary user accounts remain active when no longer needed or for an excessive period, these accounts may be used to gain unauthorized access. To mitigate this risk, automated termination of all temporary accounts must be set upon account creation.
+
+Temporary accounts are established as part of normal account activation procedures when there is a need for short-term accounts without the demand for immediacy in account activation.
+
+If temporary accounts are used, OL 8 must be configured to automatically terminate these types of accounts after a DoW-defined time period of 72 hours.
+
 To address access requirements, many OL 8 operating systems may be integrated with enterprise-level authentication/access mechanisms that meet or exceed access control policy requirements.'
   desc 'check', 'Verify that temporary accounts have been provisioned with an expiration
 date of 72 hours.

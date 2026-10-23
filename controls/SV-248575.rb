@@ -1,6 +1,6 @@
 control 'SV-248575' do
   title 'OL 8 must prevent the installation of software, patches, service packs, device drivers, or operating system components of local packages without verification they have been digitally signed using a certificate that is issued by a Certificate Authority (CA) that is recognized and approved by the organization.'
-  desc 'Changes to any software components can have significant effects on the overall security of the operating system. 
+  desc 'Changes to any software components can have significant effects on the overall security of the operating system.
 
 Accordingly, patches, service packs, device drivers, or operating system components must be signed with a certificate recognized and approved by the organization.
 

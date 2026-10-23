@@ -1,19 +1,19 @@
 control 'SV-248802' do
   title 'OL 8 must generate audit records for any attempted modifications to the "lastlog" file.'
-  desc 'Without the capability to generate audit records, it would be difficult to establish, correlate, and investigate the events relating to an incident or identify those responsible for one. 
- 
-Audit records can be generated from various components within the information system (e.g., module or policy filter). 
- 
-The list of audited events is the set of events for which audits are to be generated. This set of events is typically a subset of the list of all events for which the system is capable of generating audit records. 
- 
-DoW has defined the list of events for which OL 8 will provide an audit record generation capability as the following: 
- 
-1) Successful and unsuccessful attempts to access, modify, or delete privileges, security objects, security levels, or categories of information (e.g., classification levels); 
- 
-2) Access actions, such as successful and unsuccessful logon attempts, privileged activities or other system-level access, starting and ending time for user access to the system, concurrent logons from different workstations, successful and unsuccessful accesses to objects, all program initiations, and all direct access to the information system; 
- 
-3) All account creations, modifications, disabling, and terminations; and 
- 
+  desc 'Without the capability to generate audit records, it would be difficult to establish, correlate, and investigate the events relating to an incident or identify those responsible for one.
+
+Audit records can be generated from various components within the information system (e.g., module or policy filter).
+
+The list of audited events is the set of events for which audits are to be generated. This set of events is typically a subset of the list of all events for which the system is capable of generating audit records.
+
+DoW has defined the list of events for which OL 8 will provide an audit record generation capability as the following:
+
+1) Successful and unsuccessful attempts to access, modify, or delete privileges, security objects, security levels, or categories of information (e.g., classification levels);
+
+2) Access actions, such as successful and unsuccessful logon attempts, privileged activities or other system-level access, starting and ending time for user access to the system, concurrent logons from different workstations, successful and unsuccessful accesses to objects, all program initiations, and all direct access to the information system;
+
+3) All account creations, modifications, disabling, and terminations; and
+
 4) All kernel module load, unload, and restart actions.'
   desc 'check', 'Verify OL 8 generates an audit record for any attempted modifications to the "lastlog" file by running the following command to check the file system rules in "/etc/audit/audit.rules":
 

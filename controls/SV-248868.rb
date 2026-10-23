@@ -1,7 +1,7 @@
 control 'SV-248868' do
   title 'OL 8 must force a frequent session key renegotiation for SSH connections to the server.'
-  desc 'Unapproved mechanisms that are used for authentication to the cryptographic module are not verified and therefore cannot be relied on to provide confidentiality or integrity, and DoW data may be compromised. 
- 
+  desc 'Unapproved mechanisms that are used for authentication to the cryptographic module are not verified and therefore cannot be relied on to provide confidentiality or integrity, and DoW data may be compromised.
+
 Session key regeneration limits the chances of a session key becoming compromised.'
   desc 'check', %q(Verify the SSH server is configured to force frequent session key renegotiation with the following command:
 

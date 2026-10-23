@@ -5,14 +5,14 @@ control 'SV-248534' do
     Passwords need to be protected at all times, and encryption is the standard
 method for protecting passwords. If passwords are not encrypted, they can be
 plainly read (i.e., clear text) and easily compromised.'
-  desc 'check', 'Confirm that the interactive user account passwords are using a strong password hash with the following command: 
- 
+  desc 'check', 'Confirm that the interactive user account passwords are using a strong password hash with the following command:
+
 $ sudo cut -d: -f1,2 /etc/shadow
- 
-nsauser:$6$kcOnRq/5$NUEYPuyL.wghQwWssXRcLRFiiru7f5JPV6GaJhNC2aK5F3PZpE/BCCtwrxRc/AInKMNX3CdMw11m9STiql12f/ 
- 
-Password hashes "!" or "*" indicate inactive accounts not available for logon and are not evaluated.  
- 
+
+nsauser:$6$kcOnRq/5$NUEYPuyL.wghQwWssXRcLRFiiru7f5JPV6GaJhNC2aK5F3PZpE/BCCtwrxRc/AInKMNX3CdMw11m9STiql12f/
+
+Password hashes "!" or "*" indicate inactive accounts not available for logon and are not evaluated.
+
 If any interactive user password hash does not begin with "$6$", this is a finding.'
   desc 'fix', 'Lock all interactive user accounts not using SHA-512 hashing
 until the passwords can be regenerated with SHA-512.'

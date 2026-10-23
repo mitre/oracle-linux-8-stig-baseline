@@ -5,13 +5,13 @@ control 'SV-248836' do
 Peripherals include, but are not limited to, such devices as flash drives, external storage, and printers.'
   desc 'check', 'Note: If the "autofs" service is not installed, this requirement is not applicable.
 
-Verify OL 8 disables the ability to automount devices. 
- 
-Determine if the automounter service is active with the following command: 
- 
+Verify OL 8 disables the ability to automount devices.
+
+Determine if the automounter service is active with the following command:
+
 $ systemctl is-enabled  autofs
 masked
- 
+
 If the returned value is not "masked", "disabled", or "not-found", this is a finding.'
   desc 'fix', 'Configure OL 8 to disable the ability to automount devices.
 

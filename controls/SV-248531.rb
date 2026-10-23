@@ -29,10 +29,10 @@ Subject Public Key Info:
 Public Key Algorithm: rsaEncryption
 
 If the root ca file is not a DoW-issued certificate with a valid date installed in the "/etc/sssd/pki/sssd_auth_ca_db.pem" location, this is a finding.'
-  desc 'fix', 'Configure OL 8, for PKI-based authentication, to validate certificates by constructing a certification path (which includes status information) to an accepted trust anchor. 
- 
-Obtain a valid copy of the DoW root CA file from the PKI CA certificate bundle at cyber.mil and copy it into the following file: 
- 
+  desc 'fix', 'Configure OL 8, for PKI-based authentication, to validate certificates by constructing a certification path (which includes status information) to an accepted trust anchor.
+
+Obtain a valid copy of the DoW root CA file from the PKI CA certificate bundle at cyber.mil and copy it into the following file:
+
 /etc/sssd/pki/sssd_auth_ca_db.pem'
   impact 0.5
   tag severity: 'medium'

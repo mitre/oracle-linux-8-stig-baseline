@@ -1,7 +1,7 @@
 control 'SV-248712' do
   title 'OL 8 must enforce a delay of at least four seconds between logon prompts following a failed logon attempt.'
-  desc 'Configuring the operating system to implement organizationwide security implementation guides and security checklists verifies compliance with federal standards and establishes a common security baseline across the DoW that reflects the most restrictive security posture consistent with operational requirements. 
- 
+  desc 'Configuring the operating system to implement organizationwide security implementation guides and security checklists verifies compliance with federal standards and establishes a common security baseline across the DoW that reflects the most restrictive security posture consistent with operational requirements.
+
 Configuration settings are the set of parameters that can be changed in hardware, software, or firmware components of the system that affect the security posture and/or functionality of the system. Security-related parameters are parameters impacting the security state of the system, including the parameters required to satisfy other security control requirements. Security-related parameters include, for example, registry settings; account, file, and directory permission settings; and settings for functions, ports, protocols, services, and remote connections.'
   desc 'check', 'Verify the operating system enforces a delay of at least four seconds between console logon prompts following a failed logon attempt with the following command:
 

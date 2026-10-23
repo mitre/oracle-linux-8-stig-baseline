@@ -1,9 +1,9 @@
 control 'SV-248533' do
   title 'OL 8 must encrypt all stored passwords with a FIPS 140-2 approved cryptographic hashing algorithm.'
-  desc 'Passwords need to be protected at all times, and encryption is the standard method for protecting passwords. If passwords are not encrypted, they can be plainly read (i.e., clear text) and easily compromised. 
- 
-Unapproved mechanisms that are used for authentication to the cryptographic module are not verified and therefore cannot be relied on to provide confidentiality or integrity, and DoW data may be compromised. 
- 
+  desc 'Passwords need to be protected at all times, and encryption is the standard method for protecting passwords. If passwords are not encrypted, they can be plainly read (i.e., clear text) and easily compromised.
+
+Unapproved mechanisms that are used for authentication to the cryptographic module are not verified and therefore cannot be relied on to provide confidentiality or integrity, and DoW data may be compromised.
+
 FIPS 140-2 is the current standard for validating that mechanisms used to access cryptographic modules use authentication that meets DoW requirements.'
   desc 'check', 'Verify that the shadow password suite configuration is set to encrypt passwords with a FIPS 140-2 approved cryptographic hashing algorithm.
 

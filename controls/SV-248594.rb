@@ -30,7 +30,7 @@ If conflicting results are returned, this is a finding.'
 
 $ echo 'kernel.randomize_va_space = 2' | sudo tee /etc/sysctl.d/99-kernel_randomize_va_space.conf
 
-Remove any configurations that conflict with the above from the following locations: 
+Remove any configurations that conflict with the above from the following locations:
 
 /run/sysctl.d/*.conf
 /usr/local/lib/sysctl.d/*.conf

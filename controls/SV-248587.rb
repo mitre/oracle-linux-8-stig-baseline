@@ -1,9 +1,9 @@
 control 'SV-248587' do
   title 'OL 8 must implement certificate status checking for multifactor authentication.'
-  desc 'Using an authentication device, such as a DoW Common Access Card (CAC) or token that is separate from the information system, ensures that even if the information system is compromised, credentials stored on the authentication device will not be affected. 
- 
-Multifactor solutions that require devices separate from information systems gaining access include, for example, hardware tokens providing time-based or challenge-response authenticators and smart cards such as the U.S. Government Personal Identity Verification (PIV) card and the DoW CAC. 
- 
+  desc 'Using an authentication device, such as a DoW Common Access Card (CAC) or token that is separate from the information system, ensures that even if the information system is compromised, credentials stored on the authentication device will not be affected.
+
+Multifactor solutions that require devices separate from information systems gaining access include, for example, hardware tokens providing time-based or challenge-response authenticators and smart cards such as the U.S. Government Personal Identity Verification (PIV) card and the DoW CAC.
+
 OL 8 includes multiple options for configuring certificate status checking but for this requirement focuses on the system security services daemon (sssd). By default, sssd performs Online Certificate Status Protocol (OCSP) checking and certificate verification using a sha256 digest function.'
   desc 'check', 'Verify the operating system implements certificate status checking for multifactor authentication.
 
