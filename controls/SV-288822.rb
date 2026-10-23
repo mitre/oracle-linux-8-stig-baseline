@@ -33,4 +33,9 @@ $ sudo systemctl restart sshd'
   tag 'documentable'
   tag cci: ['CCI-001453']
   tag nist: ['AC-17 (2)']
+
+  describe 'SSH systemwide crypto policy configuration' do
+    subject { parse_config_file('/etc/sysconfig/sshd', group_re: nil).params }
+    its(['CRYPTO_POLICY']) { should be_nil }
+  end
 end

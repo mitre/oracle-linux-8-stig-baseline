@@ -28,4 +28,16 @@ $ sudo usermod --shell /usr/sbin/nologin <user>'
   tag 'documentable'
   tag cci: ['CCI-000366']
   tag nist: ['CM-6 b']
+  tag 'host'
+  tag 'container'
+
+  ignore_shells = input('non_interactive_shells').join('|')
+  non_interactive_shells = passwd.where { uid.to_i < 1000 && !shell.match(ignore_shells) }.users - input('exempt_interactive_system_accounts')
+
+  describe 'Non-interactive system accounts' do
+    it 'should have non-interactive shells' do
+      expect(passwd.users).not_to be_empty, 'No accounts could be read from /etc/passwd'
+      expect(non_interactive_shells).to be_empty, "Non-interactive system accounts with interactive shells:\n\t- #{non_interactive_shells.join("\n\t- ")}"
+    end
+  end
 end

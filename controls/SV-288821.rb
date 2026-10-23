@@ -29,4 +29,15 @@ Edit the "/etc/pki/tls/openssl.cnf" and add or modify the following line:
   tag 'documentable'
   tag cci: ['CCI-001453']
   tag nist: ['AC-17 (2)']
+
+  describe file('/etc/pki/tls/openssl.cnf') do
+    it { should exist }
+  end
+
+  openssl_config = parse_config_file('/etc/pki/tls/openssl.cnf', group_re: nil, multiple_values: true, assignment_regex: /^\s*(\S+?)\s*(?:=\s*|\s+)(.*?)\s*$/)
+
+  describe 'OpenSSL systemwide crypto policy configuration' do
+    subject { openssl_config.params }
+    its(['.include']) { should include(a_string_matching(%r{\A(["']?)/etc/crypto-policies/back-ends/opensslcnf\.config\1\z})) }
+  end
 end

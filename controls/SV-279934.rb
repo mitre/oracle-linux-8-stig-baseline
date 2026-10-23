@@ -28,23 +28,19 @@ declare -xr TMOUT=600'
   tag cci: ['CCI-001133']
   tag nist: ['SC-10']
 
-  required_tmout = input('required_tmout')
+  system_inactivity_timeout = input('system_inactivity_timeout')
 
-  tmout_cmd = command('grep -i tmout /etc/profile /etc/profile.d/*.sh')
-  tmout_values = tmout_cmd.stdout.lines.filter_map do |line|
-    next if line.match?(/:\s*#/) || line.match?(/^\s*#/)
+  tmout_lines = command('grep -i tmout /etc/profile /etc/profile.d/*.sh').stdout.strip
+  tmout_value = tmout_lines.match(/^[^#]+TMOUT\s*=\s*(\d+)/i)
 
-    match = line.match(/\bTMOUT\s*=\s*(\d+)/i)
-    match[1].to_i unless match.nil?
-  end
-
-  describe 'TMOUT configuration' do
-    it "should set TMOUT to #{required_tmout} or less in the grep command output" do
-      expect(tmout_values).not_to be_empty,
-                                  'No active TMOUT assignment was found in /etc/profile or /etc/profile.d/*.sh'
-
-      expect(tmout_values.all? { |value| value <= required_tmout }).to eq(true),
-                                                                       "TMOUT is set higher than #{required_tmout}: #{tmout_cmd.stdout.strip}"
+  describe 'The system' do
+    it 'should set a TMOUT value' do
+      expect(tmout_value).to_not be_nil, 'No TMOUT value set in /etc/profile or /etc/profile.d/*.sh'
+    end
+    unless tmout_value.nil?
+      it "should exit after #{system_inactivity_timeout} seconds of inactivity" do
+        expect(tmout_value.captures.first.to_i).to be <= system_inactivity_timeout
+      end
     end
   end
 end

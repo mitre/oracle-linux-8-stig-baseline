@@ -35,4 +35,24 @@ $ sudo service auditd restart'
   tag 'documentable'
   tag cci: ['CCI-000130']
   tag nist: ['AU-3 a']
+
+  audit_command = '/usr/sbin/useradd'
+
+  only_if('This control is Not Applicable to containers', impact: 0.0) {
+    !virtualization.container_system?
+  }
+
+  describe 'Command' do
+    it "#{audit_command} is audited properly" do
+      audit_rule = auditd.file(audit_command)
+      expect(audit_rule).to exist
+      expect(audit_rule.action.uniq).to cmp 'always'
+      expect(audit_rule.list.uniq).to cmp 'exit'
+      expect(audit_rule.fields.flatten).to include('perm=x', 'auid>=1000', 'auid!=-1')
+      expect(audit_rule.fields_nokey).to include(match_array(["path=#{audit_command}", 'perm=x', 'auid>=1000', 'auid!=-1']))
+      expect(audit_rule.key.uniq).to include(input('audit_rule_keynames').merge(input('audit_rule_keynames_overrides'))[audit_command])
+      auditctl_output = command("sudo auditctl -l | grep #{audit_command}").stdout.strip
+      expect(auditctl_output).to match(/-S\s+all\b/)
+    end
+  end
 end

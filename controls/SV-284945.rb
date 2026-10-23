@@ -1,6 +1,6 @@
 control 'SV-284945' do
   title 'Oracle Linux must elevate the SELinux context when an administrator calls the sudo command.'
-  desc 'Without verification of the security functions, they may not operate correctly and the failure may go unnoticed. Security function is defined as the hardware, software, and/or firmware of the information system responsible for enforcing the system security policy and supporting the isolation of code and data on which the protection is based. 
+  desc 'Without verification of the security functions, they may not operate correctly and the failure may go unnoticed. Security function is defined as the hardware, software, and/or firmware of the information system responsible for enforcing the system security policy and supporting the isolation of code and data on which the protection is based.
 
 Security functionality includes, but is not limited to, establishing system accounts, configuring access authorizations (i.e., permissions, privileges), setting events to be audited, and setting intrusion detection parameters.
 
@@ -23,7 +23,7 @@ If a designated sudoers administrator group or account(s) is not configured to e
 
 Edit a file in the "/etc/sudoers.d" directory with the following command:
 
-# sudo visudo -f /etc/sudoers.d/ 
+# sudo visudo -f /etc/sudoers.d/
 
 Use the following example to build the file in the "/etc/sudoers.d" directory to allow any administrator belonging to a designated sudoers admin group to elevate their SELinux context with the use of the sudo command:
 
@@ -52,4 +52,16 @@ Remove any configurations that conflict with the above from the following locati
   tag 'documentable'
   tag cci: ['CCI-002235']
   tag nist: ['AC-6 (10)']
+
+  only_if('Control not applicable within a container without sudo enabled', impact: 0.0) do
+    !virtualization.container_system?
+  end
+
+  output = command('grep -r sysadm_r /etc/sudoers /etc/sudoers.d').stdout.strip
+
+  describe 'The sudoers SELinux context rule' do
+    it 'should match the expected SELinux role and type for privileged access' do
+      expect(output).to match(/^\s*%[\w-]+\s+ALL=\(ALL\)\s+TYPE=sysadm_t\s+ROLE=sysadm_r\s+ALL/), 'No matching sudoers rule found that elevates to sysadm_t/sysadm_r'
+    end
+  end
 end
