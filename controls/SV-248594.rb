@@ -11,28 +11,44 @@ The sysctl --system command will load settings from all system configuration fil
 /usr/lib/sysctl.d/*.conf
 /lib/sysctl.d/*.conf
 /etc/sysctl.conf'
-  desc 'check', 'Verify OL 8 is implementing ASLR with the following command:
+  desc 'check', 'Verify Oracle Linux is implementing ASLR with the following command:
 
 $ sysctl kernel.randomize_va_space
-kernel.randomize_va_space = 2
-
-If "kernel.randomize_va_space" is not set to "2" or is missing, this is a finding.'
-  desc 'fix', 'Configure OL 8 to implement ASLR to protect its memory from unauthorized code execution.
-
-Add or edit the following line in a system configuration file in the "/etc/sysctl.d/" directory:
 
 kernel.randomize_va_space = 2
+
+Check that the configuration files are present to enable this kernel parameter:
+
+$ sudo grep -rs kernel.randomize_va_space /run/sysctl.d/*.conf /usr/local/lib/sysctl.d/*.conf /usr/lib/sysctl.d/*.conf /lib/sysctl.d/*.conf /etc/sysctl.conf /etc/sysctl.d/*.conf
+
+/etc/sysctl.d/99-kernel_randomize_va_space.conf:kernel.randomize_va_space = 2
+
+If "kernel.randomize_va_space" is not set to "2", or is missing, this is a finding.
+
+If conflicting results are returned, this is a finding.'
+  desc 'fix', "Configure the system to enable ASLR with the following command:
+
+$ echo 'kernel.randomize_va_space = 2' | sudo tee /etc/sysctl.d/99-kernel_randomize_va_space.conf
+
+Remove any configurations that conflict with the above from the following locations:
+
+/run/sysctl.d/*.conf
+/usr/local/lib/sysctl.d/*.conf
+/usr/lib/sysctl.d/*.conf
+/lib/sysctl.d/*.conf
+/etc/sysctl.conf
+/etc/sysctl.d/*.conf
 
 Reload settings from all system configuration files with the following command:
 
-$ sudo sysctl --system'
+$ sudo sysctl --system"
   impact 0.5
   tag severity: 'medium'
   tag gtitle: 'SRG-OS-000433-GPOS-00193'
   tag gid: 'V-248594'
-  tag rid: 'SV-248594r1156624_rule'
+  tag rid: 'SV-248594r1208708_rule'
   tag stig_id: 'OL08-00-010430'
-  tag fix_id: 'F-51982r1155452_fix'
+  tag fix_id: 'F-51982r1208707_fix'
   tag cci: ['CCI-002824']
   tag nist: ['SI-16']
   tag 'host'

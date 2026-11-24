@@ -1,7 +1,9 @@
 control 'SV-257259' do
   title 'OL 8 must terminate idle user sessions.'
   desc 'Terminating an idle session within a short time period reduces the window of opportunity for unauthorized personnel to take control of a management session enabled on the console or console port that has been left unattended.'
-  desc 'check', 'Verify OL 8 logs out sessions that are idle for 10 minutes with the following command:
+  desc 'check', 'Note: For cloud hosted systems where "ClientAliveInterval" (V-248553) is configured, this setting is not applicable.
+
+Verify OL 8 logs out sessions that are idle for 10 minutes with the following command:
 
 $ systemd-analyze cat-config systemd/logind.conf | grep StopIdleSessionSec
 
@@ -25,10 +27,10 @@ Restart systemd-logind:
 
 $ systemctl restart systemd-logind'
   impact 0.5
-  tag check_id: 'C-60943r1155560_chk'
+  tag check_id: 'C-60943r1261641_chk'
   tag severity: 'medium'
   tag gid: 'V-257259'
-  tag rid: 'SV-257259r1156674_rule'
+  tag rid: 'SV-257259r1261642_rule'
   tag stig_id: 'OL08-00-020035'
   tag gtitle: 'SRG-OS-000163-GPOS-00072'
   tag fix_id: 'F-60885r1155561_fix'

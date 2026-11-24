@@ -1,8 +1,6 @@
 control 'SV-283447' do
   title 'OL 8 cryptographic policy must not be overridden.'
-  desc 'Centralized cryptographic policies simplify applying secure ciphers across an operating system and the applications that run on that operating system. Using weak or untested encryption algorithms undermines the purposes of using encryption to protect data.
-
-'
+  desc 'Centralized cryptographic policies simplify applying secure ciphers across an operating system and the applications that run on that operating system. Using weak or untested encryption algorithms undermines the purposes of using encryption to protect data.'
   desc 'check', 'Verify OL 8 cryptographic policies are not overridden.
 
 Verify the configured policy matches the generated policy with the following command:
@@ -36,7 +34,7 @@ Note: Systemwide crypto policies are applied on application startup. Restart the
   tag satisfies: ['SRG-OS-000396-GPOS-00176', 'SRG-OS-000393-GPOS-00173', 'SRG-OS-000394-GPOS-00174']
   tag 'documentable'
   tag cci: ['CCI-002450', 'CCI-002890', 'CCI-003123']
-  tag nist: ['SC-13 b', 'MA-4 (6)', 'MA-4 (6)']
+  tag nist: ['SC-13 b', 'MA-4 (6)']
 
   describe command('update-crypto-policies --is-applied').stdout.strip do
     it { should cmp 'The configured policy is applied' }

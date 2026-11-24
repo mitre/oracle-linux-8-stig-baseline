@@ -10,21 +10,23 @@ ol8_appstream                   Oracle Linux 8 Application Stream (x86_64)
 ol8_baseos_latest               Oracle Linux 8 BaseOS Latest (x86_64)
 
 If any repositories containing the word "epel" in the name exist, this is a finding.'
-  desc 'fix', 'The repo package can be manually removed with the following command:
+  desc 'fix', 'Configure OL 8 to not be able to install packages from the EPEL.
 
-$ sudo dnf remove epel-release
+Search for and remove any/all packages that came from the EPEL repo:
 
-Configure OL 8 to disable use of the EPEL repository with the following command:
+$ dnf repository-packages ol8_developer_EPEL remove
 
-$ sudo dnf config-manager --set-disabled epel'
+Remove the package that installs access to the EPEL repo:
+
+$ dnf remove oracle-epel-release-el8'
   impact 0.7
   tag check_id: 'C-52261r1134848_chk'
   tag severity: 'high'
   tag gid: 'V-248827'
-  tag rid: 'SV-248827r1134850_rule'
+  tag rid: 'SV-248827r1208716_rule'
   tag stig_id: 'OL08-00-040010'
   tag gtitle: 'SRG-OS-000095-GPOS-00049'
-  tag fix_id: 'F-52215r1134849_fix'
+  tag fix_id: 'F-52215r1208715_fix'
   tag 'documentable'
   tag cci: ['CCI-000381']
   tag nist: ['CM-7 a']

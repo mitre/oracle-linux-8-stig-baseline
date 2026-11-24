@@ -1,0 +1,58 @@
+control 'SV-288823' do
+  title 'OL 8 must generate audit records for any use of the "useradd" command.'
+  desc 'Without generating audit records that are specific to the security and mission needs of the organization, it would be difficult to establish, correlate, and investigate the events relating to an incident or identify those responsible for one.
+
+Audit records can be generated from various components within the information system (e.g., module or policy filter). The "useradd" command modifies the system account files to reflect the changes that are specified on the command line.
+
+When a user logs on, the AUID is set to the UID of the account that is being authenticated. Daemons are not user sessions and have the loginuid set to "-1". The AUID representation is an unsigned 32-bit integer, which equals "4294967295". The audit system interprets "-1", "4294967295", and "unset" in the same way.
+
+'
+  desc 'check', 'Verify OL 8 generates an audit event for any use of the "useradd" command by running the following command to check the file system rules in "/etc/audit/audit.rules":
+
+$ sudo grep -w useradd /etc/audit/audit.rules
+
+-a always,exit -F path=/usr/sbin/useradd -F perm=x -F auid>=1000 -F auid!=unset -k privileged-useradd
+
+If the command does not return a line or the line is commented out, this is a finding.
+
+Note: The "-k" allows for specifying an arbitrary identifier, and the string after it does not need to match the example output above.'
+  desc 'fix', 'Configure the audit system to generate an audit event for any use of the "useradd" command by adding or updating the following rule in the "/etc/audit/rules.d/audit.rules" file:
+
+-a always,exit -F path=/usr/sbin/useradd -F perm=x -F auid>=1000 -F auid!=unset -k privileged-useradd
+
+The audit daemon must be restarted for the changes to take effect. To restart the audit daemon, run the following command:
+
+$ sudo service auditd restart'
+  impact 0.5
+  tag check_id: 'C-93512r1261623_chk'
+  tag severity: 'medium'
+  tag gid: 'V-288823'
+  tag rid: 'SV-288823r1261625_rule'
+  tag stig_id: 'OL08-00-030565'
+  tag gtitle: 'SRG-OS-000037-GPOS-00015'
+  tag fix_id: 'F-93417r1261624_fix'
+  tag satisfies: ['SRG-OS-000037-GPOS-00015', 'SRG-OS-000042-GPOS-00020', 'SRG-OS-000062-GPOS-00031', 'SRG-OS-000392-GPOS-00172', 'SRG-OS-000462-GPOS-00206', 'SRG-OS-000466-GPOS-00210', 'SRG-OS-000471-GPOS-00215']
+  tag 'documentable'
+  tag cci: ['CCI-000130']
+  tag nist: ['AU-3 a']
+
+  audit_command = '/usr/sbin/useradd'
+
+  only_if('This control is Not Applicable to containers', impact: 0.0) {
+    !virtualization.system.eql?('docker')
+  }
+
+  describe 'Command' do
+    it "#{audit_command} is audited properly" do
+      audit_rule = auditd.file(audit_command)
+      expect(audit_rule).to exist
+      expect(audit_rule.action.uniq).to cmp 'always'
+      expect(audit_rule.list.uniq).to cmp 'exit'
+      expect(audit_rule.fields.flatten).to include('perm=x', 'auid>=1000', 'auid!=-1')
+      expect(audit_rule.fields_nokey).to include(match_array(["path=#{audit_command}", 'perm=x', 'auid>=1000', 'auid!=-1']))
+      expect(audit_rule.key.uniq).to include(input('audit_rule_keynames').merge(input('audit_rule_keynames_overrides'))[audit_command])
+      auditctl_output = command("sudo auditctl -l | grep #{audit_command}").stdout.strip
+      expect(auditctl_output).to match(/-S\s+all\b/)
+    end
+  end
+end

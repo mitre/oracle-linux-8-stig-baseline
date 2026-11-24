@@ -1,21 +1,10 @@
 control 'SV-248551' do
   title 'A sticky bit must be set on all OL 8 public directories to prevent unauthorized and unintended information transferred via shared system resources.'
-  desc 'Preventing unauthorized information transfers mitigates the risk of
-information, including encrypted representations of information, produced by
-the actions of prior users/roles (or the actions of processes acting on behalf
-of prior users/roles) from being available to any current users/roles (or
-current processes) that obtain access to shared system resources (e.g.,
-registers, main memory, hard disks) after those resources have been released
-back to information systems. The control of information in shared resources is
-also commonly referred to as object reuse and residual information protection.
+  desc 'Preventing unauthorized information transfers mitigates the risk of information, including encrypted representations of information, produced by the actions of prior users/roles (or the actions of processes acting on behalf of prior users/roles) from being available to any current users/roles (or current processes) that obtain access to shared system resources (e.g., registers, main memory, hard disks) after those resources have been released back to information systems. The control of information in shared resources is also commonly referred to as object reuse and residual information protection.
 
-    This requirement generally applies to the design of an information
-technology product, but it can also apply to the configuration of particular
-information system components that are, or use, such products. This can be
-verified by acceptance/validation processes in DoD or other government agencies.
+This requirement generally applies to the design of an information technology product, but it can also apply to the configuration of particular information system components that are, or use, such products. This can be verified by acceptance/validation processes in DoW or other government agencies.
 
-    There may be shared resources with configurable protections (e.g., files in
-storage) that may be assessed on specific information system components.'
+There may be shared resources with configurable protections (e.g., files in storage) that may be assessed on specific information system components.'
   desc 'check', 'Verify that all world-writable directories have the sticky bit set.
 
 Verify that all world-writable directories have the sticky bit set by running the following command:
@@ -36,7 +25,7 @@ sticky bit:
   tag severity: 'medium'
   tag gtitle: 'SRG-OS-000138-GPOS-00069'
   tag gid: 'V-248551'
-  tag rid: 'SV-248551r1137695_rule'
+  tag rid: 'SV-248551r1261682_rule'
   tag stig_id: 'OL08-00-010190'
   tag fix_id: 'F-51939r779218_fix'
   tag cci: ['CCI-001090']

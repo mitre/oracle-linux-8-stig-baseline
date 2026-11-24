@@ -1,8 +1,6 @@
 control 'SV-283444' do
   title 'OL 8 must have the crypto-policies package installed.'
-  desc 'Centralized cryptographic policies simplify applying secure ciphers across an operating system and the applications that run on that operating system. Using weak or untested encryption algorithms undermines the purposes of using encryption to protect data.
-
-'
+  desc 'Centralized cryptographic policies simplify applying secure ciphers across an operating system and the applications that run on that operating system. Using weak or untested encryption algorithms undermines the purposes of using encryption to protect data.'
   desc 'check', 'Verify the OL 8 crypto-policies package is installed with the following command:
 
 $ dnf list --installed crypto-policies

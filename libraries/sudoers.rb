@@ -17,7 +17,7 @@ class SudoersUserSpecTable
     @table = userspec_lines.map { |line|
 
       line_hash = {}
-      parsed_line = line.match(/^(?<users>\S+)\s+(?<hosts>[^=\s]+)=(\((?<run_as>.+)\))?\s*(?<tags>(#{tags.join(':|')}:)+)*\s*(?<commands>.*)$/)
+      parsed_line = line.match(/^(?<users>\S+(?:\s*,\s*\S+)*)\s+(?<hosts>[^=\s]+)=(\((?<run_as>.+)\))?\s*(?<tags>(#{tags.join(':|')}:)+)*\s*(?<commands>.*)$/)
 
       # tried just using `.named_captures` to construct the hash, but that gives hash keys that are strings, which confuses filtertable
       # TODO: figure out how to handle optional fields like `tags`, which seem to have weird interactions with `.where`
@@ -27,7 +27,7 @@ class SudoersUserSpecTable
         line_hash[:run_as] = parsed_line['run_as'] if !parsed_line['run_as'].nil?
         line_hash[:tags] = parsed_line['tags'] if !parsed_line['tags'].nil?
         line_hash[:commands] = parsed_line['commands']
-        line_hash.transform_values { |v| (!v.nil? && v.include?(',')) ? v.split(',') : v }
+        line_hash.transform_values { |v| (!v.nil? && v.include?(',')) ? v.split(',').map(&:strip) : v }
       end
     }.compact
   end
@@ -65,7 +65,7 @@ class Sudoers < Inspec.resource(1)
     @raw_content = inspec.command("cat #{sudoers_files.join(' ')}").stdout
 
     # strip comment lines and blank space lines (except for the #include, just in case)
-    @lines = @raw_content.lines.reject { |line| line.nil? || line.match(/^#(?!include)|^\s*$/) }.map(&:strip)
+    @lines = @raw_content.gsub(/\\\r?\n/, ' ').lines.reject { |line| line.nil? || line.match(/^#(?!include)|^\s*$/) }.map(&:strip)
 
     # a sudoers file has both settings and user specifications
     # it gets easier to write parsing regexes if we split the logic for handling them

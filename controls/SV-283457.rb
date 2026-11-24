@@ -2,7 +2,7 @@ control 'SV-283457' do
   title 'The OL 8 SSH server must be configured to use only Message Authentication Codes (MACs) employing FIPS 140-3 validated cryptographic hash algorithms to protect the confidentiality of SSH server connections.'
   desc 'Without cryptographic integrity protections, information can be altered by unauthorized users without detection.
 
-Remote access (e.g., RDP) is access to DOD nonpublic information systems by an authorized user (or an information system) communicating through an external, nonorganization-controlled network. Remote access methods include, for example, dial-up, broadband, and wireless.
+Remote access (e.g., RDP) is access to DoW nonpublic information systems by an authorized user (or an information system) communicating through an external, nonorganization-controlled network. Remote access methods include, for example, dial-up, broadband, and wireless.
 
 Cryptographic mechanisms used for protecting the integrity of information include, for example, signed hash functions using asymmetric cryptography enabling distribution of the public key to verify the hash information while maintaining the confidentiality of the secret key used to generate the hash.
 
@@ -33,7 +33,7 @@ Note: Systemwide crypto policies are applied on application startup. It is recom
   tag check_id: 'C-88022r1188513_chk'
   tag severity: 'high'
   tag gid: 'V-283457'
-  tag rid: 'SV-283457r1188515_rule'
+  tag rid: 'SV-283457r1261714_rule'
   tag stig_id: 'OL08-00-010290'
   tag gtitle: 'SRG-OS-000250-GPOS-00093'
   tag fix_id: 'F-87927r1188514_fix'

@@ -1,8 +1,8 @@
 control 'SV-283458' do
-  title 'The OL 8 SSH server must be configured to use only DOD-approved encryption ciphers employing FIPS 140-3 validated cryptographic hash algorithms to protect the confidentiality of SSH server connections.'
+  title 'The OL 8 SSH server must be configured to use only DoW-approved encryption ciphers employing FIPS 140-3 validated cryptographic hash algorithms to protect the confidentiality of SSH server connections.'
   desc 'Without cryptographic integrity protections, information can be altered by unauthorized users without detection.
 
-Remote access (e.g., RDP) is access to DOD nonpublic information systems by an authorized user (or an information system) communicating through an external, nonorganization-controlled network. Remote access methods include, for example, dial-up, broadband, and wireless.
+Remote access (e.g., RDP) is access to DoW nonpublic information systems by an authorized user (or an information system) communicating through an external, nonorganization-controlled network. Remote access methods include, for example, dial-up, broadband, and wireless.
 
 Cryptographic mechanisms used for protecting the integrity of information include, for example, signed hash functions using asymmetric cryptography enabling distribution of the public key to verify the hash information while maintaining the confidentiality of the secret key used to generate the hash.
 
@@ -32,7 +32,7 @@ Note: Systemwide crypto policies are applied on application startup. It is recom
   tag check_id: 'C-88023r1188516_chk'
   tag severity: 'high'
   tag gid: 'V-283458'
-  tag rid: 'SV-283458r1188518_rule'
+  tag rid: 'SV-283458r1261715_rule'
   tag stig_id: 'OL08-00-010291'
   tag gtitle: 'SRG-OS-000250-GPOS-00093'
   tag fix_id: 'F-87928r1188517_fix'

@@ -6,7 +6,7 @@ Audit records can be generated from various components within the information sy
 
 The list of audited events is the set of events for which audits are to be generated. This set of events is typically a subset of the list of all events for which the system is capable of generating audit records.
 
-DoD has defined the list of events for which OL 8 will provide an audit record generation capability as the following:
+DoW has defined the list of events for which OL 8 will provide an audit record generation capability as the following:
 
 1) Successful and unsuccessful attempts to access, modify, or delete privileges, security objects, security levels, or categories of information (e.g., classification levels);
 
@@ -51,7 +51,7 @@ $ sudo service auditd restart'
   tag check_id: 'C-52235r779967_chk'
   tag severity: 'medium'
   tag gid: 'V-248801'
-  tag rid: 'SV-248801r958412_rule'
+  tag rid: 'SV-248801r1261699_rule'
   tag stig_id: 'OL08-00-030590'
   tag gtitle: 'SRG-OS-000037-GPOS-00015'
   tag fix_id: 'F-52189r779968_fix'

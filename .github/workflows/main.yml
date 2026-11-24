@@ -88,7 +88,7 @@ jobs:
       - name: Setup Ruby
         uses: ruby/setup-ruby@v1
         with:
-          ruby-version: "3.3.0"
+          ruby-version: "3.3"
 
       - name: Disable ri and rdoc
         run: 'echo "gem: --no-document" >> ~/.gemrc'
